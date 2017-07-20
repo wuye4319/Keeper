@@ -1,0 +1,10 @@
+/**
+ * Created by nero on 2017/2/15.
+ * system count
+ */
+
+var system = {
+    "use" : <%= timer %>
+}
+
+module.exports = system;

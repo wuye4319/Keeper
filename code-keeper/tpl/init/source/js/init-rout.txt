@@ -1,0 +1,15 @@
+import '<%= myless %>';
+
+var imgSrc=window.supervar.imgsrc_cn;
+var apiUrl=window.supervar.apiURL;
+var domain="//www."+window.supervar.domain;
+var hrefUrl=domain+"/cn/page/";
+var staticData={};
+
+const <%= modulename %> = React.createClass({
+    render() {
+        return <div><%= modulename %></div>
+    }
+})
+
+module.exports = <%= modulename %>;

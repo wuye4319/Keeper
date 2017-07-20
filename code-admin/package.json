@@ -1,0 +1,26 @@
+{
+  "name": "code-admin",
+  "version": "1.0.7",
+  "description": "code-admin",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wuye4319/Code-Admin.git"
+  },
+  "keywords": [
+    "code-admin"
+  ],
+  "bin": {
+    "admin": "./bin/main.js"
+  },
+  "author": "nero",
+  "bugs": {
+    "url": "https://github.com/wuye4319/Code-Admin/issues"
+  },
+  "homepage": "https://github.com/wuye4319/Code-Admin"
+}

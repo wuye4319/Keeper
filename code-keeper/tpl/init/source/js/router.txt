@@ -1,0 +1,204 @@
+import Router from 'react-router/lib/Router';
+import Link from 'react-router/lib/Link';
+import browserHistory from 'react-router/lib/browserHistory';
+import '../../less/account/account.less';
+const {domain} = window.supervar;
+
+var childlist=[
+    <% for(var i=0;i<childlist.length;i++){
+        var child=childlist[i].child;
+        var txt,link;
+        txt=childlist[i].txt;
+        if(child){
+    %>{txt:"<%= txt %>",child:[
+        <%
+            for(var j=0;j<child.length;j++){
+                var mychild=JSON.parse(child[j]);
+                txt=mychild.txt;
+                link=mychild.link;
+                href=mychild.href;
+                ref=mychild.myref;
+        %>{txt:"<%= txt %>",<%= link?"link":"href" %>:`<%= link || href %>`<%= ref?",ref:'"+ref+"'":"" %>},
+        <%
+            }
+    %>]},
+    <%  }else{
+            link=childlist[i].link;
+            href=childlist[i].href;
+            ref=childlist[i].myref;
+    %>{txt:"<%= txt %>",<%= link?"link":"href" %>:`<%= link || href %>`<%= ref?",ref:'"+ref+"'":"" %>},
+    <%
+        }
+    }%>
+]
+
+/* your logic code */
+class Content extends React.Component{
+    constructor(){
+        super();
+        this.state = {
+            userInfo : {},
+            hideSidebar : false,
+            routerName : '<%= myrouter %>'
+        }
+    }
+    componentWillMount(){
+        document.getElementById("container").style.opacity=1;
+        if(window.supervar.myreflux){
+            window.supervar.myreflux.on('userInfoUpdate',(data)=>{
+                this.setState({userInfo:data})
+            })
+        }
+    }
+    changeState(name,value){
+        this.setState({[name]:value});
+    }
+    showchild(e,index){
+        e.stopPropagation();
+        var span=this.refs["span"+index];
+        var ol=this.refs["ol"+index];
+        if(span.className=="icon-nav fr"){
+            span.className="icon-nav fr on";
+            ol.className="";
+        }else {
+            span.className="icon-nav fr";
+            ol.className="none";
+        };
+    }
+    stop(e){
+        e.stopPropagation();
+    }
+    navSelect(e){
+        let active = document.getElementsByClassName("links selected");
+        for(let i=0;i<active.length;i++){
+            active[i].className="links"
+        }
+        e.target.className = "links selected";
+    }
+    render(){
+        var self=this;
+        return(
+            <div className={"centercont" + (this.state.hideSidebar ? " hideSidebar" : "")}>
+                <div className="topcont">
+                    <div className="topnav">
+                        <ul>
+                            <li><a href={`//www.${domain}/<%= currlang %>page/account/`}>{_('我的Superbuy')}</a></li>
+                            <li className={this.state.routerName === 'account' ? 'active' : ''}><a href={`//www.${domain}/<%= currlang %>page/account/`}>{_('首页')}</a></li>
+                            <li className={this.state.routerName === 'partner' ? 'active' : ''}><a href={`//www.${domain}/<%= currlang %>page/partner/`}>{_('合伙人联盟')}</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div className="maincont">
+                    <div className="leftnav fl on">
+                        <ul>
+                            {childlist.map(function (data,index) {
+                                return (
+                                    data.child?
+                                        <li onClick={e=>self.showchild(e,index)}><a>{data.txt}</a><span ref={"span"+index} className="icon-nav fr on"></span>
+                                        <ol className="" ref={"ol"+index} onClick={e=>self.stop(e)}>
+                                            {data.child.map(function (data,index2) {
+                                                return <li >{data.link?<Link name={index+'-'+index2}
+                                                                             activeClassName="links selected"
+                                                                             className="links"
+                                                                             onClick={e=>self.navSelect(e)}
+                                                                             to={data.link}>{data.txt}</Link>
+                                                    :<a name={index+'-'+index2}
+                                                        className="links"
+                                                        onClick={e=>self.navSelect(e)}
+                                                        href={data.href}>{data.txt}</a>}</li>
+                                            })}
+                                        </ol>
+                                        </li>:
+                                        <li >{data.link?<Link name={index}
+                                                              activeClassName="links selected"
+                                                              className="links"
+                                                              onClick={e=>self.navSelect(e)}
+                                                              to={data.link}>{data.txt}</Link>
+                                            :<a name={index}
+                                                className="links"
+                                                onClick={e=>self.navSelect(e)}
+                                                href={data.href}>{data.txt}</a>}</li>
+                                );
+                            })}
+                        </ul>
+                    </div>
+                    <div className="rightcont fl">
+                        {
+                            this.props.children && React.cloneElement(this.props.children, {
+                                userInfo:this.state.userInfo,
+                                changeState:this.changeState.bind(this)
+                            })
+                        }
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
+
+var routes = {
+    path: '/<%= currlang %>page/<%= myrouter %>/',
+    component: Content,
+    indexRoute: {
+        getComponent: (nextState, cb) => {
+            require.ensure([], (require) => {
+                cb(null, require("./home/home"));
+            },"/<%= currlang %>source/js/<%= myrouter %>/home/home")
+        }
+    },
+    childRoutes: [
+        <% for(var i=0;i<childlist.length;i++){
+            var child=childlist[i].child;
+            var link,req,file;
+            if(child){
+                for(var j=0;j<child.length;j++){
+                    var mychild=JSON.parse(child[j]);
+                    link=mychild.link;
+                    req=mychild.req;
+                    file=mychild.file;
+                    if(req){
+        %>{
+            path: "<%= link %>",
+            getComponent: (nextState, cb) => {
+                require.ensure([], (require) => {
+                    cb(null, require("<%= req %>"));
+                },"<%= file %>")
+            }
+        },<%
+                    }
+                }
+            }else{
+                link=childlist[i].link;
+                req=childlist[i].req;
+                file=childlist[i].file;
+                if(req){
+        %>{
+            path: "<%= link %>",
+            getComponent: (nextState, cb) => {
+                require.ensure([], (require) => {
+                    cb(null, require("<%= req %>"));
+                },"<%= file %>")
+            }
+        },<%
+                }
+            }
+        }%>
+    ]
+}
+
+class Myrouter extends React.Component{
+    componentWillMount(){
+        document.getElementById("container").style.opacity=1;
+    }
+    render(){
+        return(
+            <Router history={browserHistory} routes={routes} />
+        )
+    }
+}
+
+var Wrap = window.supervar.Wrap;
+var content=ReactDOM.render(
+    <Wrap content={Myrouter} />,
+    document.getElementById("container")
+);

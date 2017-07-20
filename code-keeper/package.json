@@ -1,0 +1,30 @@
+{
+  "name": "code-keeper",
+  "version": "1.1.8",
+  "description": "code-keeper",
+  "main": "index.js",
+  "dependencies": {
+    "winston": "^2.2.0",
+    "es6-promise": "^4.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wuye4319/Code-Keeper.git"
+  },
+  "keywords": [
+    "code-keeper"
+  ],
+  "bin": {
+    "keeper": "./bin/main.js"
+  },
+  "author": "nero",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wuye4319/Code-Keeper/issues"
+  },
+  "homepage": "https://github.com/wuye4319/Code-Keeper"
+}
