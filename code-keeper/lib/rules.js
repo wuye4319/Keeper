@@ -86,17 +86,18 @@ class rules {
                     var namefs1 = fs.readFileSync(initfs).toString();
                     Object.assign(transfile.mytrans, JSON.parse(namefs1));
                 } else {
-                    console.log("warning : trans file of router js is not exist!".red);
+                    console.log("Warning : trans file of router js is not exist!".red);
                 }
                 //each all trans files
                 var myaccount = filelist.en;
+                myaccount.length ||　console.log("Warning : router cache is empty! please run '.initrouter'!".red);
                 for (var d = 0; d < myaccount.length; d++) {
                     var transfs = "./front/en/source/js/" + myModuleDir + "/" + myaccount[d] + "/" + configtransfile;
                     if (fs.existsSync(transfs)) {
                         var namefs = fs.readFileSync(transfs).toString();
                         Object.assign(transfile.mytrans, JSON.parse(namefs));
                     } else {
-                        console.log("warning : trans file: ".red + transfs.green + " is not exist!".red);
+                        console.log("Warning : trans file: ".red + transfs.green + " is not exist!".red);
                     }
                 }
             } else {
@@ -104,7 +105,7 @@ class rules {
                     var namefs2 = fs.readFileSync(transfile.fs).toString();
                     Object.assign(transfile.mytrans, JSON.parse(namefs2));
                 } else {
-                    console.log("warning : trans file: ".red + transfile.fs.green + " is not exist!".red);
+                    console.log("Warning : trans file: ".red + transfile.fs.green + " is not exist!".red);
                 }
             }
         }

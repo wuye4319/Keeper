@@ -10,7 +10,7 @@ var config = {
     htmlbasepath: "",//html根目录，空则没有
     lang: "",//cn:中文，en:英文，all:中英文同时编译
     proxy: "www.dev.com:8013/",//proxy是代理地址，常见：test,super,superbuy,请求是实时的数据
-    transfile: "",//默认目录：当前js的同目录下/trans/trans.json
+    transfile: "trans/trans.json",//默认目录：当前js的同目录下 [trans/trans.json]
     sourcedir: ["src"],//js需要过滤的资源目录
     routerdir: ["prolibrary"],//router的根目录
     wrapper: "wrapper/Wrapper.js",//公共模块

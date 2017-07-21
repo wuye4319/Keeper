@@ -3,7 +3,6 @@
  * version:v1.0
  * plugin:code-keeper
  */
-;'use strict';
 var fs = require("fs");
 const path = require('path');
 var fsrules = require('./rules');
@@ -67,7 +66,7 @@ compile.prototype.comsource = function (pub, wrap) {
                 var wrapdir = myconfig.wrapper.substr(0, myconfig.wrapper.lastIndexOf("/"));
                 var wrappath = './front/' + lang[i] + wrapdir + "/" + myconfig.transfile;
                 if (fs.existsSync(wrappath)) {
-                    mytrans = fs.readFileSync(wrappath);
+                    mytrans = JSON.parse(fs.readFileSync(wrappath).toString());
                 } else {
                     console.log(wrappath.green + " trans file is missing!".red);
                 }
