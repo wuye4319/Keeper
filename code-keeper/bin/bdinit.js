@@ -23,8 +23,8 @@ repls.defineCommand('conf', {
 
 repls.defineCommand('static', {
     help: 'static your html'.yellow,
-    action: function (param) {
-        static.static(this, param);
+    action: function () {
+        static.static(this);
     }
 })
 
@@ -56,18 +56,21 @@ repls.defineCommand('initconf', {
 repls.defineCommand('createobject', {
     help: 'init your config.js'.yellow,
     action: function (type) {
-        myctrlinit.createobject(type);
-        const readline = require('readline');
-        const rl = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout
-        });
-        rl.question('你认为 Node.js 中文网怎么样？', (answer) => {
-            // 对答案进行处理
-            console.log(`多谢你的反馈：${answer}`);
-
-            rl.close();
-        });
+        //myctrlinit.createobject(type);
+        myvari.anslist = [{1: "one"}, {2: "two"}, {3: "three"}];
+        console.log("which kind of object do you wanna create?".green);
+        console.log("1.web frontend-react pc".blue);
+        console.log("2.html5 app frontend-react".blue);
+        console.log("3.frontend-react admin".blue);
+        myvari.answer.one = ()=> {
+            console.log("11111111111");
+        }
+        myvari.answer.two = ()=> {
+            console.log("22222222222");
+        }
+        myvari.answer.three = ()=> {
+            console.log("33333333333");
+        }
         this.displayPrompt();
     }
 })

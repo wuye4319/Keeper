@@ -4,8 +4,8 @@
  */
 
 var list = {
-    "cn" : <%= routerlist_cn %>,
-    "en" : <%= routerlist_en %>
+  "cn" : <%= routerlist_cn %>,
+  "en" : <%= routerlist_en %>
 }
 
 module.exports = list;

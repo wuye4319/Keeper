@@ -4,8 +4,8 @@
  */
 
 var list = {
-    "cn" : ["prolist"],
-    "en" : []
+  'cn': ['prolist'],
+  'en': []
 }
 
-module.exports = list;
+module.exports = list
