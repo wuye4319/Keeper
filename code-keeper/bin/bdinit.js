@@ -7,11 +7,11 @@ myctrlinit = new myctrlinit();
 var fsclear = require('../lib/ctrl/clear');
 clear = new fsclear();//the bin/bdrelease.js used;
 
-var fsstatic = require('../lib/ctrl/static');
-var static = new fsstatic();
+let fsstatic = require('../lib/ctrl/static');
+let static = new fsstatic();
 
-var fsconf = require('../lib/ctrl/readconf');
-var conf = new fsconf();
+let fsconf = require('../lib/ctrl/readconf');
+let conf = new fsconf();
 
 repls.defineCommand('conf', {
     help: 'setting config of config.js'.green,

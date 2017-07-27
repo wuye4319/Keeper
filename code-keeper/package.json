@@ -1,11 +1,12 @@
 {
   "name": "code-keeper",
-  "version": "1.1.11",
+  "version": "1.1.13",
   "description": "code-keeper",
   "main": "index.js",
   "dependencies": {
     "winston": "^2.2.0",
-    "es6-promise": "^4.1.0"
+    "es6-promise": "^4.1.0",
+    "keeper-static": "1.0.0"
   },
   "devDependencies": {},
   "scripts": {

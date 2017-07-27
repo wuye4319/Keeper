@@ -2,6 +2,7 @@
  * Created by nero on 2017/6/29.
  * ready
  */
+const path = require('path')
 var writefile = require('../lib/base/writefile')
 writefile = new writefile()
 var exec = require('child_process').exec
@@ -9,8 +10,8 @@ var npm
 if (fs.existsSync('./node_modules/npm/')) {
   npm = require('npm')
 }
-var delay = require('../lib/base/delay')
-delay = new delay()
+let Delay = require('../lib/base/delay')
+let delay = new Delay()
 var render = require('../lib/base/render')
 render = new render()
 var lowplugin, heightplugin, lostplugin
@@ -18,19 +19,20 @@ var lowplugin, heightplugin, lostplugin
 class ready {
   constructor () {
     this.pluginlist = [
-        {name: 'babel-core', ver: '6.25.0'},
-        {name: 'babel-preset-env', ver: '1.5.2'},
-        {name: 'babel-preset-react', ver: '6.24.1'},
-        {name: 'babel-preset-stage-0', ver: '6.24.1'},
-        {name: 'css-loader', ver: '0.28.4'},
-        {name: 'less-loader', ver: '4.0.4'},
-        {name: 'style-loader', ver: '0.18.2'},
-        {name: 'url-loader', ver: '0.5.9'},
-        {name: 'babel-loader', ver: '7.1.1'},
-        {name: 'webpack', ver: '3.0.0'},
-        {name: 'react-router', ver: '4.1.2'},
-        {name: 'i18n-webpack-plugin', ver: '1.0.0'},
-        {name: 'babel-plugin-import', ver: '1.2.1'}
+      {name: 'babel-core', ver: '6.25.0'},
+      {name: 'babel-preset-env', ver: '1.5.2'},
+      {name: 'babel-preset-react', ver: '6.24.1'},
+      {name: 'babel-preset-stage-0', ver: '6.24.1'},
+      {name: 'css-loader', ver: '0.28.4'},
+      {name: 'less-loader', ver: '4.0.4'},
+      {name: 'style-loader', ver: '0.18.2'},
+      {name: 'url-loader', ver: '0.5.9'},
+      {name: 'babel-loader', ver: '7.1.1'},
+      {name: 'antd', ver: '2.12.2'},
+      {name: 'webpack', ver: '3.0.0'},
+      {name: 'react-router', ver: '3.0.0'}, // 4.1.2
+      {name: 'i18n-webpack-plugin', ver: '1.0.0'},
+      {name: 'babel-plugin-import', ver: '1.2.1'}
     ]
   }
 
@@ -41,7 +43,7 @@ class ready {
     this.checkplugin()// keeper will auto install plugin for you,please wait...
     if (lowplugin.length || heightplugin.length) {
       console.log('You have some plugin is incorrect,Keeper will uninstall those plugin.'.red)
-      var hasnpm = fs.existsSync('./node_modules/npm/package.json')
+      let hasnpm = fs.existsSync('./node_modules/npm/package.json')
       hasnpm || await this.installnpm()
       await delay.delay(5, true)
       await this.uninstallall()
@@ -49,7 +51,7 @@ class ready {
     }
     if (lostplugin.length) {
       console.log('You have some plugin is missing,Keeper will install those plugin.'.red)
-      var hasnpm = fs.existsSync('./node_modules/npm/package.json')
+      let hasnpm = fs.existsSync('./node_modules/npm/package.json')
       hasnpm || await this.installnpm()
       await delay.delay(5, true)
       await this.installall()
@@ -59,7 +61,7 @@ class ready {
 
   async uninstallall () {
     lowplugin = lowplugin.concat(heightplugin)
-    for (var i in lowplugin) {
+    for (let i in lowplugin) {
       console.log('keeper uninstalling plugin : ' + lowplugin[i])
       await this.installplugin(lowplugin[i], 'un')
       await this.clearline()
@@ -68,7 +70,7 @@ class ready {
   }
 
   async installall () {
-    for (var i in lostplugin) {
+    for (let i in lostplugin) {
       console.log('keeper installing plugin : ' + lostplugin[i])
       await this.installplugin(lostplugin[i])
       await this.clearline()
@@ -77,7 +79,7 @@ class ready {
   }
 
   checkplugin () {
-    var pluginlist = this.pluginlist
+    let pluginlist = this.pluginlist
     lowplugin = [], heightplugin = [], lostplugin = []
     for (var i in pluginlist) {
       let isexist = fs.existsSync('./node_modules/' + pluginlist[i].name + '/package.json')
@@ -102,8 +104,8 @@ class ready {
     }
     if (lostplugin.length == 0 && heightplugin.length == 0 && lowplugin.length == 0) {
       console.log('Keeper is ready!'.green)
-      var inconf = __dirname + '/../tpl/system/sysconf.txt'
-      var outconf = __dirname + '/../config/sysconf.js'
+      var inconf = path.join(__dirname, '/../tpl/system/sysconf.txt')
+      var outconf = path.join(__dirname, '/../config/sysconf.js')
 
       var tpl = fs.readFileSync(inconf).toString()
       var data = {timer: 1}
@@ -115,7 +117,7 @@ class ready {
   installplugin (plugin, type) {
     return new Promise((resolve) => {
       npm.load(function (err) {
-        if (err) return handlError(err)
+        if (err) return console.log(err)
         if (type === 'un') {
           npm.commands.uninstall([plugin], function (er, data) {
             if (er) console.log(er)
@@ -144,7 +146,7 @@ class ready {
     var result = false
     var myvers = myver.split('.')
     var cvers = cver.split('.')
-        // control version .2
+    // control version .2
     for (var i = 0; i < myvers.length - 1; i++) {
       if (parseInt(myvers[i]) > parseInt(cvers[i])) {
         result = true

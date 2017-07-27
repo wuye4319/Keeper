@@ -5,7 +5,7 @@
  */
 ;'use strict'
 var fs = require('fs')
-var phantom = require('../../phantom/lib/index')
+var phantom = require('keeper-static')
 
 var render = require('./render')
 render = new render()

@@ -1,0 +1,27 @@
+{
+  "name": "keeper-static",
+  "version": "1.0.0",
+  "description": "keeper-static",
+  "main": "./lib/index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wuye4319/Keeper-Static.git"
+  },
+  "keywords": [
+    "code-keeper"
+  ],
+  "bin": {
+    "static": "./lib/phantom.js"
+  },
+  "author": "nero",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wuye4319/Keeper-Static/issues"
+  },
+  "homepage": "https://github.com/wuye4319/Keeper-Static"
+}
