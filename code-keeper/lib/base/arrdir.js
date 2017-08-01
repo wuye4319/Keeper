@@ -3,14 +3,14 @@
  * version:v1.0
  * plugin:init js
  */
-;'use strict'
+'use strict'
 
 class arrdir {
   constructor () {
     this.options = {}// init
   }
 
-    // search all dir from dir path
+  // search all dir from dir path
   arrdir (longdir) {
     var arrdir = [longdir]
     while (longdir) {

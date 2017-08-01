@@ -6,8 +6,9 @@ var writefile = require('./writefile')
 writefile = new writefile()
 
 var routerlist = {'cn': [], 'en': []}
+
 class eachdir {
-    // seach all dir under router dir
+  // seach all dir under router dir
   seachdir (myfilepath, prepath, lang, type) {
     var myconfig = myinfor.config
     var that = this
@@ -19,10 +20,10 @@ class eachdir {
       if (file.isDirectory()) {
         var isSource = source.indexOf(path)
         if (isSource == -1) {
-                    // same name js file is exist in the dir
+          // same name js file is exist in the dir
           var isndir = (type == 'html' ? fs.existsSync(_myfilepath + '/index.html') : fs.existsSync(_myfilepath + '/' + path + '.js'))
           path = (prepath ? prepath + path : path)
-                    // out path
+          // out path
           if (isndir) {
             lang == 'en/' ? routerlist.en.push(path) : routerlist.cn.push(path)
           }
@@ -37,7 +38,7 @@ class eachdir {
     var myconfig = myinfor.config
     var lang = myinfor.lang
     for (var i = 0; i < lang.length; i++) {
-            // each dir name from [router dir]
+      // each dir name from [router dir]
       if (key == 'js') {
         this.seachdir('./front/' + lang[i] + 'source/js/' + myconfig.myModule + '/', '', lang[i])
       } else {
@@ -45,14 +46,14 @@ class eachdir {
       }
     }
 
-        // update router list
-        // use for .dev[transfile], read en dir, and contant trans.
-    var file = __dirname + '/../../tpl/routerlist.txt'
-    var outfile = __dirname + '/../../config/routerlist.js'
+    // update router list
+    // use for .dev[transfile], read en dir, and contant trans.
+    var file = path.join(__dirname, '/../../tpl/routerlist.txt')
+    var outfile = path.join(__dirname, '/../../config/routerlist.js')
     var tpl = fs.readFileSync(file).toString()
     var data = {routerlist_cn: JSON.stringify(routerlist.cn), routerlist_en: JSON.stringify(routerlist.en)}
     var str = render.renderdata(tpl, data)
-        // write my file And Report
+    // write my file And Report
     var newfile = writefile.writejs(outfile, str)
     newfile ? console.log('router list is update!'.green) : console.log('router list is update failed!'.red)
 

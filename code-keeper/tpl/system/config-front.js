@@ -20,15 +20,21 @@ var config = {
     plugins: [], // 默认自带插件：[i18n]，可以继续添加其他插件
     module: {
       rules: [
-        {test: /\.js$/,
-          use: {loader: 'babel-loader',
-            options: {presets: ['react', 'env', 'stage-0'],
+        {
+          test: /\.js$/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['react', 'env', 'stage-0'],
               plugins: [// antd的动态引入编译，及css样式文件编译
-                    ['import', {libraryName: 'antd', style: 'css'}]
-              ]}}},
-                {test: /\.less$/, use: [{loader: 'style-loader'}, {loader: 'css-loader'}, {loader: 'less-loader'}]},
-                {test: /\.css/, use: [{loader: 'style-loader'}, {loader: 'css-loader'}]},
-                {test: /\.(png|jpg|jpeg)$/, use: {loader: 'url-loader', options: {limit: 5120}}}
+                ['import', {libraryName: 'antd', style: 'css'}]
+              ]
+            }
+          }
+        },
+        {test: /\.less$/, use: [{loader: 'style-loader'}, {loader: 'css-loader'}, {loader: 'less-loader'}]},
+        {test: /\.css/, use: [{loader: 'style-loader'}, {loader: 'css-loader'}]},
+        {test: /\.(png|jpg|jpeg)$/, use: {loader: 'url-loader', options: {limit: 5120}}}
       ]
     }
   }

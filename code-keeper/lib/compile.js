@@ -25,6 +25,7 @@ var transfile = rules.transfile().transfile
 // constructor
 function compile () {
 }
+
 // reload
 compile.prototype.reload = function () {
   var file = __dirname + '/rules.js'
@@ -33,13 +34,13 @@ compile.prototype.reload = function () {
   rules = new temprules()
   myinfor = rules.infor()
   confdev = rules.dev()
-    // init
+  // init
   myrules = rulinit.init()
-    // transfile
+  // transfile
   transfile = rules.transfile().transfile
-    // release
+  // release
   confrelease = rulrelease.release().release
-    // clear
+  // clear
   confdel = ruldelete.delete()
   console.log('config is reload!'.green)
 }
@@ -85,7 +86,7 @@ compile.prototype.comsource = function (pub, wrap) {
     }
     pub ? myplug = myplug.concat(pubconf) : ''
     myplugins = myconfig.webpack.plugins.concat(myplug)
-        // webpack
+    // webpack
     var basepath = (myconfig.basepath ? myconfig.basepath + '/' : '')
     var wranojs = myconfig.wrapper.substr(0, myconfig.wrapper.indexOf('.js'))
     var tempobj = {
@@ -118,7 +119,7 @@ compile.prototype.dev = function (param) {
   watcher = compiler.watch({ // watch options:
     aggregateTimeout: 100, // wait so long for more changes
     poll: true // use polling instead of native watchers
-        // pass a number to set the polling interval
+    // pass a number to set the polling interval
   }, function (err, stats) {
     var result = stats.toString(config)
     console.log(result)

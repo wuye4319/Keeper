@@ -4,6 +4,7 @@ var fscompile = require('../lib/compile')
 var compile = new fscompile()
 
 global.myvari = {anslist: [], answer: {}}
+
 // listener
 function myEval (cmd, context, filename, callback) {
   let anslist = myvari.anslist, indx = -1
@@ -11,7 +12,7 @@ function myEval (cmd, context, filename, callback) {
     if (typeof (anslist[i]) === 'string') {
       if (anslist[i] == cmd.trim()) indx = i
     } else {
-      if (Object.keys(anslist[i]) === cmd.trim()) indx = i
+      if (Object.keys(anslist[i])[0] === cmd.trim()) indx = i
     }
   }
   if (indx === -1) {

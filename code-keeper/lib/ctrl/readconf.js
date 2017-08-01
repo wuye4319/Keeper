@@ -20,10 +20,10 @@ conf.prototype.conf = function (param) {
 conf.prototype.readconf = function () {
   var myconfig = myinfor.config
   var myseo = myrules.seoinfor
-  console.log("myModule : '".green + myconfig.myModule.red + "'".green)
-  console.log("childModule : '".green + myconfig.childModule.red + "'".green)
-  console.log("lang : '".cyan + myconfig.lang.red + "'".cyan)
-  console.log("proxy : '".cyan + myconfig.proxy.red + "'".cyan)
+  console.log('myModule : \''.green + myconfig.myModule.red + '\''.green)
+  console.log('childModule : \''.green + myconfig.childModule.red + '\''.green)
+  console.log('lang : \''.cyan + myconfig.lang.red + '\''.cyan)
+  console.log('proxy : \''.cyan + myconfig.proxy.red + '\''.cyan)
   console.log('cn : '.blue)
   console.log(JSON.stringify(myseo[0]).yellow)
   console.log('en : '.blue)

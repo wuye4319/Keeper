@@ -6,6 +6,8 @@ const path = require('path')
 var writefile = require('../lib/base/writefile')
 writefile = new writefile()
 var exec = require('child_process').exec
+var del = require('../lib/base/delete')
+del = new del()
 var npm
 if (fs.existsSync('./node_modules/npm/')) {
   npm = require('npm')
@@ -24,6 +26,7 @@ class ready {
       {name: 'babel-preset-react', ver: '6.24.1'},
       {name: 'babel-preset-stage-0', ver: '6.24.1'},
       {name: 'css-loader', ver: '0.28.4'},
+      {name: 'less', ver: '2.7.2'},
       {name: 'less-loader', ver: '4.0.4'},
       {name: 'style-loader', ver: '0.18.2'},
       {name: 'url-loader', ver: '0.5.9'},
@@ -38,8 +41,8 @@ class ready {
 
   async boot () {
     console.log('This is the first time to start keeper!'.green)
-    fs.existsSync('./config.js') || addconf()
-    fs.existsSync('./seoinfor.json') || addconf('seo')
+    fs.existsSync('./config.js') || this.addconf()
+    fs.existsSync('./seoinfor.json') || this.addconf('seo')
     this.checkplugin()// keeper will auto install plugin for you,please wait...
     if (lowplugin.length || heightplugin.length) {
       console.log('You have some plugin is incorrect,Keeper will uninstall those plugin.'.red)
@@ -60,6 +63,8 @@ class ready {
   }
 
   async uninstallall () {
+    let packagelock = './package-lock.json'
+    if (fs.existsSync(packagelock)) del.deleteSource(packagelock)
     lowplugin = lowplugin.concat(heightplugin)
     for (let i in lowplugin) {
       console.log('keeper uninstalling plugin : ' + lowplugin[i])
@@ -87,7 +92,7 @@ class ready {
         var str = fs.readFileSync('./node_modules/' + pluginlist[i].name + '/package.json').toString()
         var low = this.checkver(pluginlist[i].ver, JSON.parse(str).version)
         if (low) {
-          low == 'height' ? heightplugin.push(pluginlist[i].name) : lowplugin.push(pluginlist[i].name)
+          low === 'height' ? heightplugin.push(pluginlist[i].name) : lowplugin.push(pluginlist[i].name)
         }
       } else {
         lostplugin.push(pluginlist[i].name + '@' + pluginlist[i].ver)
@@ -102,15 +107,15 @@ class ready {
     if (lostplugin.length) {
       console.log('Missing plugin : '.yellow + lostplugin.toString().red)
     }
-    if (lostplugin.length == 0 && heightplugin.length == 0 && lowplugin.length == 0) {
+    if (lostplugin.length === 0 && heightplugin.length == 0 && lowplugin.length == 0) {
       console.log('Keeper is ready!'.green)
-      var inconf = path.join(__dirname, '/../tpl/system/sysconf.txt')
-      var outconf = path.join(__dirname, '/../config/sysconf.js')
+      let inconf = path.join(__dirname, '/../tpl/system/sysconf.txt')
+      let outconf = path.join(__dirname, '/../config/sysconf.js')
 
-      var tpl = fs.readFileSync(inconf).toString()
-      var data = {timer: 1}
-      var str = render.renderdata(tpl, data)
-      var newfile = writefile.writejs(outconf, str)
+      let tpl = fs.readFileSync(inconf).toString()
+      let data = {timer: 1}
+      let mystr = render.renderdata(tpl, data)
+      writefile.writejs(outconf, mystr)
     }
   }
 
@@ -177,10 +182,10 @@ class ready {
   addconf (type) {
     var inconf, outconf
     if (type === 'seo') {
-      inconf = __dirname + '/../tpl/system/seoinfor.json'
+      inconf = path.join(__dirname, '/../tpl/system/seoinfor.json')
       outconf = './seoinfor.json'
     } else {
-      inconf = __dirname + '/../tpl/config-front.js'
+      inconf = path.join(__dirname, '/../tpl/config-front.js')
       outconf = './config.js'
     }
     var str = fs.readFileSync(inconf).toString()

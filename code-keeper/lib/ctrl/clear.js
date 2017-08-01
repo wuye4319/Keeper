@@ -23,7 +23,7 @@ clear.prototype.clear = function (param) {
   if (param == 'r') {
     del.deleteSource('./static/release/', 'r')
   } else {
-        // write file
+    // write file
     for (var i in confdel) {
       var mydata = confdel[i]
       del.deleteSource(mydata.filename)
@@ -31,7 +31,7 @@ clear.prototype.clear = function (param) {
   }
 
   var isrouter = myinfor.isrouter
-    // update router.txt
+  // update router.txt
   isrouter == -1 || myctrlinit.initrout()
 }
 

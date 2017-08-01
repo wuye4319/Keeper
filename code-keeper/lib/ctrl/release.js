@@ -50,7 +50,7 @@ initrel.prototype.readwrite = function (myfilepath, outfile) {
         if (file.isFile()) {
           var str = fs.readFileSync(_myfilepath).toString()
           var newfile = writefile.writejs(_outfile, str)
-                    // pipe data
+          // pipe data
           readable = fs.createReadStream(_myfilepath)
           writable = fs.createWriteStream(_outfile)
           readable.pipe(writable)

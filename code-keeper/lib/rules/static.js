@@ -3,27 +3,27 @@
  * rules of static
  */
 
-function mystatic() {
+function mystatic () {
 }
 
-//static
+// static
 mystatic.prototype.static = function () {
-    var arrstatic = [];
-    var lang = myinfor.lang, proxy = myinfor.config.proxy;
+  var arrstatic = []
+  var lang = myinfor.lang, proxy = myinfor.config.proxy
 
-    for (var i = 0; i < lang.length; i++) {
-        var mypathlist = myinfor.mypathlist[i];
-        //static
-        arrstatic.push({
-            template: proxy + mypathlist.chtml,
-            filename: mypathlist.stathtml,
-        });
-    }
+  for (var i = 0; i < lang.length; i++) {
+    var mypathlist = myinfor.mypathlist[i]
+    // static
+    arrstatic.push({
+      template: proxy + mypathlist.chtml,
+      filename: mypathlist.stathtml
+    })
+  }
 
-    var data = {
-        static: arrstatic,
-    }
-    return data;
+  var data = {
+    static: arrstatic
+  }
+  return data
 }
 
-module.exports = mystatic;
+module.exports = mystatic
