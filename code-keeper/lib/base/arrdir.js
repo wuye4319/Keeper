@@ -6,10 +6,6 @@
 'use strict'
 
 class arrdir {
-  constructor () {
-    this.options = {}// init
-  }
-
   // search all dir from dir path
   arrdir (longdir) {
     var arrdir = [longdir]

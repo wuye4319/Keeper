@@ -1,42 +1,33 @@
 /**
  * Created by nero on 2017/4/13.
  */
-var ProgressBar = require('./node-progress');
+var ProgressBar = require('./node-progress')
 
 var bar = new ProgressBar(' :title [:bar] :percent ', {
-    complete: '='
-    , incomplete: ' '
-    , width: 30
-    , total: 100
-});
+  complete: '=',
+  incomplete: ' ',
+  width: 30,
+  total: 100
+})
 
-function progress() {
-}
-
-progress.prototype.start = function (title) {
+class progress {
+  start (title) {
     if (bar.curr < 99) {
-        bar.tick(1, {title: "static"});
+      bar.tick(1, {title: 'static'})
     }
-}
+  }
 
-progress.prototype.toend = function () {
-    var index=100-bar.curr;
-    bar.tick(index, {title: "static"});
-}
+  toend () {
+    var index = 100 - bar.curr
+    bar.tick(index, {title: 'static'})
+    // bar.terminate()
+  }
 
-progress.prototype.end = function (msg) {
+  end (msg) {
     if (bar.complete) {
-        console.log(msg);
+      console.log(msg)
     }
+  }
 }
 
-function backward() {
-    bar.tick(-1, {title: 'backward'});
-    if (bar.curr == 0) {
-        bar.terminate();
-    } else {
-        setTimeout(backward, 20);
-    }
-}
-
-module.exports = progress;
+module.exports = progress

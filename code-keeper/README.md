@@ -25,7 +25,8 @@ npm install babel-plugin-import --save-dev
 命令如下：
 ```javascript
 keeper //进入keeper模式
-.initconf //初始化生成默认的配置文件
+.initconf //自动生成，默认的配置文件
+.initconf -a //自动生成，管理后台的，默认配置文件
 .conf //查看当前配置文件信息
 .help //查看所有命令及说明
 ```
@@ -33,6 +34,7 @@ keeper //进入keeper模式
 ### 初始化
 命令如下：
 ```javascript
+先配置config.js里的myModule,childModule
 keeper //进入keeper模式
 .init //初始化
 ..  //退出keeper模式
@@ -60,7 +62,8 @@ keeper //进入keeper模式
 ### 正静态
 ```javascript
 keeper //进入keeper模式
-.static //正静态
+.static //正静态，默认是不会缓存静态图片资源的
+.static img // 正静态，缓存图片
 ```
 
 ### 初始化router文件
@@ -74,6 +77,7 @@ keeper //进入keeper模式
 ```javascript
 keeper //进入keeper模式
 .release //提取需要发布的文件
+.release img //提取包括图片的需要发布的文件
 ```
 
 

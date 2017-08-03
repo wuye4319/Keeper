@@ -10,11 +10,6 @@ var arrdir = new fsarrdir()
 
 // constructor
 class Delete {
-  constructor () {
-    // init
-    this.options = {}
-  }
-
   // delete source from path
   deleteSource (dir, type) {
     var filename = dir.substr(dir.lastIndexOf('/') + 1)
