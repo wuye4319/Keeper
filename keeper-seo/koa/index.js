@@ -4,7 +4,7 @@
 const Koa = require('koa')
 const app = new Koa()
 const router = require('koa-router')({
-  prefix: '/wssso'
+  prefix: '/seo'
 })
 let staticFiles = require('./static')
 

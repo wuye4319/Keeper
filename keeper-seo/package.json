@@ -1,0 +1,26 @@
+{
+  "name": "keeper-seo",
+  "version": "1.0.0",
+  "description": "keeper-seo",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wuye4319/Keeper.git"
+  },
+  "keywords": [
+    "keeper-seo"
+  ],
+  "bin": {
+    "seo": "./bin/main.js"
+  },
+  "author": "nero",
+  "bugs": {
+    "url": "https://github.com/wuye4319/Keeper/issues"
+  },
+  "homepage": "https://github.com/wuye4319/Keeper"
+}
