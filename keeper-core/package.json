@@ -1,11 +1,11 @@
 {
-  "name": "keeper-seo",
-  "version": "1.0.1",
-  "description": "keeper-seo",
+  "name": "keeper-core",
+  "version": "1.0.0",
+  "description": "keeper-core",
   "main": "index.js",
   "dependencies": {
-    "keeper-core": "1.0.0",
-    "keeper-static": "1.0.0"
+    "colors": "^1.1.2",
+    "keeper-logger": "1.0.0"
   },
   "devDependencies": {},
   "scripts": {
@@ -16,10 +16,10 @@
     "url": "git+https://github.com/wuye4319/Keeper.git"
   },
   "keywords": [
-    "keeper-seo"
+    "keeper-core"
   ],
   "bin": {
-    "seo": "./bin/main.js"
+    "log": "./index.js"
   },
   "author": "nero",
   "bugs": {

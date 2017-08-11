@@ -1,6 +1,6 @@
 const r = require('repl')
 var fs = require('fs')
-var colors = require('../colors')
+var colors = require('colors')
 repls = r.start({prompt: '> ', eval: myEval})
 var basemysql = require('../lib/base/mysql')
 var koa = require('../koa/index')

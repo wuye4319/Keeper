@@ -1,6 +1,6 @@
 /**
  * author:nero
- * version:v1.0
+ * version:v1.1
  * plugin:code-keeper
  */
 var fs = require('fs')
@@ -58,7 +58,8 @@ compile.prototype.comsource = function (pub, wrap) {
     new webpack.optimize.UglifyJsPlugin({
       compress: {warnings: false},
       output: {comments: false}
-    })
+    }),
+    new webpack.BannerPlugin(myconfig.userinfor)
   ]
   for (i in lang) {
     var myplugins, myplug, mytrans
@@ -109,8 +110,7 @@ compile.prototype.comsource = function (pub, wrap) {
   }
   compiler = webpack(webpackconf)
 }
-var watcher
-var compiler
+var watcher, compiler
 // dev
 compile.prototype.dev = function (param) {
   this.comsource()

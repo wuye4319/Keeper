@@ -14,6 +14,7 @@ var config = {
   sourcedir: ['src'], // js需要过滤的资源目录
   routerdir: ['prolibrary'], // router的根目录
   wrapper: 'wrapper/Wrapper.js', // 公共模块
+  userinfor: '@author MG @time ' + new Date().toISOString().split('T')[0],
   webpack: {
     config: {chunks: false, colors: true, version: true, hash: true, assets: true, modules: false},
     externals: {'react': 'React', 'react-dom': 'ReactDOM'},

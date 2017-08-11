@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-var colors = require('../colors')
+var colors = require('colors')
 fs = require('fs')
 var ready = require('./ready')
 ready = new ready()

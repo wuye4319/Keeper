@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "keeper-static",
   "main": "./lib/index.js",
-  "dependencies": {},
+  "dependencies": {
+    "winston": "^2.2.0",
+    "es6-promise": "^4.1.0"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "test"

@@ -3,9 +3,7 @@
  */
 const Koa = require('koa')
 const app = new Koa()
-const router = require('koa-router')({
-  prefix: '/seo'
-})
+const router = require('koa-router')()
 let staticFiles = require('./static')
 
 app.use(async (ctx, next) => {
@@ -20,7 +18,7 @@ app.use(async (ctx, next) => {
   ctx.response.set('Access-Control-Allow-Credentials', 'true')
 })
 
-app.use(router.routes())
+app.use(router.routes()).use(router.allowedMethods())
 
 // error
 app.on('error', function (err, ctx) {
