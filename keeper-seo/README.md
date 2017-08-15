@@ -2,18 +2,13 @@
 
 ### 安装
 ```javascript
-到node_modules/code-keeper目录下运行
+到node_modules/keeper-seo目录下运行
 npm link
-
-编译依赖插件
-npm install mysql --save-dev
-npm install xlsx --save-dev
-```
 
 ### 查看当前配置
 命令如下：
 ```javascript
-cadmin //进入cadmin模式
+seo //进入cadmin模式
 .help //查看所有命令及说明
 ```
 
@@ -26,4 +21,7 @@ npm install koa-cors --save-dev
 
 ### 插件更新日志
 
-### v1.0.0
+### v1.0.2
+- 分离SEO体系
+- 新增相关koa依赖插件
+- 修改readme

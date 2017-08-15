@@ -11,7 +11,7 @@ var render = require('./render')
 render = new render()
 var writefile = require('./writefile')
 writefile = new writefile()
-let fslog = require('keeper-logger')
+let fslog = require('keeper-core')
 let log = new fslog()
 
 // constructor

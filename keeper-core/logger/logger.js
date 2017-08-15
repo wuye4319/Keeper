@@ -8,8 +8,8 @@ writefile = new writefile()
 class Logger {
   constructor () {
     this.options = {
-      sucfile: '../log/success.txt',
-      errfile: '../log/error.txt'
+      sucfile: '../logfile/success.txt',
+      errfile: '../logfile/error.txt'
     }
   }
 

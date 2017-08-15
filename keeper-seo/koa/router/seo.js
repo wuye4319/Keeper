@@ -8,7 +8,7 @@ mystatic = new mystatic()
 // init
 koa.addrouter(/^\/seo(?:\/|$)/, async (ctx) => {
   let myurl = ctx.url.substr(5)
-  let seach = ctx.request.header['user-agent'] || ""
+  let seach = ctx.request.header['user-agent'] || ''
   let result = await mystatic.staticpage('', myurl, seach)
 
   if (result) {
