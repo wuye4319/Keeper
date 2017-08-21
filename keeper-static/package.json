@@ -1,6 +1,6 @@
 {
   "name": "keeper-static",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "keeper-static",
   "main": "./lib/index.js",
   "dependencies": {
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wuye4319/Keeper-Static.git"
+    "url": "git+https://github.com/wuye4319/Keeper.git"
   },
   "keywords": [
     "code-keeper"
@@ -24,7 +24,7 @@
   "author": "nero",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/wuye4319/Keeper-Static/issues"
+    "url": "https://github.com/wuye4319/Keeper/issues"
   },
-  "homepage": "https://github.com/wuye4319/Keeper-Static"
+  "homepage": "https://github.com/wuye4319/Keeper"
 }

@@ -1,6 +1,4 @@
 const r = require('repl')
-var fs = require('fs')
-var colors = require('colors')
 repls = r.start({prompt: '> ', eval: myEval})
 var koa = require('../koa/index')
 

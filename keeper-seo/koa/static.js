@@ -2,7 +2,7 @@
  * Created by nero on 2017/5/24.
  */
 var path = require('path')
-const mime = require('mime')
+// const mime = require('mime')
 var fs = require('fs')
 
 // url: 类似 '/static/'
@@ -17,7 +17,7 @@ function staticFiles (url, dir) {
       // 判断文件是否存在:
       if (fs.existsSync(fp)) {
         // 查找文件的mime:
-        ctx.response.type = mime.lookup(rpath)
+        // ctx.response.type = mime.lookup(rpath)
         // 读取文件内容并赋值给response.body:
         ctx.response.body = fs.readFileSync(fp)
       } else {

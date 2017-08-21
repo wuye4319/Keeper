@@ -1,15 +1,9 @@
 {
   "name": "keeper-seo",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "keeper-seo",
   "main": "index.js",
-  "dependencies": {
-    "keeper-core": "~1.0.1",
-    "keeper-static": "1.0.0",
-    "koa": "^2.3.0",
-    "koa-cors": "0.0.16",
-    "koa-router": "^7.2.1"
-  },
+  "dependencies": {},
   "devDependencies": {},
   "scripts": {
     "test": "test"

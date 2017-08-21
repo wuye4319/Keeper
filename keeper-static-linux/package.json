@@ -1,0 +1,30 @@
+{
+  "name": "keeper-static-linux",
+  "version": "1.0.0",
+  "description": "keeper-static-linux",
+  "main": "./lib/index.js",
+  "dependencies": {
+    "winston": "^2.2.0",
+    "es6-promise": "^4.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wuye4319/Keeper.git"
+  },
+  "keywords": [
+    "keeper-static-linux"
+  ],
+  "bin": {
+    "static": "./lib/phantom.js"
+  },
+  "author": "nero",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wuye4319/Keeper/issues"
+  },
+  "homepage": "https://github.com/wuye4319/Keeper"
+}
