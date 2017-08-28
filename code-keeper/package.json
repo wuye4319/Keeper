@@ -1,10 +1,11 @@
 {
   "name": "code-keeper",
-  "version": "1.1.17",
+  "version": "1.1.19",
   "description": "code-keeper",
   "main": "index.js",
   "dependencies": {
-    "keeper-static": "1.0.0"
+    "keeper-static": "^1.0.3",
+    "keeper-core": "^1.0.4"
   },
   "devDependencies": {},
   "scripts": {

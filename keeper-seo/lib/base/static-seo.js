@@ -5,7 +5,8 @@
  */
 'use strict'
 var fs = require('fs')
-var phantom = require('keeper-static')
+const os = require('os')
+var phantom = (os.platform() === 'linux' ? require('keeper-static') : require('keeper-static-linux'))
 
 var render = require('./render')
 render = new render()

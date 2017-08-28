@@ -185,7 +185,7 @@ class ready {
       inconf = path.join(__dirname, '/../tpl/system/seoinfor.json')
       outconf = './seoinfor.json'
     } else {
-      inconf = path.join(__dirname, '/../tpl/config-front.js')
+      inconf = path.join(__dirname, '/../tpl/system/config-front.js')
       outconf = './config.js'
     }
     var str = fs.readFileSync(inconf).toString()

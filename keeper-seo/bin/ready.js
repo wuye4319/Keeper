@@ -3,6 +3,7 @@
  * ready
  */
 const path = require('path')
+const os = require('os')
 var writefile = require('../lib/base/writefile')
 writefile = new writefile()
 var exec = require('child_process').exec
@@ -21,12 +22,13 @@ var lowplugin, heightplugin, lostplugin
 class ready {
   constructor () {
     this.pluginlist = [
-      {name: 'keeper-core', ver: '1.0.4'},
-      {name: 'keeper-static', ver: '1.0.3'},
-      {name: 'koa', ver: '2.3.0'},
-      {name: 'koa-cors', ver: '0.0.16'},
-      {name: 'koa-router', ver: '7.2.1'}
+      {name: 'keeper-static', ver: '1.0.3'}
     ]
+    if (os.platform() === 'linux') {
+      this.pluginlist = [
+        {name: 'keeper-static-linux', ver: '1.0.0'}
+      ]
+    }
   }
 
   async boot () {
