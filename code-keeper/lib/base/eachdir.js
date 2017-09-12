@@ -4,6 +4,7 @@
  */
 var writefile = require('./writefile')
 writefile = new writefile()
+const path = require('path')
 
 var routerlist = {'cn': [], 'en': []}
 

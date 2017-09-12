@@ -3,32 +3,31 @@
  * ready
  */
 const path = require('path')
-const os = require('os')
-var writefile = require('../lib/base/writefile')
-writefile = new writefile()
-var exec = require('child_process').exec
-var del = require('../lib/base/delete')
-del = new del()
+const fs = require('fs')
+const Writefile = require('keeper-core/lib/writefile')
+let writefile = new Writefile()
+const exec = require('child_process').exec
+const Del = require('keeper-core/lib/delete')
+let del = new Del()
 var npm
 if (fs.existsSync('./node_modules/npm/')) {
   npm = require('npm')
 }
-let Delay = require('../lib/base/delay')
+let Delay = require('keeper-core/lib/delay')
 let delay = new Delay()
-var render = require('../lib/base/render')
-render = new render()
+const Render = require('keeper-core/lib/render')
+let render = new Render()
 var lowplugin, heightplugin, lostplugin
 
 class ready {
   constructor () {
     this.pluginlist = [
-      {name: 'keeper-static', ver: '1.0.3'}
+      {name: 'keeper-core', ver: '1.0.9'},
+      {name: 'koa', ver: '2.3.0'},
+      {name: 'koa-cors', ver: '0.0.16'},
+      {name: 'koa-router', ver: '7.2.1'},
+      {name: 'puppeteer', ver: '0.10.1'}
     ]
-    if (os.platform() === 'linux') {
-      this.pluginlist = [
-        {name: 'keeper-static-linux', ver: '1.0.0'}
-      ]
-    }
   }
 
   async boot () {

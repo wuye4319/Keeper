@@ -7,32 +7,33 @@
 const fs = require('fs')
 const phantom = require('keeper-static')
 const path = require('path')
+const os = require('os')
+let seoinfor = require('../../config/seoinfor')
 
-let render = require('./render')
-render = new render()
-let writefile = require('./writefile')
-writefile = new writefile()
+let Fsrender = require('keeper-core/lib/render')
+const render = new Fsrender()
 
-let fsprogress = require('./progress')
-let progress = new fsprogress()
-let fslog = require('keeper-core')
-let log = new fslog()
+let Fsprogress = require('keeper-core/lib/progress')
+const progress = new Fsprogress()
+let Fslog = require('keeper-core')
+let log = new Fslog()
+const Fscache = require('keeper-core/cache/cache')
+const cache = new Fscache()
 
 // constructor
 class InitJs {
   // init the plugin 'phantom'
-  async staticpage (file, url, seach) {
-    let self = this
-    return new Promise((resolve, reject) => {
+  async staticpage (type, url, seach, title) {
+    return new Promise((resolve) => {
       let sitepage = null
       let phInstance = null
       let t = Date.now()
       const mylog = function () {
-        progress.start()
+        // progress.start()
       }
       let str = null
 
-      phantom.create(['--ignore-ssl-errors=yes', '--load-images=no'], {logger: {debug: mylog}})
+      phantom.create(['--ignore-ssl-errors=yes'], {logger: {debug: mylog}})
         .then(function (instance) {
           phInstance = instance
           return instance.createPage()
@@ -40,7 +41,8 @@ class InitJs {
         .then(function (page) {
           sitepage = page
           page.on('onResourceRequested', true, function (requestData, networkRequest) {
-            var re = /[^http]+(.png|.jpg|.gif|.jpeg)$/g
+            // png
+            var re = /[^http]+.*?(jpg|jpeg)$/g
             var isimg = re.test(requestData.url)
             if (isimg) {
               networkRequest.abort()
@@ -57,43 +59,51 @@ class InitJs {
             console.log('Loading time '.green + (t / 1000).toString().red + ' second'.green)
             // cache
             let date = new Date()
+            if (os.platform() === 'linux') {
+              date.setHours(date.getHours() + 13)
+            }
             str = 'Loading time: ' + (t / 1000).toString() + ' second.   ' + date + '.   Search Engines : ' + seach + '\n' + url + '\n'
           }
           return sitepage.property('content')
         })
         .then(function (content) {
-          let seokey = null
+          let seokey = ''
           if (content && content != '<html><head></head><body></body></html>') {
-            sitepage.evaluate(function () {
-              return document.getElementById('container').getElementsByClassName('goods-title')[0].innerText
-            }).then(function (text) {
-              seokey = text
-            })
-            // opration
+            // title
+            if (title) {
+              sitepage.evaluate(function () {
+                return document.getElementById('container').getElementsByClassName('goods-title')[0].innerText
+              }).then(function (text) {
+                seokey = text
+                console.log(text)
+              })
+            }
+
+            // content for html
             sitepage.evaluate(function () {
               return document.getElementById('container').innerHTML
             }).then(async function (html) {
               if (html.length) {
-                // write file
                 // console.log(html)
+                // write file
                 let file = path.join(__dirname, '/../../tpl/init/init.html')
                 var tpl = fs.readFileSync(file).toString()
-                seokey = seokey || ''
+                let currpageinfor = seoinfor[type]
                 var data = {
-                  title: 'Superbuy-Shopping Agent,' + seokey,
-                  keywords: '代购，Superbuy.com,Shopping Agent, Superbuy.com,' + seokey,
-                  description: '代购，Superbuy.com,Shopping Agent, Superbuy.com,' + seokey,
+                  title: seokey + currpageinfor.title,
+                  keywords: '',
+                  description: currpageinfor.description + seokey,
                   loadjs: '/plugin/base/load.js',
                   container: '<div id="container" style="opacity: 0;">' + html + '</div>',
-                  wrapjs: '/en/react-plugin/Wrap.min.js',
-                  myjs: '/en/source/js/buy/buy.js'
+                  wrapjs: currpageinfor.wrapjs,
+                  myjs: currpageinfor.myjs
                 }
                 var mystr = render.renderdata(tpl, data)
-                // console.log(mystr)
+                if (!!seokey || type === 'subject') {
+                  cache.writecache(mystr, url)
+                }
                 resolve(mystr)
-                log.writelog('success', str)
-                // var newfile = writefile.writejs(file, str)
-                // progress.end(file.yellow + ' was overwrite!'.cyan)
+                log.writelog('success', str + (!title || seokey + '\n'))
               } else {
                 resolve(false)
                 log.writelog('error', str)
