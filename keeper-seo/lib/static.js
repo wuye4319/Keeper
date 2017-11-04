@@ -23,6 +23,7 @@ class InitJs {
   async staticpage (type, url, title) {
     return new Promise(async (resolve) => {
       let t = Date.now()
+      let filterbox = ''
       const browser = await puppeteer.launch({
         ignoreHTTPSErrors: true,
         args: ['--no-sandbox', '--disable-setuid-sandbox']
@@ -31,20 +32,22 @@ class InitJs {
 
       try {
         // await page.setRequestInterceptionEnabled(true)
-        // page.on('request', interceptedRequest => {
-        //   if (interceptedRequest.url.endsWith('.png') || interceptedRequest.url.endsWith('.jpg')) {
-        //     interceptedRequest.abort()
-        //   } else {
-        //     console.log(interceptedRequest.url)
-        //     interceptedRequest.continue()
-        //   }
-        // })
+        page.on('response', async (result) => {
+          let filter = result.url.indexOf('initItemDetail.htm') !== -1
+          let filter2 = result.url.indexOf('sib.htm') !== -1
+          if (filter || filter2) {
+            filterbox += await result.text()
+            // await page.cookies(result.url)
+          }
+          console.log(await page.cookies(result.url))
+        })
 
         await page.goto(url, {waitUntil: 'networkidle', networkIdleTimeout: 1000})
         // await page.screenshot({path: 'example.png'})
         let cont = await page.content()
         // console.log(cont)
-        resolve(cont)
+        let templine = '\n\n=====================================================================================================================\n\n'
+        resolve(cont + templine + filterbox)
 
         // const mypageinfor = await page.evaluate(() => {
         //   return {

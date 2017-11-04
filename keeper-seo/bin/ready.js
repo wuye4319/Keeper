@@ -32,7 +32,7 @@ class ready {
   async boot () {
     console.log('This is the first time to start keeper!'.green)
     this.checkplugin()// keeper will auto install plugin for you,please wait...
-    if (lowplugin.length || heightplugin.length) {
+    if (lowplugin.length) {
       console.log('You have some plugin is incorrect,Keeper will uninstall those plugin.'.red)
       let hasnpm = fs.existsSync('./node_modules/npm/package.json')
       hasnpm || await this.installnpm()
@@ -53,7 +53,7 @@ class ready {
   async uninstallall () {
     let packagelock = './package-lock.json'
     if (fs.existsSync(packagelock)) del.deleteSource(packagelock)
-    lowplugin = lowplugin.concat(heightplugin)
+    // lowplugin = lowplugin.concat(heightplugin)
     for (let i in lowplugin) {
       console.log('keeper uninstalling plugin : ' + lowplugin[i])
       await this.installplugin(lowplugin[i], 'un')
@@ -95,7 +95,7 @@ class ready {
     if (lostplugin.length) {
       console.log('Missing plugin : '.yellow + lostplugin.toString().red)
     }
-    if (lostplugin.length === 0 && heightplugin.length == 0 && lowplugin.length == 0) {
+    if (lostplugin.length === 0 && lowplugin.length === 0) {
       console.log('Keeper is ready!'.green)
       let inconf = path.join(__dirname, '/../tpl/system/sysconf.txt')
       let outconf = path.join(__dirname, '/../config/sysconf.js')
