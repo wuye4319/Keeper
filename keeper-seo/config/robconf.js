@@ -5,6 +5,7 @@
  */
 
 var config = {
+  chinatime: true,
   fs: './test.xls',
   rowkey: ['A', 'B', 'C', 'F', 'L'],
   mysql: {

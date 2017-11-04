@@ -1,9 +1,11 @@
 {
   "name": "keeper-seo",
-  "version": "1.1.11",
+  "version": "1.1.43",
   "description": "keeper-seo",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "keeper-core": "^1.0.19"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "test"

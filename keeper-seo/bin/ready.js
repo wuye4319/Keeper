@@ -22,11 +22,10 @@ var lowplugin, heightplugin, lostplugin
 class ready {
   constructor () {
     this.pluginlist = [
-      {name: 'keeper-core', ver: '1.0.9'},
       {name: 'koa', ver: '2.3.0'},
       {name: 'koa-cors', ver: '0.0.16'},
       {name: 'koa-router', ver: '7.2.1'},
-      {name: 'puppeteer', ver: '0.10.1'}
+      {name: 'puppeteer', ver: '0.10.0'}
     ]
   }
 

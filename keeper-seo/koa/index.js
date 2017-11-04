@@ -11,7 +11,7 @@ app.use(async (ctx, next) => {
   await next()
   const ms = Date.now() - start
   let myurl = ctx.url.substr(0, ctx.url.indexOf('http'))
-  console.log(`${ctx.method} ${myurl} - ${ms}ms`)
+  console.log(`${ctx.method} ${myurl || ctx.url} - ${ms}ms`)
   ctx.response.set('Access-Control-Allow-Origin', 'http://www.dev.com:8011')
   ctx.response.set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, DELETE')
   ctx.response.set('Access-Control-Max-Age', '0')
