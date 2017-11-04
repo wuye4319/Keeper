@@ -3,47 +3,34 @@
  * ready
  */
 const path = require('path')
-var writefile = require('../lib/base/writefile')
-writefile = new writefile()
-var exec = require('child_process').exec
-var del = require('../lib/base/delete')
-del = new del()
+const fs = require('fs')
+const Writefile = require('keeper-core/lib/writefile')
+let writefile = new Writefile()
+const exec = require('child_process').exec
+const Del = require('keeper-core/lib/delete')
+let del = new Del()
 var npm
 if (fs.existsSync('./node_modules/npm/')) {
   npm = require('npm')
 }
-let Delay = require('../lib/base/delay')
+let Delay = require('keeper-core/lib/delay')
 let delay = new Delay()
-var render = require('../lib/base/render')
-render = new render()
+const Render = require('keeper-core/lib/render')
+let render = new Render()
 var lowplugin, heightplugin, lostplugin
 
 class ready {
   constructor () {
     this.pluginlist = [
-      {name: 'babel-core', ver: '6.25.0'},
-      {name: 'babel-preset-env', ver: '1.5.2'},
-      {name: 'babel-preset-react', ver: '6.24.1'},
-      {name: 'babel-preset-stage-0', ver: '6.24.1'},
-      {name: 'css-loader', ver: '0.28.4'},
-      {name: 'less', ver: '2.7.2'},
-      {name: 'less-loader', ver: '4.0.4'},
-      {name: 'style-loader', ver: '0.18.2'},
-      {name: 'url-loader', ver: '0.5.9'},
-      {name: 'babel-loader', ver: '7.1.1'},
-      {name: 'antd', ver: '2.12.2'},
-      {name: 'webpack', ver: '3.0.0'},
-      {name: 'react-router', ver: '3.0.0'}, // 4.1.2
-      {name: 'i18n-webpack-plugin', ver: '1.0.0'},
-      {name: 'babel-plugin-import', ver: '1.2.1'},
+      {name: 'koa', ver: '2.3.0'},
+      {name: 'koa-cors', ver: '0.0.16'},
+      {name: 'koa-router', ver: '7.2.1'},
       {name: 'puppeteer', ver: '0.10.2'}
     ]
   }
 
   async boot () {
     console.log('This is the first time to start keeper!'.green)
-    fs.existsSync('./config.js') || this.addconf()
-    fs.existsSync('./seoinfor.json') || this.addconf('seo')
     this.checkplugin()// keeper will auto install plugin for you,please wait...
     if (lowplugin.length || heightplugin.length) {
       console.log('You have some plugin is incorrect,Keeper will uninstall those plugin.'.red)
@@ -178,21 +165,6 @@ class ready {
         resolve()
       })
     })
-  }
-
-  addconf (type) {
-    var inconf, outconf
-    if (type === 'seo') {
-      inconf = path.join(__dirname, '/../tpl/system/seoinfor.json')
-      outconf = './seoinfor.json'
-    } else {
-      inconf = path.join(__dirname, '/../tpl/system/config-front.js')
-      outconf = './config.js'
-    }
-    var str = fs.readFileSync(inconf).toString()
-    var newfile = writefile.writejs(outconf, str)
-    newfile ? console.log(outconf.yellow + ' is init success!'.green) : console.log(outconf.red + ' is failed to init!'.red)
-    console.log('this is first loading! keeper is setting complete! please open again!'.green)
   }
 }
 

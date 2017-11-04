@@ -16,7 +16,7 @@ repls.defineCommand('clone', {
     // temp
   }
 })
-repls.defineCommand('.', {
+repls.defineCommand('/', {
   help: 'end and exit'.red,
   action: function () {
     basemysql.endconn()

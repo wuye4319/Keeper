@@ -5,21 +5,15 @@
  */
 'use strict'
 const fs = require('fs')
-const Arrdir = require('./arrdir')
-const arrdir = new Arrdir()
 
 // constructor
 class Delete {
   // delete source from path
-  deleteSource (dir, type) {
-    let filename = dir.substr(dir.lastIndexOf('/') + 1)
-    let mydir = dir.substr(0, dir.lastIndexOf('/') + 1)
-    let dircont = arrdir.arrdir(mydir)
-
+  deleteSource (mypath, type) {
     if (type === 'all') {
-      this.deleteAll(dir)
-    } else if (fs.existsSync(dir) && filename) {
-      this.deletefile(dir)
+      this.deleteAll(mypath)
+    } else if (fs.existsSync(mypath)) {
+      this.deletefile(mypath)
     }
 
     return true

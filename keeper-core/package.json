@@ -1,6 +1,6 @@
 {
   "name": "keeper-core",
-  "version": "1.0.15",
+  "version": "1.0.28",
   "description": "keeper-core",
   "main": "./logger/logger.js",
   "dependencies": {
@@ -18,7 +18,7 @@
     "keeper-core"
   ],
   "bin": {
-    "log": "./logger/logger.js"
+    "cache": "./bin/builder.js"
   },
   "author": "nero",
   "bugs": {

@@ -22,5 +22,6 @@ function bootstrap () {
   require('./bdvers')
   require('./bdrelease')
   require('./bdinit')
-  require('./bdrob')
+  require('./proter')
+  // require('./bdrob')
 }

@@ -60,7 +60,7 @@ repls.defineCommand('wrap', {
     this.displayPrompt()
   }
 })
-repls.defineCommand('.', {
+repls.defineCommand('/', {
   help: 'end and exit'.red,
   action: function () {
     compile.outdev()

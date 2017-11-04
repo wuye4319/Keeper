@@ -2,9 +2,10 @@
  * Created by nero on 2017/8/9.
  */
 let path = require('path')
-var writefile = require('../lib/writefile')
-writefile = new writefile()
-const os = require('os')
+const Writefile = require('../lib/writefile')
+let writefile = new Writefile()
+const Mytime = require('../lib/time')
+let mytime = new Mytime()
 
 class Logger {
   constructor () {
@@ -14,15 +15,13 @@ class Logger {
     }
   }
 
-  writelog (type, str) {
-    if (type == 'success') {
+  writelog (type, str, mymodule) {
+    if (type === 'success') {
       // let file = path.join(__dirname, this.options.sucfile)
-      let d = new Date()
-      if (os.platform() === 'linux') {
-        d.setHours(d.getHours() + 13)
-      }
-      let name = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
-      let file = path.join(__dirname, this.options.gpath + name + '.txt')
+
+      let name = mytime.mydate()
+      let file = path.join(__dirname, this.options.gpath + mymodule + '/' + name + '.txt')
+      if (fs.existsSync(file)) str = ',\n' + str
       writefile.append(file, str)
     } else {
       let file = path.join(__dirname, this.options.errfile)
