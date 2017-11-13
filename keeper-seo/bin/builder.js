@@ -35,7 +35,7 @@ function myEval (cmd, context, filename, callback) {
 }
 
 // router
-require('../koa/router/seo')
+require('../koa/router/ctrl')
 
 repls.defineCommand('clone', {
   help: 'clone'.green,
@@ -51,10 +51,25 @@ repls.defineCommand('clear', {
     del.deleteSource(mycache, 'all')
   }
 })
+
+// proxy taobao
+const Proxy = require('../lib/proxy')
+let proxy = new Proxy()
+proxy.init()
+repls.defineCommand('login', {
+  help: 'clone'.green,
+  action: function () {
+    // temp
+    let tempPro = 'https://detail.tmall.com/item.htm?spm=a220m.1000858.1000725.231.53c9d5be860lfh&id=554802892200&areaId=440300&user_id=2214167570&cat_id=2&is_b=1&rn=68394abcbd856bd2886912f499c75ece'
+    let url = 'https://login.tmall.com/?from=sm&redirectURL=' + tempPro
+    proxy.login(url)
+  }
+})
 repls.defineCommand('/', {
   help: 'end and exit'.red,
-  action: function () {
+  action: async function () {
     koa.close()
+    await proxy.close()
     console.log('Thanks for using! Bye~~~'.rainbow)
     this.close()
   }

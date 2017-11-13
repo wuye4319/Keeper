@@ -20,13 +20,9 @@ let mytime = new Mytime()
 
 // constructor
 class InitJs {
-  async staticpage (type, url, seach, title) {
+  async seo (browser, type, url, seach, title) {
     return new Promise(async (resolve) => {
       let t = Date.now()
-      const browser = await puppeteer.launch({
-        ignoreHTTPSErrors: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
-      })
       const page = await browser.newPage()
 
       try {
@@ -86,11 +82,11 @@ class InitJs {
 
         log.writelog('success', str + '"title":"' + mypageinfor.title + '"}', type)
         console.log('Loading time '.green + (t / 1000).toString().red + ' second'.green)
-        browser.close()
+        await page.close()
       } catch (e) {
         resolve(false)
         console.log('System error! Can not analysis this page!'.red)
-        browser.close()
+        await page.close()
       }
     })
   }

@@ -32,8 +32,7 @@ class Cache {
       // console.log(temparr)
       for (var i in temparr) {
         let tmpurl = Object.values(temparr[i])
-        let myurl = url.substr(url.indexOf('url=') + 4)
-        if (tmpurl[0] === myurl) {
+        if (tmpurl[0] === url) {
           let cachefile = Object.keys(temparr[i])
           let mypath = path.join(__dirname, this.options.gpath + type + '/' + cachefile + '.html')
           if (fs.existsSync(mypath)) {
@@ -66,7 +65,7 @@ class Cache {
 
   appendfile (infor, date, url, name) {
     let hasinfor = fs.existsSync(infor)
-    let str = (hasinfor ? ',\n{"' : '{"') + name + '/' + date.getTime() + '":"' + url.substr(url.indexOf('url=') + 4) + '"}'
+    let str = (hasinfor ? ',\n{"' : '{"') + name + '/' + date.getTime() + '":"' + url + '"}'
     writefile.append(infor, str)
   }
 
