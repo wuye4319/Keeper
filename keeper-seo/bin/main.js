@@ -7,7 +7,7 @@ ready = new ready()
 // check program running environment.
 var iskeeper = fs.existsSync('./node_modules/keeper-seo/bin/main.js')
 if (iskeeper) {
-  var isready = fs.existsSync('./node_modules/keeper-seo/config/sysconf.js')
+  var isready = fs.existsSync('./node_modules/keeper-core/config/sysconf.js')
   if (!isready) {
     ready.boot()
   } else {

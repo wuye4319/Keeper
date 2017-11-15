@@ -29,7 +29,6 @@ class InitJs {
       const page = await browser.newPage()
 
       try {
-        // await page.setRequestInterceptionEnabled(true)
         page.on('response', async (result) => {
           let filter = result.url.indexOf('initItemDetail.htm') !== -1
           let filter2 = result.url.indexOf('sib.htm') !== -1
@@ -44,15 +43,22 @@ class InitJs {
         let cont = await page.content()
         // console.log(cont)
 
-        let templine = '\n\n=====================================================================================================================\n\n'
-        if (filterbox.indexOf('setMdskip') != -1 || filterbox.indexOf('onSibRequestSuccess') != -1 || !isali) {
-          console.log('get api data success'.green)
+        let templine = '\n<script>\nvar apidata = '
+        let endtempline = '\n</script>'
+        let tmallkey = 'setMdskip'
+        let taobaokey = 'onSibRequestSuccess'
+        if (filterbox.indexOf(tmallkey) !== -1 || filterbox.indexOf(taobaokey) !== -1) {
+          filterbox = filterbox.substr(filterbox.indexOf('(') + 1)
+          filterbox = filterbox.substr(0, filterbox.lastIndexOf(')'))
+          console.log('Get ali api data success'.green)
+        } else if (!isali) {
+          console.log('Get other api data success'.green)
         } else {
           let loginurl = 'https://login.tmall.com/?from=sm&redirectURL='
           filterbox = await login.login(browser, loginurl + encodeURIComponent(url))
           loginstr = true
         }
-        cont = cont + templine + filterbox
+        cont = cont + templine + filterbox + endtempline
 
         // write date
         t = Date.now() - t
