@@ -26,6 +26,7 @@ class InitJs {
       let filterbox = ''
       let isali = false
       let loginstr = false
+      let cookiebox = []
       const page = await browser.newPage()
 
       try {
@@ -33,6 +34,7 @@ class InitJs {
           let filter = result.url.indexOf('initItemDetail.htm') !== -1
           let filter2 = result.url.indexOf('sib.htm') !== -1
           if (filter || filter2) {
+            cookiebox = cookiebox.concat(await page.cookies(result.url))
             isali = true
             filterbox += await result.text()
           }
@@ -47,18 +49,24 @@ class InitJs {
         let endtempline = '\n</script>'
         let tmallkey = 'setMdskip'
         let taobaokey = 'onSibRequestSuccess'
-        if (filterbox.indexOf(tmallkey) !== -1 || filterbox.indexOf(taobaokey) !== -1) {
+        let chaoshi = 'onMdskip'
+        if (filterbox.indexOf(tmallkey) !== -1 || filterbox.indexOf(taobaokey) !== -1 || filterbox.indexOf(chaoshi) !== -1) {
           filterbox = filterbox.substr(filterbox.indexOf('(') + 1)
           filterbox = filterbox.substr(0, filterbox.lastIndexOf(')'))
           console.log('Get ali api data success'.green)
-        } else if (!isali) {
-          console.log('Get other api data success'.green)
-        } else {
+        } else if (isali) {
           let loginurl = 'https://login.tmall.com/?from=sm&redirectURL='
-          filterbox = await login.login(browser, loginurl + encodeURIComponent(url))
-          loginstr = true
+          if (this.checklogin(cookiebox)) {
+            console.log('page has already login!')
+          } else {
+            filterbox = await login.login(browser, loginurl + encodeURIComponent(url))
+            loginstr = true
+          }
+        } else {
+          console.log('Get other api data success'.green)
         }
         cont = cont + templine + filterbox + endtempline
+        console.log(cookiebox)
 
         // write date
         t = Date.now() - t
@@ -76,6 +84,18 @@ class InitJs {
         await page.close()
       }
     })
+  }
+
+  checklogin (cookiebox) {
+    for (var i in cookiebox) {
+      let key1 = 'lgc'
+      let key2 = 'tracknick'
+      if (cookiebox[i].name === key1 || cookiebox[i].name === key2) {
+        return true
+      } else {
+        return false
+      }
+    }
   }
 }
 

@@ -24,9 +24,9 @@ class InitJs {
     return new Promise(async (resolve) => {
       let t = Date.now()
       let filterbox = ''
+      const page = await browser.newPage()
 
       try {
-        const page = await browser.newPage()
         // await page.setRequestInterceptionEnabled(true)
         page.on('response', async (result) => {
           let filter = result.url.indexOf('initItemDetail.htm') !== -1

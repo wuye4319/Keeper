@@ -20,7 +20,7 @@ class InitJs {
   async init () {
     browser = await puppeteer.launch({
       ignoreHTTPSErrors: true,
-      // headless: false,
+      headless: false,
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     })
   }
@@ -30,7 +30,8 @@ class InitJs {
   }
 
   async taobao (type, url) {
-    return await taobao.taobao(browser, type, url, true)
+    let cache = true
+    return await taobao.taobao(browser, type, url, cache)
   }
 
   async login (url) {
