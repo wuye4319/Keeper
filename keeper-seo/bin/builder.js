@@ -6,8 +6,10 @@ let path = require('path')
 const Fsdel = require('keeper-core/lib/delete')
 let del = new Fsdel()
 
-const Fscache = require('keeper-core/cache/cache')
-let cache = new Fscache()
+// proxy taobao
+const Proxy = require('../lib/proxy')
+let proxy = new Proxy()
+proxy.init()
 
 global.myvari = {anslist: [], answer: {}}
 
@@ -37,14 +39,8 @@ function myEval (cmd, context, filename, callback) {
 // router
 require('../koa/router/ctrl')
 
-repls.defineCommand('clone', {
-  help: 'clone'.green,
-  action: function () {
-    // temp
-  }
-})
 repls.defineCommand('clear', {
-  help: 'clone'.green,
+  help: 'clear'.green,
   action: function () {
     // temp
     let mycache = path.join(__dirname, '../../../cache/')
@@ -52,25 +48,29 @@ repls.defineCommand('clear', {
   }
 })
 
-// proxy taobao
-const Proxy = require('../lib/proxy')
-let proxy = new Proxy()
-proxy.init()
-repls.defineCommand('login', {
-  help: 'clone'.green,
-  action: function () {
+repls.defineCommand('auto-login', {
+  help: 'auto login for taobao'.green,
+  action: function (account) {
     // temp
-    let tempPro = 'https://detail.tmall.com/item.htm?spm=a220m.1000858.1000725.231.53c9d5be860lfh&id=554802892200&areaId=440300&user_id=2214167570&cat_id=2&is_b=1&rn=68394abcbd856bd2886912f499c75ece'
-    let url = 'https://login.tmall.com/?from=sm&redirectURL=' + tempPro
-    proxy.login(url)
+    let tempPro = 'https://detail.tmall.com/item.htm?id=554802892200'
+    let url = 'https://login.tmall.com/?from=sm&redirectURL='
+    proxy.login(url, tempPro, account)
   }
 })
 repls.defineCommand('/', {
   help: 'end and exit'.red,
   action: async function () {
     koa.close()
-    await proxy.close()
+    proxy.close()
     console.log('Thanks for using! Bye~~~'.rainbow)
     this.close()
+  }
+})
+const Getcode = require('../lib/getcode')
+let getcode = new Getcode()
+repls.defineCommand('verify', {
+  help: 'end and exit'.red,
+  action: async function () {
+    getcode.getcode()
   }
 })

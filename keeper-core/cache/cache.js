@@ -18,39 +18,46 @@ class Cache {
     this.options = {
       errfile: '../logfile/error.txt',
       gpath: '../../../cache/',
-      cacheinfor: '/infor.txt'
+      cacheinfor: '/infor.txt',
+      cachemins: 30 // minutes
     }
   }
 
   readcache (url, search, type) {
-    let result = false
-    let infor = path.join(__dirname, this.options.gpath + type + this.options.cacheinfor)
+    return new Promise((resolve) => {
+      let result = false
+      let infor = path.join(__dirname, this.options.gpath + type + this.options.cacheinfor)
 
-    if (fs.existsSync(infor)) {
-      let mycacheinfor = fs.readFileSync(infor).toString()
-      let temparr = JSON.parse('[' + mycacheinfor + ']')
-      // console.log(temparr)
-      for (var i in temparr) {
-        let tmpurl = Object.values(temparr[i])
-        if (tmpurl[0] === url) {
-          let cachefile = Object.keys(temparr[i])
-          let mypath = path.join(__dirname, this.options.gpath + type + '/' + cachefile + '.html')
-          if (fs.existsSync(mypath)) {
-            result = fs.readFileSync(mypath).toString()
+      if (fs.existsSync(infor)) {
+        let mycacheinfor = fs.readFileSync(infor).toString()
+        let temparr = JSON.parse('[' + mycacheinfor + ']')
+        // console.log(temparr)
+        temparr.reverse()
+        for (let i in temparr) {
+          let tmpurl = Object.values(temparr[i])
+          if (tmpurl[0] === url) {
+            let cachefile = Object.keys(temparr[i])
+            let tempdatearr = cachefile[0].substr(0, cachefile[0].indexOf('/'))
+            tempdatearr = tempdatearr.split('-')
+            let ispass = this.dateispass(tempdatearr, this.options.cachemins)
+            let mypath = path.join(__dirname, this.options.gpath + type + '/' + cachefile[0] + '.html')
+            if (fs.existsSync(mypath) && !ispass) {
+              result = fs.readFileSync(mypath).toString()
+            }
+            log.writelog('success', '{"Read":"' + cachefile + '.html","date":"' + mytime.mytime() + '","Engines":"' + search + '","url":"' + url + '"}', type)
+            break
           }
-          log.writelog('success', '{"Read":"' + cachefile + '.html","date":"' + mytime.mytime() + '","Engines":"' + search + '","url":"' + url + '"}', type)
-          break
         }
       }
-    }
 
-    return result
+      resolve(result)
+    })
   }
 
   // write
   writecache (html, url, type) {
     let date = mytime.getdate()
-    let name = mytime.mydate()
+    let name = mytime.mydate('mins')
 
     let infor = path.join(__dirname, this.options.gpath + type + '/infor/' + name + '.txt')
     let maininfor = path.join(__dirname, this.options.gpath + type + this.options.cacheinfor)
@@ -60,7 +67,7 @@ class Cache {
     let file = path.join(__dirname, this.options.gpath + type + '/' + name + '/' + date.getTime() + '.html')
     writefile.writejs(file, html)
     console.log('Create cache file!'.yellow)
-    return '"Cache":"' + name + '/' + date.getTime() + '.html",'
+    return ',"Cache":"' + name + '/' + date.getTime() + '.html"'
   }
 
   appendfile (infor, date, url, name) {
@@ -70,16 +77,16 @@ class Cache {
   }
 
   dateispass (datearr, keepdate) {
-    let ruletime = new Date()
-    ruletime.setDate(ruletime.getDate() - keepdate)
+    let ruletime = mytime.getdate()
+    ruletime.setMinutes(ruletime.getMinutes() - keepdate)
     ruletime = ruletime.getTime()
 
-    let date = new Date()
+    let date = mytime.getdate()
     date.setYear(datearr[0])
     date.setMonth(datearr[1] - 1)
     date.setDate(datearr[2])
-    date.setHours(0)
-    date.setMinutes(0)
+    date.setHours(datearr[3])
+    date.setMinutes(datearr[4])
     date.setSeconds(0)
     date = date.getTime()
 
@@ -112,6 +119,9 @@ class Cache {
                   if (fs.existsSync(myinfor)) del.deleteSource(myinfor)
                 }
               }
+            }
+            if (index === paths.length - 1) {
+              that.updatecacheinfor(type)
             }
           })
         })

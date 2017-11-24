@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-var colors = require('colors')
-fs = require('fs')
-var ready = require('./ready')
-ready = new ready()
+let colors = require('colors')
+let fs = require('fs')
+const Ready = require('./ready')
+let ready = new Ready()
 
 // check program running environment.
 var iskeeper = fs.existsSync('./node_modules/keeper-seo/bin/main.js')

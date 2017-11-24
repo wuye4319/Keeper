@@ -2,6 +2,7 @@
  * Created by nero on 2017/8/9.
  */
 let path = require('path')
+let fs = require('fs')
 const Writefile = require('../lib/writefile')
 let writefile = new Writefile()
 const Mytime = require('../lib/time')

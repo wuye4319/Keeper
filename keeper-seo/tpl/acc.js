@@ -1,12 +1,4 @@
-/**
- * author:nero
- * version:v1.0
- * plugin:init js
- */
-'use strict'
 const koa = require('../koa/index')
-const path = require('path')
-const fs = require('fs')
 
 // constructor
 class InitJs {
@@ -36,11 +28,11 @@ class InitJs {
           console.log('Auto login is working!'.red)
 
           const bodyHandle = await page.mainFrame().childFrames()[0].$('#TPL_username_1')
-          const account = await page.mainFrame().childFrames()[0].evaluate(body => body.value = 'wuye4319', bodyHandle)
+          const account = await page.mainFrame().childFrames()[0].evaluate(body => body.value = '<%= acc %>', bodyHandle)
           console.log(account)
           await bodyHandle.dispose()
           const pswHandle = await page.mainFrame().childFrames()[0].$('#TPL_password_1')
-          const psw = await page.mainFrame().childFrames()[0].evaluate(body => body.value = 'lianlian857', pswHandle)
+          const psw = await page.mainFrame().childFrames()[0].evaluate(body => body.value = '<%= psw %>', pswHandle)
           console.log(psw)
           await pswHandle.dispose()
           const butHandle = await page.mainFrame().childFrames()[0].$('#J_SubmitStatic')

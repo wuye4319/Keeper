@@ -5,6 +5,8 @@ const koa = require('../index')
 
 const Proxy = require('../../lib/proxy')
 let proxy = new Proxy()
+let Delay = require('keeper-core/lib/delay')
+let delay = new Delay()
 
 const Fscache = require('keeper-core/cache/cache')
 const cache = new Fscache()
@@ -41,8 +43,12 @@ const filtermall = async (ctx, rout) => {
   console.log(myurl)
   let result
 
-  if (internumb > 15) {
+  if (internumb > 9) {
     console.log('Server is busy,please wait...')
+    proxy.close()
+    console.log('System will restart at 10 seconds later...')
+    await delay.delay(10, true)
+    proxy.init()
   } else {
     // do not cache url
     internumb += 1
@@ -53,7 +59,7 @@ const filtermall = async (ctx, rout) => {
       urlbox.push(myurl)
       // read cache file time
       let rct = Date.now()
-      let hascache = cache.readcache(myurl, search, rout)
+      let hascache = await cache.readcache(myurl, search, rout)
       rct = Date.now() - rct
       console.log('read cache time : '.green + rct.toString().red + ' ms'.green)
       if (hascache) {
@@ -101,7 +107,7 @@ const filter = async (ctx, rout, title) => {
     internumb += 1
     // read cache file time
     let rct = Date.now()
-    let hascache = cache.readcache(myurl, search, rout)
+    let hascache = await cache.readcache(myurl, search, rout)
     rct = Date.now() - rct
     console.log('read cache time : '.green + rct.toString().red + ' ms'.green)
     if (hascache) {

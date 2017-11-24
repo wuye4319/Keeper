@@ -30,10 +30,14 @@ class time {
     return datestr
   }
 
-  mydate () {
+  mydate (unit) {
     let date = this.getdate()
-
-    let datestr = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
+    let datestr
+    if (unit === 'mins') {
+      datestr = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + '-' + date.getHours() + '-' + date.getMinutes()
+    } else {
+      datestr = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
+    }
 
     return datestr
   }

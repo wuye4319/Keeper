@@ -5,13 +5,16 @@
  */
 'use strict'
 const puppeteer = require('puppeteer')
+const path = require('path')
+const fs = require('fs')
 
 const Taobao = require('./taobao')
 let taobao = new Taobao()
-const Login = require('./auto-login')
-let login = new Login()
 const Myseo = require('./seo')
 let seo = new Myseo()
+const Render = require('keeper-core/lib/render')
+let render = new Render()
+const accbox = require('../config/account')
 
 let browser
 
@@ -20,26 +23,42 @@ class InitJs {
   async init () {
     browser = await puppeteer.launch({
       ignoreHTTPSErrors: true,
-      headless: false,
+      // headless: false,
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     })
   }
 
   async close () {
-    await browser.close()
+    browser.close()
   }
 
   async taobao (type, url) {
     let cache = true
-    return await taobao.taobao(browser, type, url, cache)
+    let data = await taobao.taobao(browser, type, url, cache)
+    return data
   }
 
-  async login (url) {
-    return await login.login(browser, url)
+  async login (loginurl, url, account) {
+    const page = await browser.newPage()
+
+    let file = path.join(__dirname, '/../tpl/acc.js')
+    const tpl = fs.readFileSync(file).toString()
+    let param = {
+      acc: accbox[account].acc,
+      psw: accbox[account].psw
+    }
+    let mystr = render.renderdata(tpl, param)
+
+    const Login = eval(mystr)
+    let login = new Login()
+
+    let data = await login.login(page, loginurl, url, account)
+    return data
   }
 
   async seo (rout, myurl, search, title) {
-    return await seo.seo(browser, rout, myurl, search, title)
+    let data = await seo.seo(browser, rout, myurl, search, title)
+    return data
   }
 }
 

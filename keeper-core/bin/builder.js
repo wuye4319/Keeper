@@ -39,16 +39,20 @@ repls.defineCommand('clear', {
     console.log('which dir do you wanna clear?')
     console.log('1.buy')
     console.log('2.subject')
-    global.myvari.anslist = [{1: 'buy'}, {2: 'subject'}]
+    console.log('3.taobao')
+    global.myvari.anslist = [{1: 'buy'}, {2: 'subject'}, {3: 'taobao'}]
     global.myvari.answer.buy = () => {
       this.getday('buy')
     }
     global.myvari.answer.subject = () => {
       this.getday('subject')
     }
+    global.myvari.answer.taobao = () => {
+      this.getday('taobao')
+    }
     this.getday = (type) => {
-      console.log('how many days cache do you wanna keep?enter : [d day , like : d 2]')
-      global.myvari.anslist = [{d: 'getday'}]
+      console.log('how long do you wanna keep cache?enter : [m mins , like : m 20]')
+      global.myvari.anslist = [{m: 'getday'}]
       global.myvari.answer.getday = (data) => {
         cache.delcache(type, data)
       }
