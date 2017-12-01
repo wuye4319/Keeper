@@ -187,42 +187,33 @@ class rules {
   }
 
   dev () {
-    var arrwebpack = [], develop, myseoinfor = this.seoinfor()
+    let arrwebpack = [], develop, myseoinfor = this.seoinfor()
 
     // dev and pub
     for (var i = 0; i < lang.length; i++) {
       var singleinfor = (lang[i] == 'cn/' ? myseoinfor[0] : myseoinfor[1])
+      let tempobj = {
+        template: initpath.htmlpath,
+        data: {
+          title: singleinfor.title,
+          keywords: singleinfor.keyword,
+          description: singleinfor.description,
+          container: '<div id="container"><div style="position:fixed;top:0;right:0;bottom:0;left:0;background:url(\'/cn/source/img/orion/loading_normal_62.gif\') no-repeat center;"></div><div class="static" style="opacity: 0;"><%= container %></div></div>',
+          loadjs: mypathlist[i].loadjs,
+          wrapjs: mypathlist[i].wrapjs
+        }
+      }
       if (isrouter != -1) {
         // router dir
-        arrwebpack.push({
-          filename: '/' + basepath + mypathlist[i].html + 'index.html',
-          template: initpath.htmlpath,
-          data: {
-            title: singleinfor.title,
-            keywords: singleinfor.keyword,
-            description: singleinfor.description,
-            container: '<div id="container" style="opacity: 0;"><%= container %></div>',
-            myjs: mypathlist[i].myroutjs,
-            loadjs: mypathlist[i].loadjs,
-            wrapjs: mypathlist[i].wrapjs
-          }
-        })
+        tempobj.filename = '/' + basepath + mypathlist[i].html + 'index.html'
+        tempobj.data.myjs = mypathlist[i].myroutjs
+        arrwebpack.push(tempobj)
         develop = myModuleDir + '/' + myModule
       } else {
         // normal dir
-        arrwebpack.push({
-          filename: '/' + basepath + mypathlist[i].chtml + 'index.html',
-          template: initpath.htmlpath,
-          data: {
-            title: singleinfor.title,
-            keywords: singleinfor.keyword,
-            description: singleinfor.description,
-            container: '<div id="container" style="opacity: 0;"><%= container %></div>',
-            myjs: mypathlist[i].myjs,
-            loadjs: mypathlist[i].loadjs,
-            wrapjs: mypathlist[i].wrapjs
-          }
-        })
+        tempobj.filename = '/' + basepath + mypathlist[i].chtml + 'index.html'
+        tempobj.data.myjs = mypathlist[i].myjs
+        arrwebpack.push(tempobj)
         develop = myModuleDir + '/' + myChildDir + mySource
       }
     }

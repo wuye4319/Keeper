@@ -39,7 +39,7 @@ class Cache {
             let cachefile = Object.keys(temparr[i])
             let tempdatearr = cachefile[0].substr(0, cachefile[0].indexOf('/'))
             tempdatearr = tempdatearr.split('-')
-            let ispass = this.dateispass(tempdatearr, this.options.cachemins)
+            let ispass = mytime.dateispass(tempdatearr, this.options.cachemins)
             let mypath = path.join(__dirname, this.options.gpath + type + '/' + cachefile[0] + '.html')
             if (fs.existsSync(mypath) && !ispass) {
               result = fs.readFileSync(mypath).toString()
@@ -66,7 +66,7 @@ class Cache {
 
     let file = path.join(__dirname, this.options.gpath + type + '/' + name + '/' + date.getTime() + '.html')
     writefile.writejs(file, html)
-    console.log('Create cache file!'.yellow)
+    log.myconsole('Create cache file!'.yellow)
     return ',"Cache":"' + name + '/' + date.getTime() + '.html"'
   }
 
@@ -74,27 +74,6 @@ class Cache {
     let hasinfor = fs.existsSync(infor)
     let str = (hasinfor ? ',\n{"' : '{"') + name + '/' + date.getTime() + '":"' + url + '"}'
     writefile.append(infor, str)
-  }
-
-  dateispass (datearr, keepdate) {
-    let ruletime = mytime.getdate()
-    ruletime.setMinutes(ruletime.getMinutes() - keepdate)
-    ruletime = ruletime.getTime()
-
-    let date = mytime.getdate()
-    date.setYear(datearr[0])
-    date.setMonth(datearr[1] - 1)
-    date.setDate(datearr[2])
-    date.setHours(datearr[3])
-    date.setMinutes(datearr[4])
-    date.setSeconds(0)
-    date = date.getTime()
-
-    if (date < ruletime) {
-      return true
-    } else {
-      return false
-    }
   }
 
   // clear
@@ -111,7 +90,7 @@ class Cache {
             if (file.isDirectory()) {
               let datearr = dirname.split('-')
               if (datearr.length > 2) {
-                let ispass = that.dateispass(datearr, keepdate)
+                let ispass = mytime.dateispass(datearr, keepdate)
                 if (ispass) {
                   let mycache = path.join(__dirname, that.options.gpath + type + '/' + dirname + '/')
                   del.deleteSource(mycache, 'all')

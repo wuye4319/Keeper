@@ -8,12 +8,26 @@ let writefile = new Writefile()
 const Mytime = require('../lib/time')
 let mytime = new Mytime()
 
+let startdate = mytime.mydate()
+
 class Logger {
   constructor () {
     this.options = {
       errfile: '../logfile/error.txt',
-      gpath: '../../../success/'
+      gpath: '../../../success/',
+      glog: '../../../logger/'
     }
+  }
+
+  mybuffer (logkey, logvalue) {
+    let tempobj = {}
+    tempobj[logkey] = logvalue
+    return tempobj
+  }
+
+  myconsole (str) {
+    let file = path.join(__dirname, this.options.glog + startdate + '.txt')
+    writefile.append(file, str + '\n')
   }
 
   writelog (type, str, mymodule) {

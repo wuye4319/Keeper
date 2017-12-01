@@ -1,6 +1,6 @@
 {
   "name": "keeper-core",
-  "version": "1.0.39",
+  "version": "1.0.42",
   "description": "keeper-core",
   "main": "./logger/logger.js",
   "dependencies": {

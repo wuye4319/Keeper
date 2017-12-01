@@ -7,6 +7,10 @@
 const koa = require('../koa/index')
 const path = require('path')
 const fs = require('fs')
+const Logger = require('keeper-core')
+let logger = new Logger()
+
+let allowlogin = true
 
 // constructor
 class InitJs {
@@ -17,55 +21,61 @@ class InitJs {
       let loginstatus
       let myurl = loginurl + encodeURIComponent(url)
 
-      try {
-        page.on('response', async (result) => {
-          let filter = result.url.indexOf('initItemDetail.htm') !== -1
-          let filter2 = result.url.indexOf('sib.htm') !== -1
-          if (filter || filter2) {
-            filterbox += await result.text()
-            loginstatus = true
-            console.log('Auto login success!page will close!'.green)
-            resolve(filterbox)
-          }
-          // console.log(result.url)
-        })
-
-        await page.goto(myurl, {waitUntil: 'networkidle', networkIdleTimeout: 1000})
-
-        await page.mainFrame().childFrames()[0].waitForSelector('#TPL_username_1').then(async () => {
-          console.log('Auto login is working!'.red)
-
-          const bodyHandle = await page.mainFrame().childFrames()[0].$('#TPL_username_1')
-          const account = await page.mainFrame().childFrames()[0].evaluate(body => body.value = 'wuye4319', bodyHandle)
-          console.log(account)
-          await bodyHandle.dispose()
-          const pswHandle = await page.mainFrame().childFrames()[0].$('#TPL_password_1')
-          const psw = await page.mainFrame().childFrames()[0].evaluate(body => body.value = 'lianlian857', pswHandle)
-          console.log(psw)
-          await pswHandle.dispose()
-          const butHandle = await page.mainFrame().childFrames()[0].$('#J_SubmitStatic')
-          await page.mainFrame().childFrames()[0].evaluate(body => body.click(), butHandle)
-          await butHandle.dispose()
-
-          // const from = await page.mainFrame().childFrames()[0].evaluate(body => body.innerHTML, await page.mainFrame().childFrames()[0].$('#J_Form'))
-          // console.log(from)
-
-          page.on('load', async () => {
-            if (!loginstatus) {
-              console.log('Page reload! check again!'.red)
-              // page.close()
-              resolve(await this.reloadpage(page, url))
+      if (allowlogin) {
+        try {
+          page.on('response', async (result) => {
+            let filter = result.url.indexOf('initItemDetail.htm') !== -1
+            let filter2 = result.url.indexOf('sib.htm') !== -1
+            if (filter || filter2) {
+              filterbox += await result.text()
+              loginstatus = true
+              logger.myconsole('Auto login success!page will close!'.green)
+              allowlogin = true
+              resolve(filterbox)
             }
+            // console.log(result.url)
           })
-        })
 
-        // write date
-        t = Date.now() - t
-        console.log('Loading time '.green + (t / 1000).toString().red + ' second'.green)
-      } catch (e) {
+          await page.goto(myurl, {waitUntil: 'networkidle', networkIdleTimeout: 1000})
+
+          await page.mainFrame().childFrames()[0].waitForSelector('#TPL_username_1').then(async () => {
+            logger.myconsole('Auto login is working!'.red)
+            allowlogin = false
+
+            const bodyHandle = await page.mainFrame().childFrames()[0].$('#TPL_username_1')
+            const account = await page.mainFrame().childFrames()[0].evaluate(body => body.value = 'wuye4319', bodyHandle)
+            logger.myconsole(account)
+            await bodyHandle.dispose()
+            const pswHandle = await page.mainFrame().childFrames()[0].$('#TPL_password_1')
+            const psw = await page.mainFrame().childFrames()[0].evaluate(body => body.value = 'lianlian857', pswHandle)
+            logger.myconsole(psw)
+            await pswHandle.dispose()
+            const butHandle = await page.mainFrame().childFrames()[0].$('#J_SubmitStatic')
+            await page.mainFrame().childFrames()[0].evaluate(body => body.click(), butHandle)
+            await butHandle.dispose()
+
+            // const from = await page.mainFrame().childFrames()[0].evaluate(body => body.innerHTML, await page.mainFrame().childFrames()[0].$('#J_Form'))
+            // console.log(from)
+
+            page.on('load', async () => {
+              if (!loginstatus) {
+                logger.myconsole('Page reload! check again!'.red)
+                // page.close()
+                resolve(await this.reloadpage(page, url))
+              }
+            })
+          })
+
+          // write date
+          t = Date.now() - t
+          logger.myconsole('Loading time '.green + (t / 1000).toString().red + ' second'.green)
+        } catch (e) {
+          resolve(false)
+          logger.myconsole('System error!'.red)
+        }
+      } else {
+        logger.myconsole('Auto-login is working!'.red)
         resolve(false)
-        console.log('System error!'.red)
-        if (loginstatus) await page.close()
       }
     })
   }
@@ -88,10 +98,10 @@ class InitJs {
 
       page.on('load', async () => {
         if (loginstatus) {
-          console.log('Auto login success!page will close!222'.green)
+          logger.myconsole('Auto login success!page will close!222'.green)
         } else {
-          console.log('Auto login failed!Program will stop working!!!'.red)
-          resolve('System error!Program stop working!')
+          logger.myconsole('Auto login failed!Program will stop working!!!'.red)
+          resolve('Auto-login failed!')
           koa.close()
         }
       })

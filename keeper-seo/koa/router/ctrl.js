@@ -7,6 +7,8 @@ const Proxy = require('../../lib/proxy')
 let proxy = new Proxy()
 let Delay = require('keeper-core/lib/delay')
 let delay = new Delay()
+const Logger = require('keeper-core')
+let logger = new Logger()
 
 const Fscache = require('keeper-core/cache/cache')
 const cache = new Fscache()
@@ -39,14 +41,14 @@ const filtermall = async (ctx, rout) => {
   // filter
   let myurl = ctx.url.substr(rout.length + 2)
   let search = ctx.request.header['user-agent'] || ''
-  console.log('process : '.red + internumb.toString().red)
-  console.log(myurl)
+  logger.myconsole('process : '.red + internumb.toString().red)
+  logger.myconsole(myurl)
   let result
 
   if (internumb > 9) {
-    console.log('Server is busy,please wait...')
+    logger.myconsole('Server is busy,please wait...')
     proxy.close()
-    console.log('System will restart at 10 seconds later...')
+    logger.myconsole('System will restart at 10 seconds later...')
     await delay.delay(10, true)
     proxy.init()
   } else {
@@ -54,24 +56,24 @@ const filtermall = async (ctx, rout) => {
     internumb += 1
     let hasurl = eachurl(urlbox, myurl)
     if (hasurl) {
-      console.log('Repeat request!'.red)
+      logger.myconsole('Repeat request!'.red)
     } else {
       urlbox.push(myurl)
       // read cache file time
       let rct = Date.now()
       let hascache = await cache.readcache(myurl, search, rout)
       rct = Date.now() - rct
-      console.log('read cache time : '.green + rct.toString().red + ' ms'.green)
+      logger.myconsole('read cache time : '.green + rct.toString().red + ' ms'.green)
       if (hascache) {
         result = hascache
-        console.log('this is cache file!')
+        logger.myconsole('this is cache file!')
       } else {
         result = await proxy.taobao(rout, myurl)
       }
 
       // rm url in box
       urlbox.splice(hasurl - 1, 1)
-      console.log(urlbox)
+      urlbox.length ? logger.myconsole(urlbox) : logger.myconsole('[]')
     }
 
     internumb -= 1

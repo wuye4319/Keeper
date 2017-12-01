@@ -1,10 +1,10 @@
 const r = require('repl')
 repls = r.start({prompt: '> ', eval: myEval})
-const koa = require('../koa/index')
 
 let path = require('path')
 const Fsdel = require('keeper-core/lib/delete')
 let del = new Fsdel()
+const koa = require('../koa/index')
 
 // proxy taobao
 const Proxy = require('../lib/proxy')
@@ -36,9 +36,6 @@ function myEval (cmd, context, filename, callback) {
   this.displayPrompt()
 }
 
-// router
-require('../koa/router/ctrl')
-
 repls.defineCommand('clear', {
   help: 'clear'.green,
   action: function () {
@@ -47,7 +44,6 @@ repls.defineCommand('clear', {
     del.deleteSource(mycache, 'all')
   }
 })
-
 repls.defineCommand('auto-login', {
   help: 'auto login for taobao'.green,
   action: function (account) {
@@ -57,16 +53,23 @@ repls.defineCommand('auto-login', {
     proxy.login(url, tempPro, account)
   }
 })
+repls.defineCommand('proxy', {
+  help: 'end and exit'.red,
+  action: async function (index) {
+    await proxy.changeip(index)
+  }
+})
 repls.defineCommand('/', {
   help: 'end and exit'.red,
   action: async function () {
+    await proxy.close()
+    // koa,do not merge to proxy!
     koa.close()
-    proxy.close()
     console.log('Thanks for using! Bye~~~'.rainbow)
     this.close()
   }
 })
-const Getcode = require('../lib/getcode')
+const Getcode = require('../lib/gethttp')
 let getcode = new Getcode()
 repls.defineCommand('verify', {
   help: 'end and exit'.red,

@@ -7,11 +7,13 @@
 const Fscache = require('keeper-core/cache/cache')
 const cache = new Fscache()
 const Fslog = require('keeper-core')
-let log = new Fslog()
+let logger = new Fslog()
+
 const Mytime = require('keeper-core/lib/time')
 let mytime = new Mytime()
 const Login = require('./auto-login')
 let login = new Login()
+let myloginstatus = false
 
 // constructor
 class InitJs {
@@ -19,9 +21,10 @@ class InitJs {
     return new Promise(async (resolve) => {
       let t = Date.now()
       let filterbox = ''
-      let isali = false
+      let isali = false // page from ali
       let loginstr = false
       let cookiebox = []
+      let apidata = false
       const page = await browser.newPage()
 
       try {
@@ -29,7 +32,7 @@ class InitJs {
           let filter = result.url.indexOf('initItemDetail.htm') !== -1
           let filter2 = result.url.indexOf('sib.htm') !== -1
           if (filter || filter2) {
-            cookiebox = cookiebox.concat(await page.cookies(result.url))
+            // cookiebox = cookiebox.concat(await page.cookies(result.url))
             isali = true
             filterbox += await result.text()
           }
@@ -39,6 +42,8 @@ class InitJs {
         let cont = await page.content()
         // console.log(cont)
 
+        if (myloginstatus) logger.myconsole('Already Logged!'.red)
+
         let templine = '\n<script>\nvar apidata = '
         let endtempline = '\n</script>'
         let tmallkey = 'setMdskip'
@@ -46,45 +51,51 @@ class InitJs {
         let chaoshi = 'onMdskip'
         let VerificationCode = 'taobao.com/query.htm'
         if (filterbox.indexOf(tmallkey) !== -1 || filterbox.indexOf(taobaokey) !== -1 || filterbox.indexOf(chaoshi) !== -1) {
+          apidata = true
           filterbox = filterbox.substr(filterbox.indexOf('(') + 1)
           filterbox = filterbox.substr(0, filterbox.lastIndexOf(')'))
-          console.log('Get ali api data success'.green)
+          logger.myconsole('Get ali api data success'.green)
         } else if (isali) {
           let loginurl = 'https://login.tmall.com/?from=sm&redirectURL='
           if (this.checklogin(cookiebox)) {
-            console.log('page has already login!')
-            if (filterbox.indexOf(VerificationCode) !== -1) console.log('Verification Code!!!'.red)
+            logger.myconsole('page has already login!')
+            if (filterbox.indexOf(VerificationCode) !== -1) logger.myconsole('Verification Code!!!'.red)
           } else {
             loginstr = true
             filterbox = await login.login(page, loginurl, url)
-            filterbox = filterbox.substr(filterbox.indexOf('(') + 1)
-            filterbox = filterbox.substr(0, filterbox.lastIndexOf(')'))
-            console.log('Get ali api data success'.green)
+            if (filterbox && filterbox !== 'System error!Program stop working!') {
+              apidata = true
+              myloginstatus = true
+              filterbox = filterbox.substr(filterbox.indexOf('(') + 1)
+              filterbox = filterbox.substr(0, filterbox.lastIndexOf(')'))
+              logger.myconsole('Get ali api data success'.green)
+            }
           }
         } else {
-          console.log('Get other api data success'.green)
+          logger.myconsole('Get api data failed'.red)
         }
         cont = cont + templine + filterbox + endtempline
+        // console.log(cont)
         // console.log(cookiebox)
 
         t = Date.now() - t
         let str = '{"Loadingtime":"' + (t / 1000).toString() + 's","date":"' + mytime.mytime() + '","url":"' + url + '"'
-        if (filterbox === 'System error!Program stop working!') {
-          await browser.close()
+        if (filterbox === 'Auto-login failed!') {
           if (loginstr) str += ',"login":"failed"'
         } else {
           // write date
-          if (opencache) str += cache.writecache(cont, url, type)
+          if (opencache && apidata) str += cache.writecache(cont, url, type)
+          apidata ? str += ',"apidata":"success"' : str += ',"apidata":"Failed"'
           if (loginstr) str += ',"login":1'
-          await page.close()
         }
+        await page.close()
 
-        log.writelog('success', str + '}', type)
+        logger.writelog('success', str + '}', type)
         resolve(cont)
-        console.log('Loading time '.green + (t / 1000).toString().red + ' second'.green)
+        logger.myconsole('Loading time '.green + (t / 1000).toString().red + ' second'.green)
       } catch (e) {
         resolve(false)
-        console.log('System error! Can not analysis this page!'.red)
+        logger.myconsole('System error! Can not analysis this page!'.red)
         await page.close()
       }
     })
