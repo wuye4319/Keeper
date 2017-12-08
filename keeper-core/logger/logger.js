@@ -9,6 +9,7 @@ const Mytime = require('../lib/time')
 let mytime = new Mytime()
 
 let startdate = mytime.mydate()
+let buffobj = {}
 
 class Logger {
   constructor () {
@@ -19,10 +20,8 @@ class Logger {
     }
   }
 
-  mybuffer (logkey, logvalue) {
-    let tempobj = {}
-    tempobj[logkey] = logvalue
-    return tempobj
+  mybuffer (obj) {
+    Object.assign(buffobj, obj)
   }
 
   myconsole (str) {
@@ -30,18 +29,19 @@ class Logger {
     writefile.append(file, str + '\n')
   }
 
-  writelog (type, str, mymodule) {
+  writelog (type, mymodule) {
     if (type === 'success') {
       // let file = path.join(__dirname, this.options.sucfile)
+      let strobj = JSON.stringify(buffobj)
 
       let name = mytime.mydate()
       let file = path.join(__dirname, this.options.gpath + mymodule + '/' + name + '.txt')
-      if (fs.existsSync(file)) str = ',\n' + str
-      writefile.append(file, str)
-    } else {
-      let file = path.join(__dirname, this.options.errfile)
-      writefile.append(file, str)
+      if (fs.existsSync(file)) strobj = ',\n' + strobj
+      writefile.append(file, strobj)
     }
+
+    // clear strobj
+    buffobj = {}
   }
 }
 

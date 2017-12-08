@@ -25,7 +25,7 @@ class ready {
       {name: 'babel-plugin-import', ver: '1.2.1'},
       {name: 'puppeteer', ver: '0.13.0'}
     ]
-    mynpm.init(pluginlist)
+    mynpm.init(pluginlist, 'code-keeper')
   }
 }
 

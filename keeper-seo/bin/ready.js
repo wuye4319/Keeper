@@ -15,7 +15,7 @@ class ready {
       {name: 'request', ver: '2.83.0'},
       {name: 'puppeteer', ver: '0.12.0'}
     ]
-    mynpm.init(pluginlist)
+    mynpm.init(pluginlist, 'keeper-seo')
   }
 }
 

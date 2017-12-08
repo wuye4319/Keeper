@@ -4,10 +4,12 @@ fs = require('fs')
 var ready = require('./ready')
 ready = new ready()
 
+const name = 'code-keeper'
+
 // check program running environment.
-var iskeeper = fs.existsSync('./node_modules/code-keeper/bin/main.js')
+var iskeeper = fs.existsSync('./node_modules/' + name + '/bin/main.js')
 if (iskeeper) {
-  var isready = fs.existsSync('./node_modules/keeper-core/config/sysconf.js')
+  var isready = fs.existsSync('./node_modules/' + name + '/config/sysconf.js')
   if (!isready) {
     ready.boot()
   } else {

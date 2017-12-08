@@ -22,10 +22,12 @@ let lowplugin, heightplugin, lostplugin
 class initnpm {
   constructor () {
     this.pluginlist = []
+    this.currplugin = ''
   }
 
-  init (parm) {
+  init (parm, plugin) {
     this.pluginlist = parm
+    this.currplugin = plugin
     this.boot()
   }
 
@@ -100,7 +102,7 @@ class initnpm {
     if (lostplugin.length === 0 && lowplugin.length === 0) {
       console.log('Keeper is ready!'.green)
       let inconf = path.join(__dirname, '/../tpl/system/sysconf.txt')
-      let outconf = path.join(__dirname, '/../config/sysconf.js')
+      let outconf = path.join(__dirname, '/../../' + this.currplugin + '/config/sysconf.js')
 
       let tpl = fs.readFileSync(inconf).toString()
       let data = {timer: 1}

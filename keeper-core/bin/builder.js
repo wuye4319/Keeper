@@ -53,19 +53,10 @@ repls.defineCommand('clear', {
     this.getday = (type) => {
       console.log('how long do you wanna keep cache?enter : [m mins , like : m 20]')
       global.myvari.anslist = [{m: 'getday'}]
+      // only answer
       global.myvari.answer.getday = (data) => {
         cache.delcache(type, data)
       }
-    }
-  }
-})
-repls.defineCommand('updatecacheinfor', {
-  help: 'clear cache file'.red,
-  action: function (type) {
-    if (type) {
-      cache.updatecacheinfor(type)
-    } else {
-      console.log('which dir do you wanna update? enter args!'.red)
     }
   }
 })

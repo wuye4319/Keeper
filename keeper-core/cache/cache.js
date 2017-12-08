@@ -23,7 +23,8 @@ class Cache {
     }
   }
 
-  readcache (url, search, type) {
+  // auto clear cache
+  readcache (url, type) {
     return new Promise((resolve) => {
       let result = false
       let infor = path.join(__dirname, this.options.gpath + type + this.options.cacheinfor)
@@ -44,7 +45,8 @@ class Cache {
             if (fs.existsSync(mypath) && !ispass) {
               result = fs.readFileSync(mypath).toString()
             }
-            log.writelog('success', '{"Read":"' + cachefile + '.html","date":"' + mytime.mytime() + '","Engines":"' + search + '","url":"' + url + '"}', type)
+            log.mybuffer({'Read': cachefile + '.html', 'date': mytime.mytime(), 'url': url})
+            log.writelog('success', type)
             break
           }
         }
@@ -67,7 +69,7 @@ class Cache {
     let file = path.join(__dirname, this.options.gpath + type + '/' + name + '/' + date.getTime() + '.html')
     writefile.writejs(file, html)
     log.myconsole('Create cache file!'.yellow)
-    return ',"Cache":"' + name + '/' + date.getTime() + '.html"'
+    log.mybuffer({'Cache': name + '/' + date.getTime() + '.html'})
   }
 
   appendfile (infor, date, url, name) {

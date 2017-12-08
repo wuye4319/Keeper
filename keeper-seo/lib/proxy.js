@@ -24,12 +24,15 @@ const accbox = require('../config/account')
 
 const Mytime = require('keeper-core/lib/time')
 let mytime = new Mytime()
+
+// ip proxy list
 const iplist = require('../config/iplist')
 
 const Logger = require('keeper-core')
 let logger = new Logger()
 
 let browser
+let prebrowser
 let ipdate = mytime.mydate('mins')
 logger.myconsole('Program start at : '.blue + ipdate)
 let ipindex = 1
@@ -38,12 +41,28 @@ let ipindex = 1
 class InitJs {
   constructor () {
     this.options = {
-      changeiptime: 120 // how long does ip address change
+      changeiptime: 20 // how long does ip address change
     }
   }
 
-  async init (tempip) {
+  async init () {
     return new Promise(async (resolve) => {
+      browser = await puppeteer.launch({
+        ignoreHTTPSErrors: true,
+        // headless: false,
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+      })
+      logger.myconsole('browser is start!'.green)
+      await delay.delay(0)
+
+      // router
+      resolve(true)
+    })
+  }
+
+  async newbrowser (tempip) {
+    return new Promise(async (resolve) => {
+      prebrowser = browser
       let args = ['--no-sandbox', '--disable-setuid-sandbox']
       if (tempip) args.push('--proxy-server=' + tempip)
       browser = await puppeteer.launch({
@@ -55,8 +74,11 @@ class InitJs {
       await delay.delay(0)
 
       // router
-      require('../koa/router/ctrl')
       resolve(true)
+
+      setTimeout(function () {
+        prebrowser.close()
+      }, 12000)
     })
   }
 
@@ -70,16 +92,14 @@ class InitJs {
     } else {
       await this.restart()
     }
-    this.getip()
+    await this.getip()
   }
 
   async restart (proxy) {
-    await this.close()
-    logger.myconsole('System will restart at 1 seconds later...'.yellow)
-    await delay.delay(0)
-    await this.init(proxy)
     ipdate = mytime.mydate('mins')
     logger.myconsole(ipdate)
+    logger.myconsole('changeiptime : '.green + this.options.changeiptime)
+    await this.newbrowser(proxy)
   }
 
   async close () {
@@ -90,10 +110,11 @@ class InitJs {
     let cache = true
     let result = await taobao.taobao(browser, type, url, cache)
 
+    // when the first one is done, it will stop the second
     // check ip date
     let ispass = mytime.dateispass(ipdate.split('-'), this.options.changeiptime)
     if (ispass) {
-      await this.changeip(ipindex)
+      this.changeip(ipindex)
       ipindex += 1
     }
 
@@ -119,7 +140,7 @@ class InitJs {
     const Login = eval(mystr)
     let login = new Login()
 
-    let data = await login.login(page, loginurl, url, account)
+    let data = await login.login(page, loginurl, url)
     return data
   }
 

@@ -5,6 +5,7 @@ let path = require('path')
 const Fsdel = require('keeper-core/lib/delete')
 let del = new Fsdel()
 const koa = require('../koa/index')
+require('../koa/router/rout')
 
 // proxy taobao
 const Proxy = require('../lib/proxy')
