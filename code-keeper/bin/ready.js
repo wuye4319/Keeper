@@ -23,7 +23,7 @@ class ready {
       {name: 'react-router', ver: '3.0.0'}, // 4.1.2
       {name: 'i18n-webpack-plugin', ver: '1.0.0'},
       {name: 'babel-plugin-import', ver: '1.2.1'},
-      {name: 'puppeteer', ver: '0.13.0'}
+      {name: 'puppeteer', ver: '0.12.0'}
     ]
     mynpm.init(pluginlist, 'code-keeper')
   }

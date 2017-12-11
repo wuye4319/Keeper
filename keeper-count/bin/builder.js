@@ -41,34 +41,6 @@ repls.defineCommand('clear', {
   help: 'clear'.green,
   action: function () {
     // temp
-    let mycache = path.join(__dirname, '../../../cache/')
-    del.deleteSource(mycache, 'all')
-  }
-})
-repls.defineCommand('ipinterval', {
-  help: 'auto login for taobao'.green,
-  action: function (time) {
-    // temp
-    if (time) {
-      proxy.setipinterval(time)
-    } else {
-      console.log('please enter time!')
-    }
-  }
-})
-repls.defineCommand('auto-login', {
-  help: 'auto login for taobao'.green,
-  action: function (account) {
-    // temp
-    let tempPro = 'https://detail.tmall.com/item.htm?id=554802892200'
-    let url = 'https://login.tmall.com/?from=sm&redirectURL='
-    proxy.login(url, tempPro, account)
-  }
-})
-repls.defineCommand('proxy', {
-  help: 'end and exit'.red,
-  action: async function (index) {
-    await proxy.changeip(index)
   }
 })
 repls.defineCommand('/', {
@@ -79,13 +51,5 @@ repls.defineCommand('/', {
     koa.close()
     console.log('Thanks for using! Bye~~~'.rainbow)
     this.close()
-  }
-})
-const Getcode = require('../lib/gethttp')
-let getcode = new Getcode()
-repls.defineCommand('verify', {
-  help: 'end and exit'.red,
-  action: async function () {
-    getcode.getcode()
   }
 })

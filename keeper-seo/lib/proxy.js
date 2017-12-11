@@ -45,6 +45,10 @@ class InitJs {
     }
   }
 
+  setipinterval (time) {
+    this.options.changeiptime = time
+  }
+
   async init () {
     return new Promise(async (resolve) => {
       browser = await puppeteer.launch({

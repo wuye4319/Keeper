@@ -72,6 +72,9 @@ class InitJs {
                 resolve(await this.reloadpage(page, url))
               }
             })
+
+            t = Date.now() - t
+            logger.myconsole('Loading time : '.green + (t / 1000).toString() + ' seconds'.green)
           })
         } catch (e) {
           resolve(false)
