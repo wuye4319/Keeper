@@ -7,5 +7,5 @@ let ctrl = new Ctrl()
 
 // buy
 koa.addrouter(/^\/count(?:\/|$)/, async (ctx) => {
-  await ctrl.filter(ctx, 'count')
+  await ctrl.count(ctx, 'count')
 })

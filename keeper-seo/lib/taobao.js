@@ -100,9 +100,9 @@ class InitJs {
         logger.mybuffer(mylogstr)
         logger.writelog('success', type)
       } catch (e) {
+        resolve(false)
         logger.myconsole('System error! Can not analysis this page!'.red)
         await page.close()
-        resolve(false)
       }
     })
   }

@@ -1,12 +1,9 @@
 {
   "name": "keeper-static",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "keeper-static",
   "main": "./lib/index.js",
-  "dependencies": {
-    "winston": "^2.2.0",
-    "es6-promise": "^4.1.0"
-  },
+  "dependencies": {},
   "devDependencies": {},
   "scripts": {
     "test": "test"
@@ -18,9 +15,6 @@
   "keywords": [
     "code-keeper"
   ],
-  "bin": {
-    "static": "./lib/phantom.js"
-  },
   "author": "nero",
   "license": "ISC",
   "bugs": {

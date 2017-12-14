@@ -1,6 +1,6 @@
 {
   "name": "keeper-count",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "keeper-count",
   "main": "index.js",
   "dependencies": {},
@@ -16,7 +16,7 @@
     "keeper-count"
   ],
   "bin": {
-    "seo": "./bin/main.js"
+    "count": "./bin/main.js"
   },
   "author": "nero",
   "bugs": {

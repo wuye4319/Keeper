@@ -52,7 +52,7 @@ repls.defineCommand('ipinterval', {
     if (time) {
       proxy.setipinterval(time)
     } else {
-      console.log('please enter time!')
+      console.log('please enter time!'.red)
     }
   }
 })

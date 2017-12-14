@@ -1,0 +1,24 @@
+{
+  "name": "keeper-static-linux",
+  "version": "1.0.2",
+  "description": "keeper-static-linux",
+  "main": "./lib/index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wuye4319/Keeper.git"
+  },
+  "keywords": [
+    "keeper-static"
+  ],
+  "author": "nero",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wuye4319/Keeper/issues"
+  },
+  "homepage": "https://github.com/wuye4319/Keeper"
+}

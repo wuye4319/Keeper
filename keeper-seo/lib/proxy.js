@@ -14,20 +14,14 @@ const Getip = require('./getip')
 let getip = new Getip()
 const Myseo = require('./seo')
 let seo = new Myseo()
-
 let Delay = require('keeper-core/lib/delay')
 let delay = new Delay()
-
 const Render = require('keeper-core/lib/render')
 let render = new Render()
 const accbox = require('../config/account')
 
 const Mytime = require('keeper-core/lib/time')
 let mytime = new Mytime()
-
-// ip proxy list
-const iplist = require('../config/iplist')
-
 const Logger = require('keeper-core')
 let logger = new Logger()
 
@@ -37,16 +31,16 @@ let ipdate = mytime.mydate('mins')
 logger.myconsole('Program start at : '.blue + ipdate)
 let ipindex = 1
 
+// ip proxy list
+const iplist = require('../config/iplist')
+// change ip interval time, [mins]
+let changeiptime = 10
+
 // constructor
 class InitJs {
-  constructor () {
-    this.options = {
-      changeiptime: 20 // how long does ip address change
-    }
-  }
-
   setipinterval (time) {
-    this.options.changeiptime = time
+    changeiptime = time
+    console.log('set ip interval : ' + changeiptime)
   }
 
   async init () {
@@ -102,7 +96,7 @@ class InitJs {
   async restart (proxy) {
     ipdate = mytime.mydate('mins')
     logger.myconsole(ipdate)
-    logger.myconsole('changeiptime : '.green + this.options.changeiptime)
+    logger.myconsole('changeiptime : '.green + changeiptime)
     await this.newbrowser(proxy)
   }
 
@@ -116,7 +110,7 @@ class InitJs {
 
     // when the first one is done, it will stop the second
     // check ip date
-    let ispass = mytime.dateispass(ipdate.split('-'), this.options.changeiptime)
+    let ispass = mytime.dateispass(ipdate.split('-'), changeiptime)
     if (ispass) {
       this.changeip(ipindex)
       ipindex += 1

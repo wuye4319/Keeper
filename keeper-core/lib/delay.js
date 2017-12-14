@@ -21,7 +21,7 @@ class delay {
         if (log) {
           self.options.stream.clearLine()
           self.options.stream.cursorTo(0)
-          count == 0 ? console.log('Count down : ' + count) : self.options.stream.write('Count down : ' + count.toString())
+          count === 0 ? console.log('Count down : ' + count) : self.options.stream.write('Count down : ' + count.toString())
         }
         count--
         if (count >= 0) {

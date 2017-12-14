@@ -2,15 +2,8 @@ const r = require('repl')
 repls = r.start({prompt: '> ', eval: myEval})
 
 let path = require('path')
-const Fsdel = require('keeper-core/lib/delete')
-let del = new Fsdel()
 const koa = require('../koa/index')
 require('../koa/router/rout')
-
-// proxy taobao
-const Proxy = require('../lib/proxy')
-let proxy = new Proxy()
-proxy.init()
 
 global.myvari = {anslist: [], answer: {}}
 
@@ -46,7 +39,6 @@ repls.defineCommand('clear', {
 repls.defineCommand('/', {
   help: 'end and exit'.red,
   action: async function () {
-    await proxy.close()
     // koa,do not merge to proxy!
     koa.close()
     console.log('Thanks for using! Bye~~~'.rainbow)
