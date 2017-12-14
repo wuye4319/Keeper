@@ -26,8 +26,9 @@ app.use(router.routes())
 app.on('error', function (err, ctx) {
   log.error('server error', err, ctx)
 })
-var lis = app.listen(8080)
+var lis = app.listen(8686)
 console.log('the server is started!!!'.green)
+console.log('http://localhost:8686/wssso/theme/getThemeList/102')
 
 var server = {
   addrouter: (url, fn) => {
