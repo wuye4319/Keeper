@@ -5,7 +5,7 @@ var compile = new fscompile()
 
 global.myvari = {anslist: [], answer: {}}
 
-// listener
+// listener 提取到文件
 function myEval (cmd, context, filename, callback) {
   let anslist = myvari.anslist, indx = -1
   for (let i in anslist) {

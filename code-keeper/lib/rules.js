@@ -3,15 +3,16 @@
  * version:v1.0
  * plugin:init js
  */
-var mypathlist = []
-var myModule, myModuleDir, childModule, routerdir, proxy, wrapper, configtransfile, lang, basepath, isrouter,
+let fs = require('fs')
+let mypathlist = []
+let myModule, myModuleDir, childModule, routerdir, proxy, wrapper, configtransfile, lang, basepath, isrouter,
   htmlbasepath, myChildDir, myChildName, mySource, myAutoPath
 
-var file = './config.js'
-var configstr = fs.readFileSync(file).toString()
-var config = eval(configstr)
+let file = './config.js'
+let configstr = fs.readFileSync(file).toString()
+let config = eval(configstr)
 
-var initpath = {
+let initpath = {
   imgpath: './front/plugin/init/source/img/.gitkeep',
   htmlpath: './front/plugin/init/page/init.html',
   jspath: './front/plugin/init/source/js/init.js',

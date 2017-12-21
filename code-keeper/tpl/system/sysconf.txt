@@ -4,7 +4,7 @@
  */
 
 var system = {
-  "use" : <%= timer %>
+  "check_env" : <%= timer %>
 }
 
 module.exports = system;

@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 var colors = require('colors')
-fs = require('fs')
+let fs = require('fs')
+let path = require('path')
 var ready = require('./ready')
 ready = new ready()
 
 const name = 'code-keeper'
+console.log(path.resolve())
 
 // check program running environment.
 var iskeeper = fs.existsSync('./node_modules/' + name + '/bin/main.js')
@@ -21,9 +23,7 @@ if (iskeeper) {
 
 function bootstrap () {
   require('./builder')
-  require('./bdvers')
   require('./bdrelease')
   require('./bdinit')
-  require('./proter')
-  // require('./bdrob')
+  require('./bdrob')
 }

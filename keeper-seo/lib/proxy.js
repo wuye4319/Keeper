@@ -40,7 +40,7 @@ let changeiptime = 10
 class InitJs {
   setipinterval (time) {
     changeiptime = time
-    console.log('set ip interval : ' + changeiptime)
+    console.log('set ip interval : ' + changeiptime + ' mins')
   }
 
   async init () {

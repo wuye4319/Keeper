@@ -14,7 +14,7 @@ var config = {
   sourcedir: ['src'], // js需要过滤的资源目录
   routerdir: ['account', 'partner'], // router的根目录
   wrapper: 'react-plugin/Wrap.min.js?57a1f3a41f8a5338e6d1779ac', // 公共模块
-  userinfor: '@author MG @time ' + new Date().toISOString().split('T')[0],
+  userinfor: '@author Nero @time ' + new Date().toISOString().split('T')[0],
   webpack: {
     config: {chunks: false, colors: true, version: true, hash: true, assets: true, modules: false},
     externals: {'react': 'React', 'react-dom': 'ReactDOM'},

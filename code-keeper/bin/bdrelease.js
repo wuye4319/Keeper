@@ -4,6 +4,20 @@
 var fsrelease = require('../lib/ctrl/release')
 var release = new fsrelease()
 
+var fsvers = require('../lib/ctrl/version')
+var vers = new fsvers()
+
+// check version
+var check = vers.checkconf()
+
+repls.defineCommand('v', {
+  help: 'version'.yellow,
+  action: function () {
+    vers.vers()
+    this.displayPrompt()
+  }
+})
+
 global.repls.defineCommand('release', {
   help: 'package source for release'.green,
   action: function (param) {

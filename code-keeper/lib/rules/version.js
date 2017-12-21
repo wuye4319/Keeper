@@ -2,9 +2,10 @@
  * Created by nero on 2017/3/23.
  * rule of version
  */
-var fsrules = require('../rules')
-var rules = new fsrules()
-var myinfor = rules.infor()
+let fs = require('fs')
+const Fsrules = require('../rules')
+let rules = new Fsrules()
+let myinfor = rules.infor()
 
 class vers {
   constructor () {

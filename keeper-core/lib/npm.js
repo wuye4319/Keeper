@@ -105,7 +105,7 @@ class initnpm {
       let outconf = path.join(__dirname, '/../../' + this.currplugin + '/config/sysconf.js')
 
       let tpl = fs.readFileSync(inconf).toString()
-      let data = {timer: 1}
+      let data = {timer: false}
       let mystr = render.renderdata(tpl, data)
       writefile.writejs(outconf, mystr)
     }
