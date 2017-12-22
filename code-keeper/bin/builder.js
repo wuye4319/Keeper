@@ -1,28 +1,5 @@
-const r = require('repl')
-repls = r.start({prompt: '> ', eval: myEval})
-var fscompile = require('../lib/compile')
-var compile = new fscompile()
-
-global.myvari = {anslist: [], answer: {}}
-
-// listener 提取到文件
-function myEval (cmd, context, filename, callback) {
-  let anslist = myvari.anslist, indx = -1
-  for (let i in anslist) {
-    if (typeof (anslist[i]) === 'string') {
-      if (anslist[i] == cmd.trim()) indx = i
-    } else {
-      if (Object.keys(anslist[i])[0] === cmd.trim()) indx = i
-    }
-  }
-  if (indx === -1) {
-    console.log('Invalid keyword!!!'.red)
-  } else {
-    myvari.anslist = []
-    typeof (anslist[indx]) === 'string' ? eval('myvari.answer.' + anslist[indx] + '()') : eval('myvari.answer.' + Object.values(anslist[indx]) + '()')
-  }
-  this.displayPrompt()
-}
+var Fscompile = require('../lib/compile')
+var compile = new Fscompile()
 
 repls.defineCommand('reload', {
   help: 'reload all setting of config.js'.green,

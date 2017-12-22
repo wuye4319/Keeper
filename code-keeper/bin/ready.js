@@ -19,10 +19,9 @@ class ready {
       {name: 'url-loader', ver: '0.5.9'},
       {name: 'babel-loader', ver: '7.1.1'},
       {name: 'antd', ver: '2.12.2'},
-      {name: 'webpack', ver: '3.0.0'},
+      {name: 'webpack', ver: '3.0.0 -g'},
       {name: 'react-router', ver: '3.0.0'}, // 4.1.2
-      {name: 'i18n-webpack-plugin', ver: '1.0.0'},
-      {name: 'babel-plugin-import', ver: '1.2.1'},
+      {name: 'babel-plugin-import', ver: '1.2.1'}
     ]
     mynpm.init(pluginlist, 'code-keeper')
   }

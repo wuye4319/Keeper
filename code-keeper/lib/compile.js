@@ -3,34 +3,29 @@
  * version:v1.1
  * plugin:code-keeper
  */
-var fs = require('fs')
+const fs = require('fs')
 const path = require('path')
-var fsrules = require('./rules')
-var rules = new fsrules()
-var fsrender = require('./base/render')
-render = new fsrender()
-var writefile = require('./base/writefile')
-writefile = new writefile()
+const Fsrules = require('./rules')
+let rules = new Fsrules()
 // test webpack
 const webpack = require('webpack')
-var keeper = require('code-keeper')
+var keeper = require('../index')
 // test i18n
 var I18nPlugin = require('i18n-webpack-plugin')
 // config
 myinfor = rules.infor()
 myseoinfor = rules.seoinfor()
-var confdev = rules.dev()
-var transfile = rules.transfile().transfile
+let confdev = rules.dev()
+let transfile = rules.transfile().transfile
 
 // constructor
-function compile () {
-}
+function compile () {}
 
 // reload
 compile.prototype.reload = function () {
-  var file = __dirname + '/rules.js'
-  var configstr = fs.readFileSync(file).toString()
-  var temprules = eval(configstr)
+  let file = __dirname + '/rules.js'
+  let configstr = fs.readFileSync(file).toString()
+  let temprules = eval(configstr)
   rules = new temprules()
   myinfor = rules.infor()
   confdev = rules.dev()

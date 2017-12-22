@@ -4,14 +4,12 @@
  * plugin:init js
  */
 let fs = require('fs')
+const path = require('path')
 let mypathlist = []
 let myModule, myModuleDir, childModule, routerdir, proxy, wrapper, configtransfile, lang, basepath, isrouter,
   htmlbasepath, myChildDir, myChildName, mySource, myAutoPath
 
-let file = './config.js'
-let configstr = fs.readFileSync(file).toString()
-let config = eval(configstr)
-
+let config = require(path.resolve('./config.js'))
 let initpath = {
   imgpath: './front/plugin/init/source/img/.gitkeep',
   htmlpath: './front/plugin/init/page/init.html',

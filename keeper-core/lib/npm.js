@@ -10,7 +10,7 @@ const exec = require('child_process').exec
 const Del = require('./delete')
 let del = new Del()
 let npm
-if (fs.existsSync('./node_modules/npm/')) {
+if (fs.existsSync(path.join(__dirname, '/../../../../npm/'))) {
   npm = require('npm')
 }
 let Delay = require('./delay')
@@ -79,7 +79,12 @@ class initnpm {
     heightplugin = []
     lostplugin = []
     for (var i in pluginlist) {
-      let isexist = fs.existsSync('./node_modules/' + pluginlist[i].name + '/package.json')
+      let isexist
+      if (pluginlist[i].name === 'webpack') {
+        isexist = fs.existsSync(path.join(__dirname, '/../../../../' + pluginlist[i].name + '/package.json'))
+      } else {
+        isexist = fs.existsSync('./node_modules/' + pluginlist[i].name + '/package.json')
+      }
       if (isexist) {
         var str = fs.readFileSync('./node_modules/' + pluginlist[i].name + '/package.json').toString()
         var low = this.checkver(pluginlist[i].ver, JSON.parse(str).version)
@@ -102,12 +107,16 @@ class initnpm {
     if (lostplugin.length === 0 && lowplugin.length === 0) {
       console.log('Keeper is ready!'.green)
       let inconf = path.join(__dirname, '/../tpl/system/sysconf.txt')
-      let outconf = path.join(__dirname, '/../../' + this.currplugin + '/config/sysconf.js')
+      let outconf = path.resolve('./node_modules/' + this.currplugin + '/config/sysconf.js')
+      let tempver = fs.readFileSync(path.join(__dirname, '/../../../../' + this.currplugin + '/package.json')).toString()
+      console.log(tempver)
 
       let tpl = fs.readFileSync(inconf).toString()
-      let data = {timer: false}
+      let data = {timer: 1}
       let mystr = render.renderdata(tpl, data)
       writefile.writejs(outconf, mystr)
+
+      this.bootstrap()
     }
   }
 
@@ -159,7 +168,7 @@ class initnpm {
   installnpm () {
     return new Promise((resolve) => {
       console.log('Keeper is preparing the installation resource for you,Please wait...'.green)
-      exec('npm install npm@5.0.4', function (error, stdout, stderr) {
+      exec('npm install npm@5.6.0 -g', function (error, stdout, stderr) {
         console.log(stdout)
         stderr ? console.log('stderr: ' + stderr) : console.log('keeper is ready!'.green)
         npm = require('npm')
@@ -169,6 +178,13 @@ class initnpm {
         resolve()
       })
     })
+  }
+
+  bootstrap () {
+    require('code-keeper/bin/builder')
+    require('code-keeper/bin/bdrelease')
+    require('code-keeper/bin/bdinit')
+    require('code-keeper/bin/bdrob')
   }
 }
 
