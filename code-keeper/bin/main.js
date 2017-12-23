@@ -30,10 +30,25 @@ function myEval (cmd, context, filename, callback) {
   this.displayPrompt()
 }
 
+let plugname = 'code-keeper'
+
 // check program running environment.
-let sysconf = path.resolve('./node_modules/code-keeper/config/sysconf.js')
+let sysconf = path.resolve('./node_modules/' + plugname + '/config/sysconf.js')
 var isready = fs.existsSync(sysconf)
-if (!isready) {
+if (isready) {
+  let tempver = fs.readFileSync(path.join(__dirname, '/../../' + plugname + '/package.json')).toString()
+  let currversion = JSON.parse(tempver).version
+  let preversion = require(sysconf)
+  if (preversion.check_env === currversion) {
+    bootstrap()
+  } else {
+    boot()
+  }
+} else {
+  boot()
+}
+
+function boot () {
   console.log('This is a new Object (first time to running keeper) or Keeper is running at wrong Environment! Please comfirm! Enter [y]es or [n]o to continue.'.red)
   global.myvari.anslist = [{y: 'yes'}, {n: 'no'}]
   global.myvari.answer.yes = () => {
@@ -42,8 +57,6 @@ if (!isready) {
   global.myvari.answer.no = () => {
     global.repls.close()
   }
-} else {
-  bootstrap()
 }
 
 function bootstrap () {

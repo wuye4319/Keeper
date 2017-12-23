@@ -78,16 +78,17 @@ class initnpm {
     lowplugin = []
     heightplugin = []
     lostplugin = []
-    for (var i in pluginlist) {
-      let isexist
+    for (let i in pluginlist) {
+      let packagepath
       if (pluginlist[i].name === 'webpack') {
-        isexist = fs.existsSync(path.join(__dirname, '/../../../../' + pluginlist[i].name + '/package.json'))
+        packagepath = path.join(__dirname, '/../../../../' + pluginlist[i].name + '/package.json')
       } else {
-        isexist = fs.existsSync('./node_modules/' + pluginlist[i].name + '/package.json')
+        packagepath = './node_modules/' + pluginlist[i].name + '/package.json'
       }
+      let isexist = fs.existsSync(packagepath)
       if (isexist) {
-        var str = fs.readFileSync('./node_modules/' + pluginlist[i].name + '/package.json').toString()
-        var low = this.checkver(pluginlist[i].ver, JSON.parse(str).version)
+        let str = fs.readFileSync(packagepath).toString()
+        let low = this.checkver(pluginlist[i].ver, JSON.parse(str).version)
         if (low) {
           low === 'height' ? heightplugin.push(pluginlist[i].name) : lowplugin.push(pluginlist[i].name)
         }
@@ -96,10 +97,10 @@ class initnpm {
       }
     }
     if (lowplugin.length) {
-      console.log('Warning : outdataed version plugin : '.yellow + lowplugin.toString().red)
+      console.log('Warning : outdataed version plugin : '.red + lowplugin.toString().red)
     }
     if (heightplugin.length) {
-      console.log('Warning : height version plugin : '.yellow + heightplugin.toString().red)
+      console.log('Warning : height version plugin : '.yellow + heightplugin.toString().yellow)
     }
     if (lostplugin.length) {
       console.log('Missing plugin : '.yellow + lostplugin.toString().red)
@@ -108,11 +109,10 @@ class initnpm {
       console.log('Keeper is ready!'.green)
       let inconf = path.join(__dirname, '/../tpl/system/sysconf.txt')
       let outconf = path.resolve('./node_modules/' + this.currplugin + '/config/sysconf.js')
-      let tempver = fs.readFileSync(path.join(__dirname, '/../../../../' + this.currplugin + '/package.json')).toString()
-      console.log(tempver)
+      let plugver = fs.readFileSync(path.join(__dirname, '/../../../../' + this.currplugin + '/package.json'))
 
       let tpl = fs.readFileSync(inconf).toString()
-      let data = {timer: 1}
+      let data = {timer: JSON.parse(plugver).version}
       let mystr = render.renderdata(tpl, data)
       writefile.writejs(outconf, mystr)
 
