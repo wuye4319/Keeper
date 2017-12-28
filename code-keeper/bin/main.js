@@ -61,7 +61,4 @@ function boot () {
 
 function bootstrap () {
   require('./builder')
-  require('./bdrelease')
-  require('./bdinit')
-  require('./bdrob')
 }

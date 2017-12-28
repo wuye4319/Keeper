@@ -9,10 +9,7 @@ let writefile = new Writefile()
 const exec = require('child_process').exec
 const Del = require('./delete')
 let del = new Del()
-let npm
-if (fs.existsSync(path.join(__dirname, '/../../../../npm/'))) {
-  npm = require('npm')
-}
+let npm = require('npm')
 let Delay = require('./delay')
 let delay = new Delay()
 const Render = require('./render')
@@ -36,16 +33,16 @@ class initnpm {
     this.checkplugin()// keeper will auto install plugin for you,please wait...
     if (lowplugin.length) {
       console.log('You have some plugin is incorrect,Keeper will uninstall those plugin.'.red)
-      let hasnpm = fs.existsSync('./node_modules/npm/package.json')
-      hasnpm || await this.installnpm()
+      // let hasnpm = fs.existsSync('./node_modules/npm/package.json')
+      // hasnpm || await this.installnpm()
       await delay.delay(5, true)
       await this.uninstallall()
       this.checkplugin()
     }
     if (lostplugin.length) {
       console.log('You have some plugin is missing,Keeper will install those plugin.'.red)
-      let hasnpm = fs.existsSync('./node_modules/npm/package.json')
-      hasnpm || await this.installnpm()
+      // let hasnpm = fs.existsSync('./node_modules/npm/package.json')
+      // hasnpm || await this.installnpm()
       await delay.delay(5, true)
       await this.installall()
       this.checkplugin()
@@ -165,26 +162,23 @@ class initnpm {
     return result
   }
 
-  installnpm () {
-    return new Promise((resolve) => {
-      console.log('Keeper is preparing the installation resource for you,Please wait...'.green)
-      exec('npm install npm@5.6.0 -g', function (error, stdout, stderr) {
-        console.log(stdout)
-        stderr ? console.log('stderr: ' + stderr) : console.log('keeper is ready!'.green)
-        npm = require('npm')
-        if (error !== null) {
-          console.log('exec error: ' + error)
-        }
-        resolve()
-      })
-    })
-  }
+  // installnpm () {
+  //   return new Promise((resolve) => {
+  //     console.log('Keeper is preparing the installation resource for you,Please wait...'.green)
+  //     exec('npm install npm@5.6.0', function (error, stdout, stderr) {
+  //       console.log(stdout)
+  //       stderr ? console.log('stderr: ' + stderr) : console.log('keeper is ready!'.green)
+  //       npm = require('npm')
+  //       if (error !== null) {
+  //         console.log('exec error: ' + error)
+  //       }
+  //       resolve()
+  //     })
+  //   })
+  // }
 
   bootstrap () {
-    require('code-keeper/bin/builder')
-    require('code-keeper/bin/bdrelease')
-    require('code-keeper/bin/bdinit')
-    require('code-keeper/bin/bdrob')
+    require(this.currplugin + '/bin/builder')
   }
 }
 

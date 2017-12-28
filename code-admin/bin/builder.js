@@ -1,13 +1,9 @@
-const r = require('repl')
-let fs = require('fs')
-let colors = require('colors')
-repls = r.start({prompt: '> ', eval: myEval})
-let basemysql = require('../lib/base/mysql')
+let basemysql = require('../../../admin/base/mysql')
 let koa = require('../koa/index')
 // router
-require('../koa/router/theme')
+require('../../../admin/router/rout')
 
-function myEval () {}
+require('./bdrob')
 
 repls.defineCommand('/', {
   help: 'end and exit'.red,

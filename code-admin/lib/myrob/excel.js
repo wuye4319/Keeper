@@ -4,10 +4,10 @@
  * plugin:init js
  */
 'use strict'
-var fs = require('fs')
-var XLSX = require('xlsx')
-var workbook
-var config = require('../../config/robconf')
+const fs = require('fs')
+let XLSX = require('xlsx')
+let workbook
+let config = require('../../config/robconf')
 
 // constructor
 class excel {
@@ -17,7 +17,8 @@ class excel {
   }
 
   boot () {
-    var myfs = config.fs, datalist
+    let myfs = config.fs
+    let datalist
     if (fs.existsSync(myfs)) {
       workbook = XLSX.readFile(myfs)
       datalist = this.getexcel()
@@ -28,26 +29,26 @@ class excel {
   }
 
   getexcel () {
-    var sheet_name_list = workbook.SheetNames
-    var self = this, datalist = []
-    var rowkey = config.rowkey
-    var mynumlist = []
-    sheet_name_list.forEach(function (y) { /* iterate through sheets */
-      var worksheet = workbook.Sheets[y]
-      for (var z in worksheet) {
+    let sheetNameList = workbook.SheetNames
+    let datalist = []
+    let rowkey = config.rowkey
+    let mynumlist = []
+    sheetNameList.forEach(function (y) { /* iterate through sheets */
+      let worksheet = workbook.Sheets[y]
+      for (let z in worksheet) {
         /* all keys that do not begin with "!" correspond to cell addresses */
         if (z[0] === '!') continue
-        var Letter = z.replace(/[0-9]/g, '')
-        var isrow = rowkey.indexOf(Letter)
-        if (isrow != -1) {
-          var num = z.replace(/[A-Z]/g, '')
+        let Letter = z.replace(/[0-9]/g, '')
+        let isrow = rowkey.indexOf(Letter)
+        if (isrow !== -1) {
+          let num = z.replace(/[A-Z]/g, '')
           if (num > 1) {
-            var numindex = mynumlist.indexOf(num)
-            if (numindex == -1) {
+            let numindex = mynumlist.indexOf(num)
+            if (numindex === -1) {
               mynumlist.push(num)
               datalist.push({A: worksheet[z].v})
             } else {
-              eval('datalist[numindex].' + Letter + '=worksheet[z].v')
+              datalist[numindex][Letter] = worksheet[z].v
             }
           }
         }

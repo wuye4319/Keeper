@@ -1,9 +1,11 @@
 {
   "name": "code-admin",
-  "version": "1.0.10",
+  "version": "1.0.22",
   "description": "code-admin",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "keeper-core": "^1.0.55"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "test"

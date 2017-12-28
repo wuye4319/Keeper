@@ -2,7 +2,7 @@
  * Created by nero on 2017/5/24.
  */
 var path = require('path')
-const mime = require('mime')
+// const mime = require('mime')
 var fs = require('fs')
 
 // url: 类似 '/static/'

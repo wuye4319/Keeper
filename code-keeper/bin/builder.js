@@ -1,5 +1,9 @@
-var Fscompile = require('../lib/compile')
-var compile = new Fscompile()
+const Fscompile = require('../lib/compile')
+let compile = new Fscompile()
+
+require('./bdrelease')
+require('./bdinit')
+require('./bdrob')
 
 repls.defineCommand('reload', {
   help: 'reload all setting of config.js'.green,
