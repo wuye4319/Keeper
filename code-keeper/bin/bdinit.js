@@ -64,6 +64,10 @@ repls.defineCommand('createobject', {
     console.log('3.frontend-react admin'.blue)
     myvari.answer.one = () => {
       console.log('11111111111')
+      myvari.temphandle = 'test'
+      myvari.answer.test = (data) => {
+        console.log('test' + data)
+      }
     }
     myvari.answer.two = () => {
       console.log('22222222222')

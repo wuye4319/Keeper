@@ -2,6 +2,10 @@
  * Created by nero on 2017/3/23.
  */
 const path = require('path')
+const fs = require('fs')
+const Render = require('keeper-core/lib/render')
+let render = new Render()
+
 var fsinit = require('../rules/init')
 rulinit = new fsinit()
 
