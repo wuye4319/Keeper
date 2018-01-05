@@ -7,7 +7,6 @@ let ready = new Ready()
 
 const r = require('repl')
 global.repls = r.start({prompt: '> ', eval: myEval})
-
 global.myvari = {anslist: [], answer: {}}
 
 // listener 提取到文件

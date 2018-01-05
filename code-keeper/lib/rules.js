@@ -6,17 +6,20 @@
 let fs = require('fs')
 const path = require('path')
 let mypathlist = []
-let myModule, myModuleDir, childModule, routerdir, proxy, wrapper, configtransfile, lang, basepath, isrouter,
-  htmlbasepath, myChildDir, myChildName, mySource, myAutoPath
+let myModule, myModuleDir, childModule, routerdir
+let proxy, wrapper, configtransfile, lang, basepath, isrouter
+let htmlbasepath, myChildDir, myChildName, mySource, myAutoPath
 
-let config = require(path.resolve('./config.js'))
+let config
+let systemconfig = require('../config/system')
+
 let initpath = {
-  imgpath: './front/plugin/init/source/img/.gitkeep',
-  htmlpath: './front/plugin/init/page/init.html',
-  jspath: './front/plugin/init/source/js/init.js',
-  lesspath: './front/plugin/init/source/less/init.less',
-  rout: './front/plugin/init/source/js/init-rout.txt',
-  routjs: './front/plugin/init/source/js/router.txt'
+  imgpath: systemconfig.base + '/source/img/.gitkeep',
+  htmlpath: systemconfig.base + '/page/init.html',
+  jspath: systemconfig.base + '/source/js/init.js',
+  lesspath: systemconfig.base + '/source/less/init.less',
+  rout: systemconfig.base + '/source/js/init-rout.txt',
+  routjs: systemconfig.base + '/source/js/router.txt'
 }
 
 // construct
@@ -24,62 +27,69 @@ class rules {
   constructor () {
     // init
     this.options = {
-      seofile: './seoinfor.json',
-      config: config
+      seofile: './seoinfor.json'
     }
 
-    myModule = config.myModule,
-      myModuleDir = config.myModule.toLocaleLowerCase(),
-      childModule = config.childModule,
-      routerdir = config.routerdir,
-      proxy = config.proxy,
-      wrapper = config.wrapper,
-      configtransfile = config.transfile,
-      lang = (config.lang ? config.lang + '/' : ''),
-      basepath = (config.basepath ? config.basepath + '/' : ''),
-      isrouter = routerdir.indexOf(myModuleDir),
-      htmlbasepath = (config.htmlbasepath ? config.htmlbasepath + '/' : ''),
-      myChildDir = (childModule ? childModule.toLocaleLowerCase() + '/' : ''),
-      myChildName = childModule.substr(childModule.lastIndexOf('/') + 1),
-      mySource = (myChildName || myModule),
-      myAutoPath = (childModule ? '../' : '')
+    this.loadconfig()
+  }
 
-    var childnum = childModule.split('/').length - 1
-    for (var i = 0; i < childnum; i++) {
+  loadconfig () {
+    config = eval(fs.readFileSync('./config.js').toString())
+
+    myModule = config.myModule
+    myModuleDir = config.myModule.toLocaleLowerCase()
+    childModule = config.childModule
+    routerdir = config.routerdir
+    proxy = config.proxy
+    wrapper = config.wrapper
+    configtransfile = config.transfile
+    lang = (config.lang ? config.lang + '/' : '')
+    basepath = (config.basepath ? config.basepath + '/' : '')
+    isrouter = routerdir.indexOf(myModuleDir)
+    htmlbasepath = (config.htmlbasepath ? config.htmlbasepath + '/' : '')
+    myChildDir = (childModule ? childModule.toLocaleLowerCase() + '/' : '')
+    myChildName = childModule.substr(childModule.lastIndexOf('/') + 1)
+    mySource = (myChildName || myModule)
+    myAutoPath = (childModule ? '../' : '')
+
+    let childnum = childModule.split('/').length - 1
+    for (let i = 0; i < childnum; i++) {
       myAutoPath += '../'
     }
 
     // language
-    lang == 'all/' ? lang = ['cn/', 'en/'] : lang = [lang]
-
-    this.mypath()
+    lang === 'all/' ? lang = ['cn/', 'en/'] : lang = [lang]
+    for (let i in lang) {
+      mypathlist.push(this.mypath(lang[i]))
+    }
   }
 
   // config
   infor () {
-    var config = this.options.config
-    var data = {
+    let data = {
       config: config,
       mypathlist: mypathlist,
       lang: lang,
       isrouter: isrouter,
-      initpath: initpath
+      initpath: initpath,
+      basepath: basepath,
+      myChildDir: myChildDir
     }
     return data
   }
 
   // transfile
   transfile () {
-    var filelist = require('../config/routerlist.js')
-    var transfile = {
+    let filelist = require('../config/routerlist.js')
+    let transfile = {
       fs: './front/en/source/js/' + myModuleDir + '/' + myChildDir + configtransfile,
       mytrans: false
     }
 
     // router trans file
-    if (lang.indexOf('en/') != -1) {
+    if (lang.indexOf('en/') !== -1) {
       transfile.mytrans = {}
-      if (isrouter != -1) {
+      if (isrouter !== -1) {
         // router dir trans file [account.js trans]
         var initfs = './front/en/source/js/' + myModuleDir + '/' + configtransfile
         if (fs.existsSync(initfs)) {
@@ -117,52 +127,41 @@ class rules {
   }
 
   // my path
-  mypath () {
-    for (var i = 0; i < lang.length; i++) {
-      var child = {
-        html: lang[i] + htmlbasepath + myModuleDir + '/',
-        js: lang[i] + 'source/js/' + myModuleDir + '/',
-        img: lang[i] + 'source/img/' + myModuleDir + '/',
-        less: lang[i] + 'source/less/' + myModuleDir + '/'
-      }
-      var base = {
-        // base
-        stat: './static/' + basepath,
-        chtml: child.html + myChildDir,
-        cjs: child.js + myChildDir,
-        cimg: child.img + myChildDir,
-        cless: child.less + myChildDir
-      }
-      var clearpath = {
-        // clear
-        statimg: base.stat + base.cimg + '.gitkeep',
-        stathtml: base.stat + base.chtml + 'index.html',
-        frtjs: './front/' + base.cjs + mySource + '.js',
-        frtless: './front/' + base.cless + mySource + '.less',
-        statjs: base.stat + base.cjs + mySource + '.js',
-        statpart: base.stat + base.cjs + mySource + '.part.js'
-      }
-      var init = {
-        // routerlist
-        namefile: './front/' + (lang[i] ? 'cn/' : '') + 'source/js/' + myModuleDir + '/routername.js',
-        routjs: './front/' + child.js + myModule + '.js',
-        // link: "/" + basepath + base.chtml,
-        link: '/' + basepath + child.html,
-        file: '/' + basepath + child.js,
-        // init
-        myupchildname: myChildName.substr(0, 1).toLocaleUpperCase() + myChildName.substr(1),
-        myless: myAutoPath + '../../less/' + myModuleDir + '/' + myChildDir + mySource + '.less',
-        commonless: myAutoPath + '../../../plugin/less/class.less',
-        myroutjs: '/' + basepath + child.js + myModule + '.js',
-        loadjs: '/' + basepath + 'plugin/base/load.js',
-        wrapjs: '/' + basepath + lang[i] + wrapper,
-        // wrapjs: "<script src=\"/" + basepath + lang[i] + "react-plugin/Wrap.min.js\"></script>",
-        myjs: '/' + basepath + base.cjs + mySource + '.js'
-      }
-      var mypath = {}
-      Object.assign(mypath, child, base, clearpath, init)
-      mypathlist.push(mypath)
+  mypath (lang) {
+    let base = {
+      stat: './static/' + basepath,
+      html: lang + htmlbasepath + myModuleDir + '/',
+      js: lang + 'source/js/' + myModuleDir + '/',
+      img: lang + 'source/img/' + myModuleDir + '/',
+      less: lang + 'source/less/' + myModuleDir + '/'
     }
+    let clearpath = {
+      // clear
+      statimg: base.stat + base.img + myChildDir + '.gitkeep',
+      stathtml: base.stat + base.html + myChildDir + 'index.html',
+      frtjs: './front/' + base.js + myChildDir + mySource + '.js',
+      frtless: './front/' + base.less + myChildDir + mySource + '.less',
+      statjs: base.stat + base.js + myChildDir + mySource + '.js',
+      statpart: base.stat + base.js + myChildDir + mySource + '.part.js'
+    }
+    let init = {
+      // routerlist
+      namefile: './front/' + (lang ? 'cn/' : '') + 'source/js/' + myModuleDir + '/routername.js',
+      routjs: './front/' + base.js + myModule + '.js',
+      link: '/' + basepath + base.html,
+      file: '/' + basepath + base.js,
+      // init
+      myupchildname: myChildName.substr(0, 1).toLocaleUpperCase() + myChildName.substr(1),
+      myless: myAutoPath + '../../less/' + myModuleDir + '/' + myChildDir + mySource + '.less',
+      commonless: myAutoPath + '../../../plugin/less/class.less',
+      myroutjs: '/' + basepath + base.js + myModule + '.js',
+      loadjs: '/' + basepath + 'plugin/base/load.js',
+      wrapjs: '/' + basepath + lang + wrapper,
+      myjs: '/' + basepath + base.js + myChildDir + mySource + '.js'
+    }
+    let mypath = {}
+    Object.assign(mypath, base, clearpath, init)
+    return mypath
   }
 
   // seo infor
@@ -186,11 +185,13 @@ class rules {
   }
 
   dev () {
-    let arrwebpack = [], develop, myseoinfor = this.seoinfor()
+    let arrwebpack = []
+    let develop
+    let myseoinfor = this.seoinfor()
 
     // dev and pub
-    for (var i = 0; i < lang.length; i++) {
-      var singleinfor = (lang[i] == 'cn/' ? myseoinfor[0] : myseoinfor[1])
+    for (let i = 0; i < lang.length; i++) {
+      let singleinfor = (lang[i] === 'cn/' ? myseoinfor[0] : myseoinfor[1])
       let tempobj = {
         template: initpath.htmlpath,
         data: {
@@ -202,7 +203,7 @@ class rules {
           wrapjs: mypathlist[i].wrapjs
         }
       }
-      if (isrouter != -1) {
+      if (isrouter !== -1) {
         // router dir
         tempobj.filename = '/' + basepath + mypathlist[i].html + 'index.html'
         tempobj.data.myjs = mypathlist[i].myroutjs
@@ -210,7 +211,7 @@ class rules {
         develop = myModuleDir + '/' + myModule
       } else {
         // normal dir
-        tempobj.filename = '/' + basepath + mypathlist[i].chtml + 'index.html'
+        tempobj.filename = '/' + basepath + mypathlist[i].html + myChildDir + 'index.html'
         tempobj.data.myjs = mypathlist[i].myjs
         arrwebpack.push(tempobj)
         develop = myModuleDir + '/' + myChildDir + mySource

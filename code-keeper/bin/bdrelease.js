@@ -1,14 +1,14 @@
 /**
  * Created by nero on 2017/3/23.
  */
-var fsrelease = require('../lib/ctrl/release')
-var release = new fsrelease()
+const Fsrelease = require('../lib/ctrl/release')
+let release = new Fsrelease()
 
-var fsvers = require('../lib/ctrl/version')
-var vers = new fsvers()
+const Fsvers = require('../lib/ctrl/version')
+let vers = new Fsvers()
 
 // check version
-var check = vers.checkconf()
+vers.checkconf()
 
 repls.defineCommand('v', {
   help: 'version'.yellow,

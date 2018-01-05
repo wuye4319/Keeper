@@ -1,18 +1,44 @@
 /**
  * Created by nero on 2017/3/23.
  */
-var fsvers = require('../rules/version')
-var rulvers = new fsvers()
+let fs = require('fs')
 
 class myvers {
+  constructor () {
+    this.options = {
+      version: '1.1.1'
+    }
+  }
+
   // version of rules.js, not config.js
   vers () {
-    var version = rulvers.version().version
+    let version = this.options.version
     console.log('version:'.green + version.green)
   }
 
   checkconf () {
-    var result = rulvers.checkconf()
+    let versconf = myinfor.config.version
+    let configcheck = [
+      {name: 'basepath', value: myinfor.config.basepath},
+      {name: 'htmlbasepath', value: myinfor.config.htmlbasepath},
+      {name: 'lang', value: myinfor.lang},
+      {name: 'wrapper', value: myinfor.config.wrapper.substr(0, myinfor.config.wrapper.lastIndexOf('/'))}
+    ]
+    let result = true
+    if (versconf !== this.options.version) {
+      console.log('!!! Warnning : Your config.js is not the latest version, Please create a new config.js buy \'.initconf\','.red)
+      result = false
+    }
+    if (myinfor.config.transfile.trim() === '') {
+      console.log('Warning : transfile can\'t be empty!'.red)// transfile
+    }
+    for (let i in configcheck) {
+      if (configcheck[i].value) {
+        let dirpath = './static/' + myinfor.lang[0] + (configcheck[i].name === 'lang' ? '' : configcheck[i].value + '/')
+        let isexist = fs.existsSync(dirpath)
+        isexist || console.log('Warning : '.yellow + configcheck[i].name.green + ' is non-existing dir! Please comfirm.'.yellow)
+      }
+    }
     return result
   }
 }
