@@ -19,7 +19,7 @@ class conf {
   readconf () {
     let myinfor = rules.infor()
     let myconfig = myinfor.config
-    let myseo = myrules.seoinfor
+    let myseo = rules.seoinfor()
     console.log('myModule : \''.green + myconfig.myModule.red + '\''.green)
     console.log('childModule : \''.green + myconfig.childModule.red + '\''.green)
     console.log('lang : \''.cyan + myconfig.lang.red + '\''.cyan)

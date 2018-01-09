@@ -7,10 +7,10 @@
 var fs = require('fs')
 // var phantom = require('keeper-static')
 
-var render = require('./render')
-render = new render()
-var writefile = require('./writefile')
-writefile = new writefile()
+const Render = require('keeper-core/lib/render')
+let render = new Render()
+const Writefile = require('keeper-core/lib/writefile')
+let writefile = new Writefile()
 
 var fsprogress = require('./progress')
 var progress = new fsprogress()

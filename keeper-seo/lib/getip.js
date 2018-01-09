@@ -25,6 +25,7 @@ class InitJs {
 
     let myip = JSON.parse(mypageinfor.pre)
     logger.myconsole('ip changes to : '.green + myip.origin.red)
+    console.log(myip.origin.red)
     await page.close()
   }
 }

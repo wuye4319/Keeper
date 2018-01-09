@@ -6,8 +6,8 @@ const fs = require('fs')
 var mystatic = require('../base/static')
 mystatic = new mystatic()
 
-var writefile = require('../base/writefile')
-writefile = new writefile()
+const Writefile = require('keeper-core/lib/writefile')
+let writefile = new Writefile()
 
 class Static {
   // reset all except myjs

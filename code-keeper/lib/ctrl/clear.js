@@ -8,9 +8,11 @@
  */
 const Myctrlinit = require('./init')
 let myctrlinit = new Myctrlinit()
-
 const Del = require('keeper-core/lib/delete')
 let del = new Del()
+const Fsrules = require('../ctrl/loadconf')
+let rules = new Fsrules()
+let myinfor = rules.infor()
 
 class clear {
   clear (param) {
@@ -19,8 +21,8 @@ class clear {
     } else {
       // write file
       let confdel = this.delete()
-      for (var i in confdel) {
-        var mydata = confdel[i]
+      for (let i in confdel) {
+        let mydata = confdel[i]
         del.deleteSource(mydata.filename)
       }
     }
@@ -32,17 +34,19 @@ class clear {
 
   delete () {
     let lang = myinfor.lang
-    let mypathlist = myinfor.mypathlist
     let arrdel = []
     for (let i = 0; i < lang.length; i++) {
+      let mypathlist = rules.mypath(lang[i])
       // delete
       arrdel.push(
-        {filename: mypathlist[i].statimg},
-        {filename: mypathlist[i].stathtml},
-        {filename: mypathlist[i].frtjs},
-        {filename: mypathlist[i].frtless},
-        {filename: mypathlist[i].statjs},
-        {filename: mypathlist[i].statpart})
+        // ./static/cn/source/img/test/.gitkeep
+        {filename: mypathlist.stat + mypathlist.img + myinfor.myChildDir + '.gitkeep'},
+        {filename: mypathlist.stat + mypathlist.html + myinfor.myChildDir + 'index.html'},
+        // ./front/cn/source/js/test/test.js
+        {filename: './front/' + mypathlist.js + myinfor.myChildDir + myinfor.mySource + '.js'},
+        {filename: './front/' + mypathlist.less + myinfor.myChildDir + myinfor.mySource + '.less'},
+        {filename: mypathlist.stat + mypathlist.js + myinfor.myChildDir + myinfor.mySource + '.js'},
+        {filename: mypathlist.stat + mypathlist.js + myinfor.myChildDir + myinfor.mySource + '.part.js'})
     }
     return arrdel
   }

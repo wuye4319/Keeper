@@ -2,11 +2,11 @@
  * Created by nero on 2017/4/5.
  * each dir
  */
-var writefile = require('./writefile')
-writefile = new writefile()
+const Writefile = require('keeper-core/lib/writefile')
+let writefile = new Writefile()
 const path = require('path')
 
-var routerlist = {'cn': [], 'en': []}
+let routerlist = {'cn': [], 'en': []}
 
 class eachdir {
   // seach all dir under router dir
