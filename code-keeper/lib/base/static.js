@@ -12,7 +12,7 @@ let render = new Render()
 const Writefile = require('keeper-core/lib/writefile')
 let writefile = new Writefile()
 
-var fsprogress = require('./progress')
+var fsprogress = require('keeper-core/lib/progress')
 var progress = new fsprogress()
 
 // constructor
