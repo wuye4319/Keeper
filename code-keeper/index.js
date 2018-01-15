@@ -25,19 +25,19 @@ function InitJs (options) {
 InitJs.prototype.apply = function (compiler) {
   let self = this
   let data = self.options.data
-  var myjs = data.myjs
+  let myjs = data.myjs
 
   compiler.plugin('emit', function (compilation, callback) {
     // hash
-    var changedChunks = compilation.chunks.filter(function (chunk) {
+    let changedChunks = compilation.chunks.filter(function (chunk) {
       return chunk.hash
     })
     // write file
-    var file = self.options.filename
-    var outfile = './static/' + self.options.filename
+    let file = self.options.filename
+    let outfile = './static/' + self.options.filename
     let tpl = fs.readFileSync(self.options.template).toString()
-    var isfirst = myjs.indexOf('?')
-    var subjs = isfirst != -1 ? myjs.substr(0, myjs.indexOf('?')) : myjs
+    let isfirst = myjs.indexOf('?')
+    let subjs = isfirst !== -1 ? myjs.substr(0, myjs.indexOf('?')) : myjs
     let myhash = subjs + '?' + changedChunks[0].hash
     let str
     // reset all except content
@@ -55,26 +55,26 @@ InitJs.prototype.apply = function (compiler) {
 }
 
 InitJs.prototype.hascont = function (str, content) {
-  var strn = str + '\n'
-  var strr = str + '\r'
-  var strnr = str + '\r\n'
-  if (content.indexOf(strn) != -1) {
+  let strn = str + '\n'
+  let strr = str + '\r'
+  let strnr = str + '\r\n'
+  if (content.indexOf(strn) !== -1) {
     return content.indexOf(strn) + strn.length
-  } else if (content.indexOf(strnr) != -1) {
+  } else if (content.indexOf(strnr) !== -1) {
     return content.indexOf(strnr) + strnr.length
-  } else if (content.indexOf(strr) != -1) {
+  } else if (content.indexOf(strr) !== -1) {
     return content.indexOf(strr) + strr.length
   }
 }
 
 InitJs.prototype.contstr = function (file) {
-  var content = fs.readFileSync(file).toString()
+  let content = fs.readFileSync(file).toString()
   // windows \r\n
-  var firstStr = '<body>'
-  var endStr = '\n<!-- common module -->'
-  var hascont = this.hascont(firstStr, content)
-  var contstr = content.substr(hascont)
-  var newcont = contstr.substr(0, contstr.indexOf(endStr))
+  let firstStr = '<body>'
+  let endStr = '\n<!-- common module -->'
+  let hascont = this.hascont(firstStr, content)
+  let contstr = content.substr(hascont)
+  let newcont = contstr.substr(0, contstr.indexOf(endStr))
   return newcont
 }
 

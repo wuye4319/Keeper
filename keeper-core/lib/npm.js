@@ -6,7 +6,7 @@ const path = require('path')
 const fs = require('fs')
 const Writefile = require('./writefile')
 let writefile = new Writefile()
-const exec = require('child_process').exec
+// const exec = require('child_process').exec
 const Del = require('./delete')
 let del = new Del()
 let npm = require('npm')
@@ -146,11 +146,11 @@ class initnpm {
   }
 
   checkver (myver, cver) {
-    var result = false
-    var myvers = myver.split('.')
-    var cvers = cver.split('.')
+    let result = false
+    let myvers = myver.split('.')
+    let cvers = cver.split('.')
     // control version .2
-    for (var i = 0; i < myvers.length - 1; i++) {
+    for (let i in myvers) {
       if (parseInt(myvers[i]) > parseInt(cvers[i])) {
         result = true
         break

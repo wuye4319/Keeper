@@ -9,7 +9,7 @@ var config = {
   basepath: '',
   htmlbasepath: 'page', // html根目录，空则没有
   lang: 'cn', // cn:中文，en:英文，all:中英文同时编译
-  proxy: 'www.dev.com:8013/', // proxy是代理地址，常见：test,super,superbuy,请求是实时的数据
+  proxy: 'www.dev.com/', // proxy是代理地址，常见：test,super,superbuy,请求是实时的数据
   transfile: 'trans/trans.json', // 默认目录：当前js的同目录下 [trans/trans.json]
   sourcedir: ['src'], // js需要过滤的资源目录
   routerdir: ['account', 'partner'], // router的根目录

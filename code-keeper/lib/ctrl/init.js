@@ -5,29 +5,31 @@ const path = require('path')
 const fs = require('fs')
 const Render = require('keeper-core/lib/render')
 let render = new Render()
+const Fsinit = require('../rules/init-rout')
+let rulinit = new Fsinit()
+let myrules = rulinit.init()
 
-var fsinit = require('../rules/init')
-rulinit = new fsinit()
-
-var fseachdir = require('../base/eachdir')
-var eachdir = new fseachdir()
-
-myrules = rulinit.init()
-
-var writefile = require('../base/writefile')
-writefile = new writefile()
+const Fseachdir = require('../base/eachdir')
+let eachdir = new Fseachdir()
+const Writefile = require('keeper-core/lib/writefile')
+let writefile = new Writefile()
+const Fsrules = require('../ctrl/loadconf')
+let rules = new Fsrules()
+let myinfor = rules.infor()
 
 class Init {
   // init config.js and seoinfor.json
   initconf (type) {
-    if (type == '-a') {
-      var inconf = path.join(__dirname, '/../../tpl/system/config-admin.js')
-      var outconf = './config.js'
+    let inconf
+    let outconf
+    if (type === '-a') {
+      inconf = path.join(__dirname, '/../../tpl/system/config-admin.js')
+      outconf = './config.js'
     } else {
-      var inconf = path.join(__dirname, '/../../tpl/system/config-front.js')
-      var outconf = './config.js'
+      inconf = path.join(__dirname, '/../../tpl/system/config-front.js')
+      outconf = './config.js'
     }
-    var res = writefile.copy(inconf, outconf)
+    let res = writefile.copy(inconf, outconf)
     if (res) {
       console.log('config is init success!'.green)
     }
@@ -38,16 +40,17 @@ class Init {
     // write file
     this.writeinitfile(myrules.init)
 
-    var isrouter = myinfor.isrouter
+    let isrouter = myinfor.isrouter
     // update router.txt
-    isrouter == -1 || this.initrout()
+    isrouter === -1 || this.initrout()
   }
 
   // init router
   initrout () {
-    var routerlist = eachdir.seachdirbykey('js')
+    // each all dir by js file, put it on config/routerlist.js
+    let routerlist = eachdir.seachdirbykey('js')
 
-    var myroutlist = rulinit.routelist(routerlist)
+    let myroutlist = rulinit.routelist(routerlist)
     // router dir .js
     this.writeinitfile(myroutlist)
     // routername.js
@@ -56,30 +59,30 @@ class Init {
 
   // rewrite routername.js
   writeroutname (data) {
-    var init = data
-    var templ = path.join(__dirname, '/../../tpl/routername.txt')
+    let init = data
+    let templ = path.join(__dirname, '/../../tpl/routername.txt')
     // routername write 2 times,but result is different.we need merge those result.
-    for (var i in init) {
-      var mydata = init[i]
-      var tpl = fs.readFileSync(templ).toString()
-      var data = mydata.rnamedata
-      var str = render.renderdata(tpl, data)
+    for (let i in init) {
+      let mydata = init[i]
+      let tpl = fs.readFileSync(templ).toString()
+      let data = mydata.rnamedata
+      let str = render.renderdata(tpl, data)
       // write my file And Report
-      var newfile = writefile.writejs(mydata.rfname, str)
+      let newfile = writefile.writejs(mydata.rfname, str)
       newfile ? console.log(mydata.rfname.yellow + ' is update success!'.green) : console.log(mydata.rfname.red + ' is failed to update!'.red)
     }
   }
 
   // rewrite file [router].js
   writeinitfile (data) {
-    var init = data
-    for (var i in init) {
-      var mydata = init[i]
-      var tpl = fs.readFileSync(mydata.template).toString()
-      var data = mydata.data
-      var str = render.renderdata(tpl, data)
+    let init = data
+    for (let i in init) {
+      let mydata = init[i]
+      let tpl = fs.readFileSync(mydata.template).toString()
+      let data = mydata.data
+      let str = render.renderdata(tpl, data)
       // write my file And Report
-      var newfile = writefile.writejs(mydata.filename, str)
+      let newfile = writefile.writejs(mydata.filename, str)
       newfile ? console.log(mydata.filename.yellow + ' is init success!'.green) : console.log(mydata.filename.yellow + ' is init failed!'.red)
     }
   }

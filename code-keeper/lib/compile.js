@@ -14,9 +14,8 @@ let keeper = require('../index')
 // test i18n
 let I18nPlugin = require('i18n-webpack-plugin')
 // config
-myinfor = rules.infor()
-myseoinfor = rules.seoinfor()
-let confdev = rules.dev()
+let myinfor = rules.infor()
+
 let transfile = rules.transfile().transfile
 let watcher, compiler
 
@@ -40,18 +39,11 @@ class compile {
 
   reload () {
     rules.loadconfig()
-    myinfor = rules.infor()
-    confdev = rules.dev()
-    // init
-    myrules = rulinit.init()
-    // transfile
-    transfile = rules.transfile().transfile
-    // clear
-    confdel = ruldelete.delete()
     console.log('config is reload!'.green)
   }
 
   comsource (pub) {
+    let confdev = rules.dev(pub)
     let dev = confdev.develop
     let myconfig = myinfor.config
     let lang = myinfor.lang
@@ -66,13 +58,13 @@ class compile {
         output: {filename: pub ? '[name].min.js' : '[name].js'}
       }
       Object.assign(tempobj.output, this.confobj.output)
-      Object.assign(this.confobj, tempobj)
-      webpackconf.push(this.confobj)
+      webpackconf.push({...this.confobj, ...tempobj})
     }
     compiler = webpack(webpackconf)
   }
 
-  defaultplugin (pub, lang) {
+  defaultplugin (pub, lang, wrap) {
+    let confdev = rules.dev(pub)
     let pubconf = [
       new webpack.DefinePlugin({
         'process.env': {
@@ -88,33 +80,33 @@ class compile {
 
     let myplug
     if (lang === 'en/') {
-      let mytrans = transfile.mytrans
+      let mytrans = wrap || transfile.mytrans
       myplug = [
         new I18nPlugin(mytrans, {functionName: '_'})
       ]
-      myplug.push(new keeper(confdev.webdev[1] || confdev.webdev[0]))
+      wrap || myplug.push(new keeper(confdev.webdev[1] || confdev.webdev[0]))
     } else {
       myplug = [
         new I18nPlugin('', {functionName: '_'})
       ]
-      myplug.push(new keeper(confdev.webdev[0]))
+      // wrap do not need html
+      wrap || myplug.push(new keeper(confdev.webdev[0]))
     }
 
     if (pub) myplug = myplug.concat(pubconf)
-
     return myinfor.config.webpack.plugins.concat(myplug)
   }
 
   dev (param) {
     this.comsource()
     console.log('program is ready to compile,please wait...'.green)
-    var config = myinfor.config.webpack.config
+    let config = myinfor.config.webpack.config
     watcher = compiler.watch({ // watch options:
       aggregateTimeout: 100, // wait so long for more changes
       poll: true // use polling instead of native watchers
       // pass a number to set the polling interval
     }, function (err, stats) {
-      var result = stats.toString(config)
+      let result = stats.toString(config)
       console.log(result)
     })
   }
@@ -129,9 +121,9 @@ class compile {
   pub (param) {
     this.comsource(true)
     console.log('program is ready to compile,please wait...'.green)
-    var config = myinfor.config.webpack.config
+    let config = myinfor.config.webpack.config
     compiler.run(function (err, stats) {
-      var result = stats.toString(config)
+      let result = stats.toString(config)
       console.log(result)
       console.log('compile success'.blue)
     })
@@ -141,9 +133,10 @@ class compile {
     let myconfig = myinfor.config
     let lang = myinfor.lang
     let webpackconf = []
+    let mytrans
     for (let i in lang) {
       let wrapdir = myconfig.wrapper.substr(0, myconfig.wrapper.lastIndexOf('/'))
-      let wrappath = './front/' + lang[i] + wrapdir + '/' + myconfig.transfile
+      let wrappath = './front/en/' + wrapdir + '/' + myconfig.transfile
       if (fs.existsSync(wrappath)) {
         mytrans = JSON.parse(fs.readFileSync(wrappath).toString())
       } else {
@@ -152,15 +145,15 @@ class compile {
 
       let wranojs = myconfig.wrapper.substr(0, myconfig.wrapper.indexOf('.js'))
       let basepath = (myconfig.basepath ? myconfig.basepath + '/' : '')
-      let myplugins = this.defaultplugin(pub, lang[i])
+      let myplugins = this.defaultplugin(pub, lang[i], mytrans || true) // wrap must be true
       let tempobj = {
         plugins: myplugins,
         entry: {[basepath + lang[i] + wranojs]: ['./front/' + lang[i] + myconfig.wrapper]},
         output: {filename: pub ? '[name].min.js' : '[name].js'}
       }
       Object.assign(tempobj.output, this.confobj.output)
-      Object.assign(this.confobj, tempobj)
-      webpackconf.push(tempobj)
+      // Object.assign(this.confobj, tempobj)
+      webpackconf.push({...this.confobj, ...tempobj})
     }
     compiler = webpack(webpackconf)
   }
@@ -168,9 +161,9 @@ class compile {
   wrap (param) {
     param === 'pub' ? this.wrapconfig(param) : this.wrapconfig()
     console.log('program is ready to compile,please wait...'.green)
-    var config = myinfor.config.webpack.config
+    let config = myinfor.config.webpack.config
     compiler.run(function (err, stats) {
-      var result = stats.toString(config)
+      let result = stats.toString(config)
       console.log(result)
       console.log('compile success'.blue)
     })

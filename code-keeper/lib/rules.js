@@ -68,12 +68,13 @@ class rules {
   infor () {
     let data = {
       config: config,
-      mypathlist: mypathlist,
       lang: lang,
       isrouter: isrouter,
       initpath: initpath,
       basepath: basepath,
-      myChildDir: myChildDir
+      myChildDir: myChildDir,
+      myModuleDir: myModuleDir,
+      mySource: mySource
     }
     return data
   }
@@ -83,28 +84,30 @@ class rules {
     let filelist = require('../config/routerlist.js')
     let transfile = {
       fs: './front/en/source/js/' + myModuleDir + '/' + myChildDir + configtransfile,
-      mytrans: false
+      mytrans: false,
+      maintranslang: false
     }
+    let mainlang = 'en/'
 
     // router trans file
-    if (lang.indexOf('en/') !== -1) {
+    if (lang.indexOf(mainlang) !== -1) {
       transfile.mytrans = {}
       if (isrouter !== -1) {
         // router dir trans file [account.js trans]
-        var initfs = './front/en/source/js/' + myModuleDir + '/' + configtransfile
+        let initfs = './front/' + mainlang + '/source/js/' + myModuleDir + '/' + configtransfile
         if (fs.existsSync(initfs)) {
-          var namefs1 = fs.readFileSync(initfs).toString()
+          let namefs1 = fs.readFileSync(initfs).toString()
           Object.assign(transfile.mytrans, JSON.parse(namefs1))
         } else {
           console.log('Warning : trans file of router js is not exist!'.red)
         }
         // each all trans files
-        var myaccount = filelist.en
+        let myaccount = filelist.en
         myaccount.length || console.log('Warning : router cache is empty! please run \'.initrouter\'!'.red)
-        for (var d = 0; d < myaccount.length; d++) {
-          var transfs = './front/en/source/js/' + myModuleDir + '/' + myaccount[d] + '/' + configtransfile
+        for (let d in myaccount) {
+          let transfs = './front/' + mainlang + '/source/js/' + myModuleDir + '/' + myaccount[d] + '/' + configtransfile
           if (fs.existsSync(transfs)) {
-            var namefs = fs.readFileSync(transfs).toString()
+            let namefs = fs.readFileSync(transfs).toString()
             Object.assign(transfile.mytrans, JSON.parse(namefs))
           } else {
             console.log('Warning : trans file: '.red + transfs.green + ' is not exist!'.red)
@@ -112,7 +115,7 @@ class rules {
         }
       } else {
         if (fs.existsSync(transfile.fs)) {
-          var namefs2 = fs.readFileSync(transfile.fs).toString()
+          let namefs2 = fs.readFileSync(transfile.fs).toString()
           Object.assign(transfile.mytrans, JSON.parse(namefs2))
         } else {
           console.log('Warning : trans file: '.red + transfile.fs.green + ' is not exist!'.red)
@@ -120,8 +123,9 @@ class rules {
       }
     }
 
-    var data = {
-      transfile: transfile
+    let data = {
+      transfile: transfile,
+      maintranslang: this.options.maintranslang
     }
     return data
   }
@@ -135,21 +139,9 @@ class rules {
       img: lang + 'source/img/' + myModuleDir + '/',
       less: lang + 'source/less/' + myModuleDir + '/'
     }
-    let clearpath = {
-      // clear
-      statimg: base.stat + base.img + myChildDir + '.gitkeep',
-      stathtml: base.stat + base.html + myChildDir + 'index.html',
-      frtjs: './front/' + base.js + myChildDir + mySource + '.js',
-      frtless: './front/' + base.less + myChildDir + mySource + '.less',
-      statjs: base.stat + base.js + myChildDir + mySource + '.js',
-      statpart: base.stat + base.js + myChildDir + mySource + '.part.js'
-    }
     let init = {
       // routerlist
-      namefile: './front/' + (lang ? 'cn/' : '') + 'source/js/' + myModuleDir + '/routername.js',
       routjs: './front/' + base.js + myModule + '.js',
-      link: '/' + basepath + base.html,
-      file: '/' + basepath + base.js,
       // init
       myupchildname: myChildName.substr(0, 1).toLocaleUpperCase() + myChildName.substr(1),
       myless: myAutoPath + '../../less/' + myModuleDir + '/' + myChildDir + mySource + '.less',
@@ -157,21 +149,21 @@ class rules {
       myroutjs: '/' + basepath + base.js + myModule + '.js',
       loadjs: '/' + basepath + 'plugin/base/load.js',
       wrapjs: '/' + basepath + lang + wrapper,
-      myjs: '/' + basepath + base.js + myChildDir + mySource + '.js'
+      myjs: '/' + basepath + base.js + myChildDir + mySource
     }
     let mypath = {}
-    Object.assign(mypath, base, clearpath, init)
+    Object.assign(mypath, base, init)
     return mypath
   }
 
   // seo infor
   seoinfor () {
-    var seofile = this.options.seofile
+    let seofile = this.options.seofile
     // seo config
-    var seoconfig = fs.readFileSync(seofile).toString()
-    seoconfig = JSON.parse(seoconfig)
+    let tempseoconfig = fs.readFileSync(seofile).toString()
+    let seoconfig = JSON.parse(tempseoconfig)
 
-    var myseoinfor
+    let myseoinfor
     if (myChildDir) {
       if (!eval('seoconfig.' + myModuleDir)) {
         myseoinfor = eval('seoconfig.default.default')
@@ -184,13 +176,13 @@ class rules {
     return myseoinfor
   }
 
-  dev () {
+  dev (ispub) {
     let arrwebpack = []
     let develop
     let myseoinfor = this.seoinfor()
 
     // dev and pub
-    for (let i = 0; i < lang.length; i++) {
+    for (let i in lang) {
       let singleinfor = (lang[i] === 'cn/' ? myseoinfor[0] : myseoinfor[1])
       let tempobj = {
         template: initpath.htmlpath,
@@ -212,12 +204,12 @@ class rules {
       } else {
         // normal dir
         tempobj.filename = '/' + basepath + mypathlist[i].html + myChildDir + 'index.html'
-        tempobj.data.myjs = mypathlist[i].myjs
+        tempobj.data.myjs = mypathlist[i].myjs + (ispub ? '.min.js' : '.js')
         arrwebpack.push(tempobj)
         develop = myModuleDir + '/' + myChildDir + mySource
       }
     }
-    var data = {
+    let data = {
       webdev: arrwebpack,
       develop: develop
     }

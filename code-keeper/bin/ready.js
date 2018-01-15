@@ -19,7 +19,7 @@ class ready {
       {name: 'url-loader', ver: '0.5.9'},
       {name: 'babel-loader', ver: '7.1.1'},
       {name: 'antd', ver: '2.12.2'},
-      {name: 'webpack', ver: '3.0.0 -g'},
+      {name: 'webpack', ver: '3.10.0 -g'},
       {name: 'react-router', ver: '3.0.0'}, // 4.1.2
       {name: 'babel-plugin-import', ver: '1.2.1'}
     ]

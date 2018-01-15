@@ -2,23 +2,8 @@
 
 ### 安装
 ```javascript
-npm install code-keeper --save-dev
-这时候没法直接使用keeper命令
-需要到node_modules/code-keeper目录下运行
-npm link
-
-运行keeper命令，等待keeper自动安装相关插件包
-
-或者手动运行：
-npm install --save-dev css-loader less-loader url-loader jsx-loader style-loader babel-loader babel-core babel-preset-env
-npm install --save-dev webpack babel-preset-es2015 babel-preset-react babel-preset-stage-0
-
-//router
-npm install -S react-router
-//antd
-npm install antd --save
-npm install babel-plugin-import --save-dev
-
+npm install code-keeper -g
+运行keeper，等待keeper自动安装相关插件包
 ```
 
 ### 查看当前配置

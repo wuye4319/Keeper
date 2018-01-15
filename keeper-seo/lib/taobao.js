@@ -14,7 +14,6 @@ let mytime = new Mytime()
 const Login = require('./auto-login')
 let login = new Login()
 let myloginstatus = false
-
 let logincount = 0
 
 // constructor
@@ -94,8 +93,8 @@ class InitJs {
         mylogstr.url = url
         logger.myconsole(mytime.mytime())
         // write date
-        if (opencache && apidata) cache.writecache(cont, url, type)
-        apidata ? mylogstr.apidata = 'success' : mylogstr.apidata = 'Failed'
+        if (opencache && apidata && filterbox) cache.writecache(cont, url, type)
+        apidata && filterbox ? mylogstr.apidata = 'success' : mylogstr.apidata = 'Failed'
         logger.myconsole('Loading time : '.green + mylogstr.Loadingtime.red)
         logger.mybuffer(mylogstr)
         logger.writelog('success', type)
