@@ -2,6 +2,7 @@
 
 ### 安装
 ```javascript
+npm install keeper-seo --save-dev
 到node_modules/keeper-seo目录下运行
 npm link
 
@@ -47,5 +48,7 @@ seo //进入cadmin模式
 - 自动登录，增加对于错误商品的2次验证，防止错误跳转，重复检索登录态
 - 自动登录后，验证码不过，则机器会自动停止工作。
 
-### v1.1.100
+### v1.1.113
 - 进程数爆了，重启，并重置process及urlbox
+- 3重错误解析后，首先尝试切换ip，而不是自动登录了
+- 自动登录增强判断

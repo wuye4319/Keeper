@@ -10,6 +10,7 @@ let myModule, myModuleDir, childModule, routerdir
 let proxy, wrapper, configtransfile, lang, basepath, isrouter
 let htmlbasepath, myChildDir, myChildName, mySource, myAutoPath
 
+let langbox = ['cn/', 'en/']
 let config
 let systemconfig = require('../config/system')
 
@@ -58,7 +59,7 @@ class rules {
     }
 
     // language
-    lang === 'all/' ? lang = ['cn/', 'en/'] : lang = [lang]
+    lang === 'all/' ? lang = langbox : lang = [lang]
     for (let i in lang) {
       mypathlist.push(this.mypath(lang[i]))
     }
@@ -80,29 +81,27 @@ class rules {
   }
 
   // transfile
-  transfile () {
+  transfile (mainlang) {
     let filelist = require('../config/routerlist.js')
     let transfile = {
-      fs: './front/en/source/js/' + myModuleDir + '/' + myChildDir + configtransfile,
-      mytrans: false,
-      maintranslang: false
+      normaljs: './front/' + mainlang + '/source/js/' + myModuleDir + '/' + myChildDir + configtransfile,
+      router: './front/' + mainlang + '/source/js/' + myModuleDir + '/' + configtransfile,
+      mytrans: false
     }
-    let mainlang = 'en/'
 
     // router trans file
     if (lang.indexOf(mainlang) !== -1) {
       transfile.mytrans = {}
       if (isrouter !== -1) {
         // router dir trans file [account.js trans]
-        let initfs = './front/' + mainlang + '/source/js/' + myModuleDir + '/' + configtransfile
-        if (fs.existsSync(initfs)) {
-          let namefs1 = fs.readFileSync(initfs).toString()
+        if (fs.existsSync(transfile.router)) {
+          let namefs1 = fs.readFileSync(transfile.router).toString()
           Object.assign(transfile.mytrans, JSON.parse(namefs1))
         } else {
           console.log('Warning : trans file of router js is not exist!'.red)
         }
         // each all trans files
-        let myaccount = filelist.en
+        let myaccount = filelist[mainlang.substr(0, mainlang.lastIndexOf('/'))]
         myaccount.length || console.log('Warning : router cache is empty! please run \'.initrouter\'!'.red)
         for (let d in myaccount) {
           let transfs = './front/' + mainlang + '/source/js/' + myModuleDir + '/' + myaccount[d] + '/' + configtransfile
@@ -114,18 +113,17 @@ class rules {
           }
         }
       } else {
-        if (fs.existsSync(transfile.fs)) {
-          let namefs2 = fs.readFileSync(transfile.fs).toString()
+        if (fs.existsSync(transfile.normaljs)) {
+          let namefs2 = fs.readFileSync(transfile.normaljs).toString()
           Object.assign(transfile.mytrans, JSON.parse(namefs2))
         } else {
-          console.log('Warning : trans file: '.red + transfile.fs.green + ' is not exist!'.red)
+          console.log('Warning : trans file: '.red + transfile.normaljs.green + ' is not exist!'.red)
         }
       }
     }
 
     let data = {
-      transfile: transfile,
-      maintranslang: this.options.maintranslang
+      transfile: transfile.mytrans
     }
     return data
   }
@@ -144,9 +142,9 @@ class rules {
       routjs: './front/' + base.js + myModule + '.js',
       // init
       myupchildname: myChildName.substr(0, 1).toLocaleUpperCase() + myChildName.substr(1),
-      myless: myAutoPath + '../../less/' + myModuleDir + '/' + myChildDir + mySource + '.less',
-      commonless: myAutoPath + '../../../plugin/less/class.less',
-      myroutjs: '/' + basepath + base.js + myModule + '.js',
+      myless: mySource + '.less',
+      commonless: myAutoPath + (isrouter ? '../../../plugin/less/class.less' : '../../plugin/less/class.less'),
+      myroutjs: '/' + basepath + base.js + myModule,
       loadjs: '/' + basepath + 'plugin/base/load.js',
       wrapjs: '/' + basepath + lang + wrapper,
       myjs: '/' + basepath + base.js + myChildDir + mySource
@@ -198,7 +196,7 @@ class rules {
       if (isrouter !== -1) {
         // router dir
         tempobj.filename = '/' + basepath + mypathlist[i].html + 'index.html'
-        tempobj.data.myjs = mypathlist[i].myroutjs
+        tempobj.data.myjs = mypathlist[i].myroutjs + (ispub ? '.min.js' : '.js')
         arrwebpack.push(tempobj)
         develop = myModuleDir + '/' + myModule
       } else {

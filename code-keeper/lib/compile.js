@@ -15,9 +15,8 @@ let keeper = require('../index')
 let I18nPlugin = require('i18n-webpack-plugin')
 // config
 let myinfor = rules.infor()
-
-let transfile = rules.transfile().transfile
 let watcher, compiler
+let lang = myinfor.lang
 
 // constructor
 class compile {
@@ -35,6 +34,18 @@ class compile {
     }
     Object.assign(this.confobj, myinfor.config.webpack)
     delete this.confobj.config
+    for (let i in lang) {
+      this.checktrans(lang[i])
+    }
+  }
+
+  checktrans (lang) {
+    let transfile
+    let firstlang = myinfor.config.firstlang + '/'
+    if (lang !== firstlang) {
+      transfile = rules.transfile(lang).transfile
+    }
+    return transfile
   }
 
   reload () {
@@ -46,7 +57,6 @@ class compile {
     let confdev = rules.dev(pub)
     let dev = confdev.develop
     let myconfig = myinfor.config
-    let lang = myinfor.lang
     let webpackconf = []
     for (let i in lang) {
       let myplugins = this.defaultplugin(pub, lang[i])
@@ -64,6 +74,7 @@ class compile {
   }
 
   defaultplugin (pub, lang, wrap) {
+    let transfile = this.checktrans(lang)
     let confdev = rules.dev(pub)
     let pubconf = [
       new webpack.DefinePlugin({
@@ -80,9 +91,8 @@ class compile {
 
     let myplug
     if (lang === 'en/') {
-      let mytrans = wrap || transfile.mytrans
       myplug = [
-        new I18nPlugin(mytrans, {functionName: '_'})
+        new I18nPlugin(wrap || transfile, {functionName: '_'})
       ]
       wrap || myplug.push(new keeper(confdev.webdev[1] || confdev.webdev[0]))
     } else {
@@ -131,7 +141,6 @@ class compile {
 
   wrapconfig (pub) {
     let myconfig = myinfor.config
-    let lang = myinfor.lang
     let webpackconf = []
     let mytrans
     for (let i in lang) {

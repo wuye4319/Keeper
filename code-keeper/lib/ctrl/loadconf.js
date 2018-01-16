@@ -17,8 +17,8 @@ class loadconf {
     return rules.dev(ispub)
   }
 
-  transfile () {
-    return rules.transfile()
+  transfile (lang) {
+    return rules.transfile(lang)
   }
 
   mypath (lang) {

@@ -1,6 +1,6 @@
 {
   "name": "code-keeper",
-  "version": "1.1.49",
+  "version": "1.1.51",
   "description": "code-keeper",
   "main": "index.js",
   "dependencies": {

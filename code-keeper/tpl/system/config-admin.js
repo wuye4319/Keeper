@@ -3,12 +3,13 @@
  * 通过.xx执行命令
  */
 var config = {
-  version: '1.1.1',
+  version: '1.2.0',
   myModule: 'test', // myModule:1级目录
   childModule: '', // childModule:2级目录
   basepath: 'newadmin',
   htmlbasepath: '', // html根目录，空则没有
   lang: '', // cn:中文，en:英文，all:中英文同时编译
+  firstlang: 'cn', // 初始语种
   proxy: 'www.dev.com:8013/', // proxy是代理地址，常见：test,super,superbuy,请求是实时的数据
   transfile: 'trans/trans.json', // 默认目录：当前js的同目录下 [trans/trans.json]
   sourcedir: ['src'], // js需要过滤的资源目录

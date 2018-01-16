@@ -25,7 +25,7 @@ class rulinit {
         filename: mypathlist.stat + mypathlist.img + myinfor.myChildDir + '.gitkeep',
         template: initpath.imgpath
       }, {
-        filename: './front/' + mypathlist.less + myinfor.myChildDir + myinfor.mySource + '.less',
+        filename: './front/' + mypathlist.js + myinfor.myChildDir + myinfor.mySource + '.less',
         template: initpath.lesspath,
         data: {'commonless': mypathlist.commonless}
       }, {

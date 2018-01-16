@@ -46,6 +46,7 @@ class clear {
         {filename: './front/' + mypathlist.js + myinfor.myChildDir + myinfor.mySource + '.js'},
         {filename: './front/' + mypathlist.less + myinfor.myChildDir + myinfor.mySource + '.less'},
         {filename: mypathlist.stat + mypathlist.js + myinfor.myChildDir + myinfor.mySource + '.js'},
+        {filename: mypathlist.stat + mypathlist.js + myinfor.myChildDir + myinfor.mySource + '.min.js'},
         {filename: mypathlist.stat + mypathlist.js + myinfor.myChildDir + myinfor.mySource + '.part.js'})
     }
     return arrdel

@@ -42,10 +42,11 @@ let plugname = 'code-keeper'
 
 // check program running environment.
 let sysconf = path.resolve('./node_modules/' + plugname + '/config/sysconf.js')
-var isready = fs.existsSync(sysconf)
+let isready = fs.existsSync(sysconf)
 if (isready) {
   let tempver = fs.readFileSync(path.join(__dirname, '/../../' + plugname + '/package.json')).toString()
   let currversion = JSON.parse(tempver).version
+  console.log(plugname + ' : '.green + currversion.green)
   let preversion = require(sysconf)
   if (preversion.check_env === currversion) {
     bootstrap()
