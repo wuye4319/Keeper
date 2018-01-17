@@ -5,8 +5,6 @@
  */
 'use strict'
 const koa = require('../koa/index')
-const path = require('path')
-const fs = require('fs')
 const Logger = require('keeper-core')
 let logger = new Logger()
 
@@ -51,11 +49,11 @@ class InitJs {
             allowlogin = false
 
             const bodyHandle = await page.mainFrame().childFrames()[0].$('#TPL_username_1')
-            const account = await page.mainFrame().childFrames()[0].evaluate(body => body.value = '捣腾捣腾003', bodyHandle)
+            const account = await page.mainFrame().childFrames()[0].evaluate(body => body.value = 'wuye4319', bodyHandle)
             logger.myconsole(account)
             await bodyHandle.dispose()
             const pswHandle = await page.mainFrame().childFrames()[0].$('#TPL_password_1')
-            const psw = await page.mainFrame().childFrames()[0].evaluate(body => body.value = 'ddt@1233', pswHandle)
+            const psw = await page.mainFrame().childFrames()[0].evaluate(body => body.value = 'lianlian857', pswHandle)
             logger.myconsole(psw)
             await pswHandle.dispose()
             const butHandle = await page.mainFrame().childFrames()[0].$('#J_SubmitStatic')

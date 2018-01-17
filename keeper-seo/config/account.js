@@ -5,7 +5,7 @@
 let infor = [
   {
     acc: '捣腾捣腾001',
-    psw: 'ddt@1123'
+    psw: 'dotdotbuy123'
   },
   {
     acc: '捣腾捣腾003',

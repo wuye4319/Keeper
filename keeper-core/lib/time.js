@@ -33,11 +33,7 @@ class time {
     date.setSeconds(0)
     date = date.getTime()
 
-    if (date < ruletime) {
-      return true
-    } else {
-      return false
-    }
+    return date < ruletime ? 1 : 0
   }
 
   mytime () {

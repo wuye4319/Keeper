@@ -6,7 +6,7 @@ const path = require('path')
 const fs = require('fs')
 const Writefile = require('./writefile')
 let writefile = new Writefile()
-// const exec = require('child_process').exec
+const exec = require('child_process').exec
 const Del = require('./delete')
 let del = new Del()
 let npm = require('npm')
@@ -106,7 +106,12 @@ class initnpm {
       console.log('Keeper is ready!'.green)
       let inconf = path.join(__dirname, '/../tpl/system/sysconf.txt')
       let outconf = path.resolve('./node_modules/' + this.currplugin + '/config/sysconf.js')
-      let plugver = fs.readFileSync(path.join(__dirname, '/../../../../' + this.currplugin + '/package.json'))
+      let plugver = path.join(__dirname, '/../../../../' + this.currplugin + '/package.json')
+      if (fs.existsSync(plugver)) {
+        plugver = fs.readFileSync(plugver)
+      } else {
+        plugver = fs.readFileSync(path.join(__dirname, '/../../' + this.currplugin + '/package.json'))
+      }
 
       let tpl = fs.readFileSync(inconf).toString()
       let data = {timer: JSON.parse(plugver).version}
@@ -146,11 +151,11 @@ class initnpm {
   }
 
   checkver (myver, cver) {
-    let result = false
-    let myvers = myver.split('.')
-    let cvers = cver.split('.')
+    var result = false
+    var myvers = myver.split('.')
+    var cvers = cver.split('.')
     // control version .2
-    for (let i in myvers) {
+    for (var i = 0; i < myvers.length - 1; i++) {
       if (parseInt(myvers[i]) > parseInt(cvers[i])) {
         result = true
         break

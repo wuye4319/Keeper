@@ -102,7 +102,7 @@ class rules {
         }
         // each all trans files
         let myaccount = filelist[mainlang.substr(0, mainlang.lastIndexOf('/'))]
-        myaccount.length || console.log('Warning : router cache is empty! please run \'.initrouter\'!'.red)
+        myaccount || console.log('Warning : router cache is empty! please run \'.initrouter\'!'.red)
         for (let d in myaccount) {
           let transfs = './front/' + mainlang + '/source/js/' + myModuleDir + '/' + myaccount[d] + '/' + configtransfile
           if (fs.existsSync(transfs)) {
@@ -145,7 +145,6 @@ class rules {
       myless: mySource + '.less',
       commonless: myAutoPath + (isrouter ? '../../../plugin/less/class.less' : '../../plugin/less/class.less'),
       myroutjs: '/' + basepath + base.js + myModule,
-      loadjs: '/' + basepath + 'plugin/base/load.js',
       wrapjs: '/' + basepath + lang + wrapper,
       myjs: '/' + basepath + base.js + myChildDir + mySource
     }
@@ -189,7 +188,7 @@ class rules {
           keywords: singleinfor.keyword,
           description: singleinfor.description,
           container: '<div id="container"><div style="position:fixed;top:0;right:0;bottom:0;left:0;background:url(\'/cn/source/img/orion/loading_normal_62.gif\') no-repeat center;"></div><div class="static" style="opacity: 0;"><%= container %></div></div>',
-          loadjs: mypathlist[i].loadjs,
+          loadjs: '/' + basepath + 'plugin/' + (ispub ? 'base' : 'dev') + '/load.js',
           wrapjs: mypathlist[i].wrapjs
         }
       }

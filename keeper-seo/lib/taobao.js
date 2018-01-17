@@ -13,12 +13,11 @@ const Mytime = require('keeper-core/lib/time')
 let mytime = new Mytime()
 const Login = require('./auto-login')
 let login = new Login()
-let myloginstatus = false
 let logincount = 0
 
 // constructor
 class InitJs {
-  async taobao (browser, type, url, opencache) {
+  async taobao (browser, type, url, opencache, autologin) {
     return new Promise(async (resolve) => {
       let t = Date.now()
       let filterbox = ''
@@ -29,19 +28,19 @@ class InitJs {
       const page = await browser.newPage()
 
       try {
+        // await page.setRequestInterception(true)
+        // page.on('request', intercep => { intercep.continue() })
         page.on('response', async (result) => {
-          let filter = result.url.indexOf('initItemDetail.htm') !== -1
-          let filter2 = result.url.indexOf('sib.htm') !== -1
+          let filter = result.url().indexOf('initItemDetail.htm') !== -1
+          let filter2 = result.url().indexOf('sib.htm') !== -1
           if (filter || filter2) {
-            // cookiebox = cookiebox.concat(await page.cookies(result.url))
             isali = true
             filterbox += await result.text()
           }
         })
 
-        await page.goto(url, {waitUntil: 'networkidle', networkIdleTimeout: 1000})
+        await page.goto(url)
         let cont = await page.content()
-        if (myloginstatus) logger.myconsole('Already Logged!'.red)
 
         let templine = '\n<script>\nvar apidata = '
         let endtempline = '\n</script>'
@@ -54,24 +53,30 @@ class InitJs {
           filterbox = this.subresult(filterbox)
           // if previous api is failed, check this time
           if (logincount) logincount -= 1
-        } else if (isali) {
+        } else if (isali) { // filterbox is null or sth else
           // check login status, prevent repeat login
           if (this.checklogin(cookiebox)) {
             logger.myconsole('page has already login!')
             if (filterbox.indexOf(VerificationCode) !== -1) logger.myconsole('Verification Code!!!'.red)
           } else {
-            // check login count, if get api failed more than 3 tims, start auto login
-            if (logincount < 3) {
+            // check login count, if get api failed more than 2 times, change ip first
+            if (logincount < 1) {
               logincount += 1
+              logger.myconsole('Analysis failed!'.red)
             } else {
+              resolve('changeip')
+              logincount = 0
+            }
+
+            // auto-login
+            if (autologin) {
               let loginurl = 'https://login.tmall.com/?from=sm&redirectURL='
               filterbox = await login.login(page, loginurl, url)
-              logincount = 0
               logger.myconsole('login count : '.green + logincount)
               if (filterbox && filterbox !== 'Auto-login failed!') {
                 mylogstr.login = 1
                 apidata = true
-                myloginstatus = true
+                console.log('Auto login successed! '.red + mytime.mytime())
                 filterbox = this.subresult(filterbox)
               } else {
                 mylogstr.login = 'failed'
@@ -80,7 +85,7 @@ class InitJs {
             }
           }
         } else {
-          logger.myconsole('Get api data failed'.red)
+          logger.myconsole('Analysis failed! Product is missing!'.red)
         }
         cont = cont + templine + filterbox + endtempline
         // close page when analysis is done
@@ -100,7 +105,7 @@ class InitJs {
         logger.writelog('success', type)
       } catch (e) {
         resolve(false)
-        logger.myconsole('System error! Can not analysis this page!'.red)
+        logger.myconsole('System error!'.red)
         await page.close()
       }
     })

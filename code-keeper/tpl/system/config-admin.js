@@ -2,7 +2,7 @@
  *启动方式：node bd,通过.help查看命令
  * 通过.xx执行命令
  */
-var config = {
+const config = {
   version: '1.2.0',
   myModule: 'test', // myModule:1级目录
   childModule: '', // childModule:2级目录
@@ -24,6 +24,7 @@ var config = {
       rules: [
         {
           test: /\.js$/,
+          exclude: /node_modules/,
           use: {
             loader: 'babel-loader',
             options: {

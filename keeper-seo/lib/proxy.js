@@ -111,12 +111,12 @@ class InitJs {
     // when the first one is done, it will stop the second
     // check ip date
     let ispass = mytime.dateispass(ipdate.split('-'), changeiptime)
-    if (ispass) {
+    if (ispass || result === 'changeip') {
       this.changeip(ipindex)
       ipindex += 1
     }
 
-    return result
+    return result === 'changeip' ? 'Analysis failed!' : result
   }
 
   async getip () {

@@ -67,6 +67,7 @@ class compile {
         entry: {[basepath + lang[i] + 'source/js/' + dev]: ['./front/' + lang[i] + 'source/js/' + dev + '.js']},
         output: {filename: pub ? '[name].min.js' : '[name].js'}
       }
+      if (myconfig.webpack.devtool) tempobj.devtool = (pub ? myconfig.webpack.devtool[1] : myconfig.webpack.devtool[0])
       Object.assign(tempobj.output, this.confobj.output)
       webpackconf.push({...this.confobj, ...tempobj})
     }
@@ -77,11 +78,11 @@ class compile {
     let transfile = this.checktrans(lang)
     let confdev = rules.dev(pub)
     let pubconf = [
-      new webpack.DefinePlugin({
-        'process.env': {
-          NODE_ENV: JSON.stringify('production') // production | true
-        }
-      }),
+      // new webpack.DefinePlugin({
+      //   'process.env': {
+      //     NODE_ENV: JSON.stringify(pub ? true : 'production') // production | true
+      //   }
+      // }),
       new webpack.optimize.UglifyJsPlugin({
         compress: {warnings: false},
         output: {comments: false}

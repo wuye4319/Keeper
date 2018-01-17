@@ -6,6 +6,8 @@
 'use strict'
 const Logger = require('keeper-core')
 let logger = new Logger()
+const Mytime = require('keeper-core/lib/time')
+let mytime = new Mytime()
 
 // constructor
 class InitJs {
@@ -13,7 +15,7 @@ class InitJs {
     const page = await browser.newPage()
     await page.authenticate({username: 'superbuy', password: 'super@123'})
 
-    await page.goto('http://httpbin.org/ip', {waitUntil: 'networkidle', networkIdleTimeout: 1000})
+    await page.goto('http://httpbin.org/ip')
     // let cont = await page.content()
     // console.log(cont)
 
@@ -25,7 +27,7 @@ class InitJs {
 
     let myip = JSON.parse(mypageinfor.pre)
     logger.myconsole('ip changes to : '.green + myip.origin.red)
-    console.log(myip.origin.red)
+    console.log(myip.origin.red + ' >>>  ' + mytime.mytime().green)
     await page.close()
   }
 }

@@ -12,7 +12,6 @@ global.myvari = {anslist: [], answer: {}}
 // listener 提取到文件
 function myEval (cmd, context, filename, callback) {
   let myvar = global.myvari
-  console.log(myvar.anslist, myvar.answer)
   // temp handle model
   if (myvar.temphandle) {
     myvar.answer[myvar.temphandle](cmd.trim())
