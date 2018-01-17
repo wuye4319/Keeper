@@ -14,6 +14,8 @@ let mytime = new Mytime()
 const Login = require('./auto-login')
 let login = new Login()
 let logincount = 0
+const Http = require('./gethttp')
+let http = new Http()
 
 // constructor
 class InitJs {
@@ -34,6 +36,7 @@ class InitJs {
           let filter = result.url().indexOf('initItemDetail.htm') !== -1
           let filter2 = result.url().indexOf('sib.htm') !== -1
           if (filter || filter2) {
+            // http.getcode(result.url(), url)
             isali = true
             filterbox += await result.text()
           }

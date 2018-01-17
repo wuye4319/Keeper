@@ -4,7 +4,7 @@
   "description": "code-keeper",
   "main": "index.js",
   "dependencies": {
-    "keeper-core": "^1.0.55",
+    "keeper-core": "^1.0.56",
     "i18n-webpack-plugin": "^1.0.0"
   },
   "devDependencies": {},

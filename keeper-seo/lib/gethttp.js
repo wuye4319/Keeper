@@ -5,24 +5,24 @@
  */
 'use strict'
 const request = require('request')
-const vm = require('vm')
 
 // constructor
 class InitJs {
-  async getcode (url) {
+  async getcode (apiurl, url) {
     return new Promise(async (resolve) => {
-      let formData = {
-        tmallurl: 'https://pin.aliyun.com/get_img?sessionid=aeb9cf16a16ec9c369e31ccce51b9155&identity=sm-malldetailskip&type=150_40'
+      let options = {
+        url: apiurl,
+        headers: {
+          'referer': url
+        }
       }
-      request.post({
-        url: 'http://zhlynn.mynetgear.com:3960/GetImageCode2.php?key=haveagoodjob',
-        formData: formData
-      }, function optionalCallback (error, httpResponse, body) {
-        if (error) { console.log('Verification code failed : '.red + error) } else {
+
+      request(options, function optionalCallback (error, resp, body) {
+        if (error) { console.log('get code failed : '.red + error) } else {
           if (body) {
             console.log(body)
           } else {
-            console.log('verification code is empty!'.blue)
+            console.log('get code is empty!'.blue)
           }
         }
       })
