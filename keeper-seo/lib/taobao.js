@@ -27,6 +27,7 @@ class InitJs {
       let cookiebox = []
       let apidata = false
       let mylogstr = {}
+      let isjson = false
       const page = await browser.newPage()
 
       try {
@@ -47,49 +48,32 @@ class InitJs {
 
         let templine = '\n<script>\nvar apidata = '
         let endtempline = '\n</script>'
-        let tmallkey = 'setMdskip'
-        let taobaokey = 'onSibRequestSuccess'
-        let chaoshi = 'onMdskip'
-        let VerificationCode = 'taobao.com/query.htm'
-        if (filterbox.indexOf(tmallkey) !== -1 || filterbox.indexOf(taobaokey) !== -1 || filterbox.indexOf(chaoshi) !== -1) {
-          apidata = true
-          filterbox = this.subresult(filterbox)
-          // if previous api is failed, check this time
-          if (logincount) logincount -= 1
-        } else if (isali) { // filterbox is null or sth else
-          // check login status, prevent repeat login
-          if (this.checklogin(cookiebox)) {
-            logger.myconsole('page has already login!')
-            if (filterbox.indexOf(VerificationCode) !== -1) logger.myconsole('Verification Code!!!'.red)
-          } else {
-            // check login count, if get api failed more than 2 times, change ip first
-            if (logincount < 1) {
-              logincount += 1
-              logger.myconsole('Analysis failed!'.red)
-            } else {
-              resolve('changeip')
-              logincount = 0
-            }
+        // let tmallkey = 'setMdskip'
+        // let taobaokey = 'onSibRequestSuccess'
+        // let chaoshi = 'onMdskip'
 
-            // auto-login
-            if (autologin) {
-              let loginurl = 'https://login.tmall.com/?from=sm&redirectURL='
-              filterbox = await login.login(page, loginurl, url)
-              logger.myconsole('login count : '.green + logincount)
-              if (filterbox && filterbox !== 'Auto-login failed!') {
-                mylogstr.login = 1
-                apidata = true
-                console.log('Auto login successed! '.red + mytime.mytime())
-                filterbox = this.subresult(filterbox)
-              } else {
-                mylogstr.login = 'failed'
-                logger.myconsole('Auto login failed!'.red)
-              }
-            }
+        if (filterbox && isali) {
+          // if (filterbox.indexOf(tmallkey) !== -1 || filterbox.indexOf(taobaokey) !== -1 || filterbox.indexOf(chaoshi) !== -1) {
+          let tempstr = this.subresult(filterbox)
+          if (tempstr) filterbox = tempstr
+          isjson = this.isJson(filterbox)
+          if (isjson) {
+            apidata = true
+            // if previous api is success, reduce
+            if (logincount) logincount -= 1
+          } else {
+            let befailed = await this.befailed(filterbox, cookiebox)
+            if (befailed === 'changeip') resolve('changeip')
           }
+          // } else {
+          //   let befailed = await this.befailed(filterbox, cookiebox)
+          //   if (befailed === 'changeip') resolve('changeip')
+          //   logger.myconsole('Taobao verification code or login!'.red)
+          // }
         } else {
-          logger.myconsole('Analysis failed! Product is missing!'.red)
+          logger.myconsole('Product is missing!'.yellow)
         }
+
         cont = cont + templine + filterbox + endtempline
         // close page when analysis is done
         await page.close()
@@ -114,6 +98,50 @@ class InitJs {
     })
   }
 
+  async befailed (filterbox, cookiebox) {
+    let VerificationCode = 'taobao.com/query.htm'
+    // check login status, prevent repeat login
+    if (this.checklogin(cookiebox)) {
+      logger.myconsole('page has already login!')
+      if (filterbox.indexOf(VerificationCode) !== -1) logger.myconsole('Verification Code!!!'.red)
+    } else {
+      // check login count, if get api failed more than 2 times, change ip first
+      logger.myconsole('Analysis failed!'.red)
+      if (logincount < 1) {
+        logincount += 1
+      } else {
+        logincount = 0
+        return 'changeip'
+      }
+
+      // auto-login
+      // if (autologin) {
+      //   let loginurl = 'https://login.tmall.com/?from=sm&redirectURL='
+      //   filterbox = await        login.login(page, loginurl, url)
+      //   logger.myconsole('login count : '.green + logincount)
+      //   if (filterbox && filterbox !== 'Auto-login failed!') {
+      //     mylogstr.login = 1
+      //     apidata = true
+      //     console.log('Auto login successed! '.red + mytime.mytime())
+      //     filterbox = this.subresult(filterbox)
+      //   } else {
+      //     mylogstr.login = 'failed'
+      //     logger.myconsole('Auto login failed!'.red)
+      //   }
+      // }
+    }
+    return false
+  }
+
+  isJson (obj) {
+    try {
+      obj = JSON.parse(obj)
+      return typeof (obj) === 'object' && Object.prototype.toString.call(obj).toLowerCase() === '[object object]' && !obj.length
+    } catch (e) {
+      return false
+    }
+  }
+
   subresult (filterbox) {
     filterbox = filterbox.substr(filterbox.indexOf('(') + 1)
     filterbox = filterbox.substr(0, filterbox.lastIndexOf(')'))
@@ -122,7 +150,7 @@ class InitJs {
 
   checklogin (cookiebox) {
     let result = false
-    for (var i in cookiebox) {
+    for (let i in cookiebox) {
       let key1 = 'lgc'
       let key2 = 'tracknick'
       if (cookiebox[i].name === key1 || cookiebox[i].name === key2) {

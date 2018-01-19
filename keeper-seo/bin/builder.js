@@ -34,7 +34,11 @@ repls.defineCommand('auto-login', {
     // temp
     let tempPro = 'https://detail.tmall.com/item.htm?id=554802892200'
     let url = 'https://login.tmall.com/?from=sm&redirectURL='
-    proxy.login(url, tempPro, account)
+    if (account) {
+      proxy.login(url, tempPro, account)
+    } else {
+      console.log('Please chose the account first, Begin with 0'.red)
+    }
   }
 })
 repls.defineCommand('proxy', {

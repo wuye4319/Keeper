@@ -1,9 +1,9 @@
 /**
  * Created by nero on 2017/4/13.
  */
-var ProgressBar = require('./node-progress')
+let ProgressBar = require('./node-progress')
 
-var bar = new ProgressBar(' :title [:bar] :percent ', {
+let bar = new ProgressBar(' :title [:bar] :percent ', {
   complete: '=',
   incomplete: ' ',
   width: 30,
@@ -18,7 +18,7 @@ class progress {
   }
 
   toend () {
-    var index = 100 - bar.curr
+    let index = 100 - bar.curr
     bar.tick(index, {title: 'static'})
     // bar.terminate()
   }

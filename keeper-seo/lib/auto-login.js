@@ -28,6 +28,7 @@ class InitJs {
               filterbox += await result.text()
               allowlogin = true
               if (mygetout) clearTimeout(mygetout)
+              logger.myconsole('Auto login success!'.green)
               resolve(filterbox)
             }
             // console.log(result.url)
@@ -35,7 +36,9 @@ class InitJs {
 
           page.on('load', () => {
             mygetout = setTimeout(function () {
-              resolve('Auto-login failed!')
+              let str = 'Auto-login timeout! Login failed!'
+              filterbox || logger.myconsole(str.red)
+              resolve(str)
             }, 20000)
           })
 
@@ -65,7 +68,7 @@ class InitJs {
           logger.myconsole('Login system error!'.red)
         }
       } else {
-        logger.myconsole('Auto-login is working!'.red)
+        logger.myconsole('Auto-login was start! Please try later!'.red)
         resolve(false)
       }
     })

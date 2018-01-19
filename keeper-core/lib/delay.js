@@ -16,7 +16,7 @@ class delay {
 
   timer (count, log) {
     return new Promise((resolve) => {
-      var self = this
+      let self = this
       const sth = function () {
         if (log) {
           self.options.stream.clearLine()

@@ -84,8 +84,8 @@ class rules {
   transfile (mainlang) {
     let filelist = require('../config/routerlist.js')
     let transfile = {
-      normaljs: './front/' + mainlang + '/source/js/' + myModuleDir + '/' + myChildDir + configtransfile,
-      router: './front/' + mainlang + '/source/js/' + myModuleDir + '/' + configtransfile,
+      normaljs: './front/' + mainlang + 'source/js/' + myModuleDir + '/' + myChildDir + configtransfile,
+      router: './front/' + mainlang + 'source/js/' + myModuleDir + '/' + configtransfile,
       mytrans: false
     }
 
@@ -104,7 +104,7 @@ class rules {
         let myaccount = filelist[mainlang.substr(0, mainlang.lastIndexOf('/'))]
         myaccount || console.log('Warning : router cache is empty! please run \'.initrouter\'!'.red)
         for (let d in myaccount) {
-          let transfs = './front/' + mainlang + '/source/js/' + myModuleDir + '/' + myaccount[d] + '/' + configtransfile
+          let transfs = './front/' + mainlang + 'source/js/' + myModuleDir + '/' + myaccount[d] + '/' + configtransfile
           if (fs.existsSync(transfs)) {
             let namefs = fs.readFileSync(transfs).toString()
             Object.assign(transfile.mytrans, JSON.parse(namefs))
@@ -142,7 +142,7 @@ class rules {
       routjs: './front/' + base.js + myModule + '.js',
       // init
       myupchildname: myChildName.substr(0, 1).toLocaleUpperCase() + myChildName.substr(1),
-      myless: mySource + '.less',
+      myless: './' + mySource + '.less',
       commonless: myAutoPath + (isrouter ? '../../../plugin/less/class.less' : '../../plugin/less/class.less'),
       myroutjs: '/' + basepath + base.js + myModule,
       wrapjs: '/' + basepath + lang + wrapper,

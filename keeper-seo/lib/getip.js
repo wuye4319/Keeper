@@ -16,6 +16,7 @@ class InitJs {
     await page.authenticate({username: 'superbuy', password: 'super@123'})
 
     await page.goto('http://httpbin.org/ip')
+    // await page.goto('http://2017.ip138.com/ic.asp')
     // let cont = await page.content()
     // console.log(cont)
 

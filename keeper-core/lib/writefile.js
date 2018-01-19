@@ -5,10 +5,10 @@
  */
 'use strict'
 
-var fs = require('fs')
+const fs = require('fs')
 const path = require('path')
-var fsarrdir = require('./arrdir')
-var arrdir = new fsarrdir()
+const Arrdir = require('./arrdir')
+let arrdir = new Arrdir()
 
 class Writefile {
   constructor () {
@@ -19,11 +19,11 @@ class Writefile {
   }
 
   mymkdirs (file) {
-    var index = file.lastIndexOf('/')
+    let index = file.lastIndexOf('/')
     if (index === -1) index = file.lastIndexOf('\\')
     let dir = file.substr(0, index + 1)
 
-    if (dir.indexOf('\\') != -1) {
+    if (dir.indexOf('\\') !== -1) {
       dir = path.normalize(dir)
       dir = dir.replace(/\\/g, '/')
     }
@@ -47,19 +47,19 @@ class Writefile {
   }
 
   copy (from, tourl) {
-    var result
-    var str = fs.readFileSync(from).toString()
+    let result
+    let str = fs.readFileSync(from).toString()
     this.writejs(tourl, str)
-    var isright = fs.existsSync(tourl)
+    let isright = fs.existsSync(tourl)
     isright ? result = true : result = false
     return result
   }
 
   createdirs (dir) {
-    var mydir = arrdir.arrdir(dir).reverse()
+    let mydir = arrdir.arrdir(dir).reverse()
     // create dir
-    for (var i in mydir) {
-      var dir = mydir[i]
+    for (let i in mydir) {
+      let dir = mydir[i]
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, function (err) {
           if (err) console.log(err)
