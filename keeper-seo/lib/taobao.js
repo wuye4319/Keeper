@@ -106,7 +106,9 @@ class InitJs {
       if (filterbox.indexOf(VerificationCode) !== -1) logger.myconsole('Verification Code!!!'.red)
     } else {
       // check login count, if get api failed more than 2 times, change ip first
-      logger.myconsole('Analysis failed!'.red)
+      let tempstr = 'Analysis failed!'
+      logger.myconsole(tempstr.red)
+      console.log(tempstr.red)
       if (logincount < 1) {
         logincount += 1
       } else {
