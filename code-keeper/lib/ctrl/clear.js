@@ -32,6 +32,15 @@ class clear {
     // isrouter === -1 || myctrlinit.initrout()
   }
 
+  checkrouter () {
+    if (myinfor.isrouter !== -1 && !myinfor.myChildDir) {
+
+      return true
+    } else {
+      return false
+    }
+  }
+
   delete () {
     let lang = myinfor.lang
     let arrdel = []

@@ -31,7 +31,16 @@ repls.defineCommand('static', {
 repls.defineCommand('clear', {
   help: 'clear your object by config.json'.yellow,
   action: function (param) {
-    clear.clear(param)
+    if (clear.checkrouter()) {
+      console.log('Do you wanna clear all files of this router? Please confirm. Enter [y]es or [n]o to continue...'.red)
+      myvari.anslist = [{y: 'yes'}, {n: 'no'}]
+      myvari.answer.yes = () => {
+        clear.clear(param)
+      }
+    } else {
+      clear.clear(param)
+    }
+
     this.displayPrompt()
   }
 })
