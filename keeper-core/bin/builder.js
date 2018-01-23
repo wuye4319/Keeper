@@ -1,7 +1,5 @@
 #!/usr/bin/env node
-var colors = require('colors')
-fs = require('fs')
-
+const colors = require('colors')
 const r = require('repl')
 repls = r.start({prompt: '> ', eval: myEval})
 

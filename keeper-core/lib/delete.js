@@ -24,7 +24,6 @@ class Delete {
     console.log(dir.yellow + ' is delete successed!'.green)
   }
 
-  // foreach the path to delete file
   deleteDir (dir) {
     if (fs.existsSync(dir)) {
       // if dir is empty,delete dir.
@@ -37,6 +36,7 @@ class Delete {
     }
   }
 
+  // foreach the path to delete file, delete all files by path
   deleteAll (myfilepath) {
     let that = this
     if (fs.existsSync(myfilepath)) {
@@ -44,23 +44,29 @@ class Delete {
         if (err) {
           throw err
         }
-        paths.forEach(function (path, index) {
-          let _myfilepath = myfilepath + path
+        if (paths.length) {
+          paths.forEach(function (path, index) {
+            let _myfilepath = myfilepath + path
 
-          fs.stat(_myfilepath, function (err, file) {
-            if (err) {
-              throw err
-            }
-            if (file.isFile()) {
-              that.deletefile(_myfilepath)
-              if (index === paths.length - 1) {
-                that.deleteDir(myfilepath)
+            fs.stat(_myfilepath, function (err, file) {
+              if (err) {
+                throw err
               }
-            } else if (file.isDirectory()) {
-              that.deleteAll(_myfilepath + '/')
-            }
+              if (file.isFile()) {
+                that.deletefile(_myfilepath)
+                if (index === paths.length - 1) {
+                  // last file
+                  that.deleteDir(myfilepath)
+                }
+              } else if (file.isDirectory()) {
+                that.deleteAll(_myfilepath + '/')
+              }
+            })
           })
-        })
+        } else {
+          // delete empty dir
+          that.deleteDir(myfilepath)
+        }
       })
     }
   }

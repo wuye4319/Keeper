@@ -118,7 +118,7 @@ class rulinit {
           // child {txt:"",link:"",req:"",file:""}
           let tempobj = {}
           tempobj.txt = routname.txt[txtindex]
-          tempobj.link = '/' + myinfor.basepath + mypathlist.html + myaccount[d] + '/'
+          tempobj.link = '/' + myinfor.basepath + mypathlist.html + myaccount[d]
           tempobj.req = './' + myaccount[d] + '/' + jsname
           tempobj.file = '/' + myinfor.basepath + mypathlist.js + myaccount[d] + '/' + jsname
           tempobj.icon = routname.icon

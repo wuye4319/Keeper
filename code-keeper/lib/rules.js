@@ -143,7 +143,7 @@ class rules {
       // init
       myupchildname: myChildName.substr(0, 1).toLocaleUpperCase() + myChildName.substr(1),
       myless: './' + mySource + '.less',
-      commonless: myAutoPath + (isrouter ? '../../../plugin/less/class.less' : '../../plugin/less/class.less'),
+      commonless: myAutoPath + '../../../../plugin/less/class.less',
       myroutjs: '/' + basepath + base.js + myModule,
       wrapjs: '/' + basepath + lang + wrapper,
       myjs: '/' + basepath + base.js + myChildDir + mySource

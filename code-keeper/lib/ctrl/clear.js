@@ -23,13 +23,13 @@ class clear {
       let confdel = this.delete()
       for (let i in confdel) {
         let mydata = confdel[i]
-        del.deleteSource(mydata.filename)
+        del.deleteSource(mydata.filename, 'all')
       }
     }
 
-    let isrouter = myinfor.isrouter
+    // let isrouter = myinfor.isrouter
     // update router.txt
-    isrouter === -1 || myctrlinit.initrout()
+    // isrouter === -1 || myctrlinit.initrout()
   }
 
   delete () {
@@ -40,14 +40,12 @@ class clear {
       // delete
       arrdel.push(
         // ./static/cn/source/img/test/.gitkeep
-        {filename: mypathlist.stat + mypathlist.img + myinfor.myChildDir + '.gitkeep'},
-        {filename: mypathlist.stat + mypathlist.html + myinfor.myChildDir + 'index.html'},
+        {filename: mypathlist.stat + mypathlist.img + myinfor.myChildDir},
+        {filename: mypathlist.stat + mypathlist.html + myinfor.myChildDir},
         // ./front/cn/source/js/test/test.js
-        {filename: './front/' + mypathlist.js + myinfor.myChildDir + myinfor.mySource + '.js'},
-        {filename: './front/' + mypathlist.less + myinfor.myChildDir + myinfor.mySource + '.less'},
-        {filename: mypathlist.stat + mypathlist.js + myinfor.myChildDir + myinfor.mySource + '.js'},
-        {filename: mypathlist.stat + mypathlist.js + myinfor.myChildDir + myinfor.mySource + '.min.js'},
-        {filename: mypathlist.stat + mypathlist.js + myinfor.myChildDir + myinfor.mySource + '.part.js'})
+        {filename: './front/' + mypathlist.js + myinfor.myChildDir},
+        {filename: './front/' + mypathlist.less + myinfor.myChildDir},
+        {filename: mypathlist.stat + mypathlist.js + myinfor.myChildDir})
     }
     return arrdel
   }
