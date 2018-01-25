@@ -9,7 +9,6 @@ const Render = require('keeper-core/lib/render')
 let render = new Render()
 const Fsrules = require('../ctrl/loadconf')
 let rules = new Fsrules()
-let myinfor = rules.infor()
 const path = require('path')
 
 let routerlist = {'cn': [], 'en': []}
@@ -17,6 +16,7 @@ let routerlist = {'cn': [], 'en': []}
 class eachdir {
   // seach all dir under router dir
   seachdir (myfilepath, prepath, lang, type) {
+    let myinfor = rules.infor()
     let myconfig = myinfor.config
     let that = this
     let source = myconfig.sourcedir
@@ -42,6 +42,7 @@ class eachdir {
 
   seachdirbykey (key) {
     routerlist = {'cn': [], 'en': []}
+    let myinfor = rules.infor()
     let myconfig = myinfor.config
     let lang = myinfor.lang
     for (let i in lang) {

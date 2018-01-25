@@ -4,12 +4,12 @@
 const fs = require('fs')
 const Fsrules = require('../ctrl/loadconf')
 let rules = new Fsrules()
-let myinfor = rules.infor()
 
 class rulinit {
   // search all dir from dir path
   init (dir) {
     // seo config
+    let myinfor = rules.infor()
     let arrinit = []
     let lang = myinfor.lang
     let isrouter = myinfor.isrouter
@@ -71,6 +71,7 @@ class rulinit {
 
   // update router
   routelist (filelist) {
+    let myinfor = rules.infor()
     let lang = myinfor.lang
     let isrouter = myinfor.isrouter
     let initpath = myinfor.initpath
@@ -140,6 +141,7 @@ class rulinit {
           data: {
             'childlist': newchild,
             currlang: lang[i],
+            myless: './' + myinfor.myModuleDir + '.less',
             myrouter: myinfor.config.myModule.toLocaleLowerCase()
           }, // for routerdir .js
           rfname: namefile,

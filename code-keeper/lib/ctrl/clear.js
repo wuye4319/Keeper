@@ -12,7 +12,6 @@ const Del = require('keeper-core/lib/delete')
 let del = new Del()
 const Fsrules = require('../ctrl/loadconf')
 let rules = new Fsrules()
-let myinfor = rules.infor()
 
 class clear {
   clear (param) {
@@ -33,8 +32,8 @@ class clear {
   }
 
   checkrouter () {
+    let myinfor = rules.infor()
     if (myinfor.isrouter !== -1 && !myinfor.myChildDir) {
-
       return true
     } else {
       return false
@@ -42,6 +41,7 @@ class clear {
   }
 
   delete () {
+    let myinfor = rules.infor()
     let lang = myinfor.lang
     let arrdel = []
     for (let i = 0; i < lang.length; i++) {

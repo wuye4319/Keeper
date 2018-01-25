@@ -7,7 +7,6 @@ const Render = require('keeper-core/lib/render')
 let render = new Render()
 const Fsinit = require('../rules/init-rout')
 let rulinit = new Fsinit()
-let myrules = rulinit.init()
 
 const Fseachdir = require('../base/eachdir')
 let eachdir = new Fseachdir()
@@ -15,7 +14,6 @@ const Writefile = require('keeper-core/lib/writefile')
 let writefile = new Writefile()
 const Fsrules = require('../ctrl/loadconf')
 let rules = new Fsrules()
-let myinfor = rules.infor()
 
 class Init {
   // init config.js and seoinfor.json
@@ -37,8 +35,9 @@ class Init {
 
   // init file
   init () {
+    let myinfor = rules.infor()
     // write file
-    this.writeinitfile(myrules.init)
+    this.writeinitfile(rulinit.init().init)
 
     let isrouter = myinfor.isrouter
     // update router.txt

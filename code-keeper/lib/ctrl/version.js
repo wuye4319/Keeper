@@ -4,7 +4,6 @@
 let fs = require('fs')
 const Fsrules = require('../ctrl/loadconf')
 let rules = new Fsrules()
-let myinfor = rules.infor()
 
 class myvers {
   constructor () {
@@ -20,6 +19,7 @@ class myvers {
   }
 
   checkconf () {
+    let myinfor = rules.infor()
     let versconf = myinfor.config.version
     let configcheck = [
       {name: 'basepath', value: myinfor.config.basepath},

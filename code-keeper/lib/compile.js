@@ -50,6 +50,8 @@ class compile {
 
   reload () {
     rules.loadconfig()
+    myinfor = rules.infor()
+    lang = myinfor.lang
     console.log('config is reload!'.green)
   }
 
@@ -112,11 +114,11 @@ class compile {
     this.comsource()
     console.log('program is ready to compile,please wait...'.green)
     let config = myinfor.config.webpack.config
-    watcher = compiler.watch({ // watch options:
-      aggregateTimeout: 100, // wait so long for more changes
-      poll: true // use polling instead of native watchers
+    watcher = compiler.watch({
+      // aggregateTimeout: 100, // wait so long for more changes
+      // poll: true // use polling instead of native watchers
       // pass a number to set the polling interval
-    }, function (err, stats) {
+    }, (err, stats) => {
       let result = stats.toString(config)
       console.log(result)
     })
@@ -133,7 +135,7 @@ class compile {
     this.comsource(true)
     console.log('program is ready to compile,please wait...'.green)
     let config = myinfor.config.webpack.config
-    compiler.run(function (err, stats) {
+    compiler.run((err, stats) => {
       let result = stats.toString(config)
       console.log(result)
       console.log('compile success'.blue)
@@ -172,7 +174,7 @@ class compile {
     param === 'pub' ? this.wrapconfig(param) : this.wrapconfig()
     console.log('program is ready to compile,please wait...'.green)
     let config = myinfor.config.webpack.config
-    compiler.run(function (err, stats) {
+    compiler.run((err, stats) => {
       let result = stats.toString(config)
       console.log(result)
       console.log('compile success'.blue)
