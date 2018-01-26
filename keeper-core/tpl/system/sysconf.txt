@@ -3,8 +3,8 @@
  * system count
  */
 
-var system = {
+const system = {
   "check_env" : "<%= timer %>"
 }
 
-module.exports = system;
+module.exports = system
