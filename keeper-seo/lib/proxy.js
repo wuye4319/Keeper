@@ -12,6 +12,9 @@ const Taobao = require('./taobao')
 let taobao = new Taobao()
 const Getip = require('./getip')
 let getip = new Getip()
+const Getcodeimg = require('./getcodeimg')
+let getcodeimg = new Getcodeimg()
+
 const Myseo = require('./seo')
 let seo = new Myseo()
 let Delay = require('keeper-core/lib/delay')
@@ -121,6 +124,11 @@ class InitJs {
 
   async getip () {
     let data = await getip.getip(browser)
+    return data
+  }
+
+  async loginbycode () {
+    let data = await getcodeimg.getimg(browser)
     return data
   }
 

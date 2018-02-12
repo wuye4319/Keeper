@@ -4,7 +4,7 @@
 const Koa = require('koa')
 const app = new Koa()
 const router = require('koa-router')()
-// let staticFiles = require('./static')
+let staticFiles = require('./static')
 const Logger = require('keeper-core')
 let logger = new Logger()
 
@@ -22,20 +22,18 @@ app.use(async (ctx, next) => {
 })
 
 app.use(router.routes()).use(router.allowedMethods())
+app.use(staticFiles('/static/', __dirname + '/../static'))
 
 // error
 app.on('error', function (err, ctx) {
   console.log('server error', err, ctx)
 })
-var lis = app.listen(8080)
+let lis = app.listen(8080)
 console.log('the server is started!!!'.green)
 
-var server = {
+let server = {
   addrouter: (url, fn) => {
     router.get(url, fn).post(url, fn)
-  },
-  static: () => {
-    // app.use(staticFiles('/static/', __dirname + '/static'))
   },
   close: () => {
     lis.close()

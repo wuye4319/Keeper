@@ -24,3 +24,13 @@ koa.addrouter(/^\/subject_cn(?:\/|$)/, async (ctx) => {
 koa.addrouter(/^\/taobao(?:\/|$)/, async (ctx) => {
   await ctrl.filtermall(ctx, 'taobao')
 })
+
+// logincode
+koa.addrouter('/logincode/', async (ctx) => {
+  await ctrl.loginbycode(ctx)
+})
+
+// web log
+koa.addrouter('/logger/', async (ctx) => {
+  await ctrl.weblogger(ctx)
+})

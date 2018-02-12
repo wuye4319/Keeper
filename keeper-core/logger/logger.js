@@ -29,6 +29,10 @@ class Logger {
     writefile.append(file, str + '\n')
   }
 
+  startdate () {
+    return startdate
+  }
+
   writelog (type, mymodule) {
     if (type === 'success') {
       // let file = path.join(__dirname, this.options.sucfile)

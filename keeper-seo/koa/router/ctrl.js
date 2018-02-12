@@ -1,10 +1,9 @@
 /**
  * Created by nero on 2017/6/2.
  */
+const fs = require('fs')
 const Proxy = require('../../lib/proxy')
 let proxy = new Proxy()
-let Delay = require('keeper-core/lib/delay')
-let delay = new Delay()
 const Logger = require('keeper-core')
 let logger = new Logger()
 
@@ -74,6 +73,24 @@ class ctrl {
   clearinternumb () {
     internumb = 0
     urlbox = []
+  }
+
+  async loginbycode (ctx) {
+    let result = await proxy.loginbycode()
+    if (result) {
+      ctx.response.body = '<img src="/static/codeimg/codeimg.png" />'
+    } else {
+      ctx.response.body = 'error'
+    }
+  }
+
+  async weblogger (ctx) {
+    let startdate = logger.startdate()
+    let fslog = path.join(__dirname, '../../../logger/' + startdate + '.txt')
+    fs.watchFile(fslog, (curr, prev) => {
+      console.log(`the current mtime is: ${curr.mtime}`)
+      console.log(`the previous mtime was: ${prev.mtime}`)
+    })
   }
 
   async filter (ctx, rout, title) {

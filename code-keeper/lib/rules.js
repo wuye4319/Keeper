@@ -90,7 +90,7 @@ class rules {
     }
 
     // router trans file
-    if (lang.indexOf(mainlang) !== -1) {
+    if (mainlang && lang.indexOf(mainlang) !== -1) {
       transfile.mytrans = {}
       if (isrouter !== -1) {
         // router dir trans file [account.js trans]

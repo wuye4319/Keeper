@@ -21,6 +21,9 @@ class InitJs {
 
       if (allowlogin) {
         try {
+          // await page.setRequestInterception(true)
+          // await page.setExtraHTTPHeaders({'Pragma': 'no-cache', 'Cache-Control': 'no-cache'})
+
           page.on('response', async (result) => {
             let filter = result.url().indexOf('initItemDetail.htm') !== -1
             let filter2 = result.url().indexOf('sib.htm') !== -1
