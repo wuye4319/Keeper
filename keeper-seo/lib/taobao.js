@@ -19,6 +19,17 @@ let http = new Http()
 
 // constructor
 class InitJs {
+  // ignoresource (url) {
+  //   let result = false
+  //   let ignorebox = ['.jpg', '.png', '.css', 'js']
+  //   for (let i in ignorebox) {
+  //     if (url.indexOf(ignorebox[i]) !== -1) {
+  //       result = true
+  //     }
+  //   }
+  //   return result
+  // }
+
   async taobao (browser, type, url, opencache, autologin) {
     return new Promise(async (resolve) => {
       let t = Date.now()
@@ -106,9 +117,7 @@ class InitJs {
       if (filterbox.indexOf(VerificationCode) !== -1) logger.myconsole('Verification Code!!!'.red)
     } else {
       // check login count, if get api failed more than 2 times, change ip first
-      let tempstr = 'Analysis failed!'
-      logger.myconsole(tempstr.red)
-      console.log(tempstr.red)
+      logger.myconsole('Analysis failed!'.red)
       if (logincount < 1) {
         logincount += 1
       } else {

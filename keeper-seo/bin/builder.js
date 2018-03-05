@@ -8,9 +8,10 @@ require('../koa/router/rout')
 const Proxy = require('../lib/proxy')
 let proxy = new Proxy()
 proxy.init()
+proxy.initproxybrowser()
 
 repls.defineCommand('clear', {
-  help: 'clear'.green,
+  help: 'Clear all cache, confirm your opration carefully!'.green,
   action: function () {
     // temp
     let mycache = path.join(__dirname, '../../../cache/')
@@ -18,7 +19,7 @@ repls.defineCommand('clear', {
   }
 })
 repls.defineCommand('ipinterval', {
-  help: 'auto login for taobao'.green,
+  help: 'Set interval of change ip'.green,
   action: function (time) {
     // temp
     if (time) {
@@ -38,10 +39,16 @@ repls.defineCommand('auto-login', {
     proxy.login(url, tempPro, account || 0)
   }
 })
-repls.defineCommand('proxy', {
-  help: 'end and exit'.red,
-  action: async function (index) {
-    await proxy.changeip(index)
+repls.defineCommand('manualchangeip', {
+  help: 'Close active change ip, and manual change ip by index'.red,
+  action: async function () {
+    await proxy.manualchangeip()
+  }
+})
+repls.defineCommand('autoproxy', {
+  help: 'Auto active change ip'.red,
+  action: async function () {
+    await proxy.autoproxy()
   }
 })
 repls.defineCommand('/', {
@@ -52,13 +59,5 @@ repls.defineCommand('/', {
     koa.close()
     console.log('Thanks for using! Bye~~~'.rainbow)
     this.close()
-  }
-})
-const Getcode = require('../lib/gethttp')
-let getcode = new Getcode()
-repls.defineCommand('verify', {
-  help: 'end and exit'.red,
-  action: async function () {
-    getcode.getcode()
   }
 })

@@ -39,7 +39,8 @@ class ctrl {
         let rct = Date.now()
         let hascache = await cache.readcache(myurl, rout)
         rct = Date.now() - rct
-        logger.myconsole('read cache time : '.green + rct.toString().red + ' ms'.green)
+        logger.myconsole('read cache time : '.green + rct.toString().red +
+          ' ms'.green)
         if (hascache) {
           result = hascache
           logger.myconsole('this is cache file!')
@@ -49,7 +50,9 @@ class ctrl {
 
         // rm url in box
         urlbox.splice(hasurl - 1, 1)
-        urlbox.length ? logger.myconsole(JSON.stringify(urlbox)) : logger.myconsole('[]')
+        urlbox.length
+          ? logger.myconsole(JSON.stringify(urlbox))
+          : logger.myconsole('[]')
       }
 
       internumb -= 1
@@ -78,10 +81,18 @@ class ctrl {
   async loginbycode (ctx) {
     let result = await proxy.loginbycode()
     if (result) {
-      ctx.response.body = '<img src="/static/codeimg/codeimg.png" />'
+      ctx.response.body = '<img src="/static/codeimg/codeimg.png" /><p><a href="/loginstatus/">click to check login status</a></p>'
     } else {
       ctx.response.body = 'error'
     }
+  }
+
+  async loginstatus (ctx) {
+    let imgpath = path.join(__dirname, '/../../static/codeimg/loginstatus.png')
+    let status = fs.statSync(imgpath)
+    let labimg = '<img src="/static/codeimg/loginstatus.png" />'
+    let labp = '<p>' + status.mtime + '</p>'
+    ctx.response.body = labimg + labp
   }
 
   async weblogger (ctx) {
@@ -97,7 +108,8 @@ class ctrl {
     // filter
     let myurl = ctx.url.substr(rout.length + 2)
     let search = ctx.request.header['user-agent'] || ''
-    console.log('process : '.red + internumb.toString().red, ' | search : '.green + search.yellow)
+    console.log('process : '.red +
+      internumb.toString().red, ' | search : '.green + search.yellow)
     console.log(myurl)
 
     let result

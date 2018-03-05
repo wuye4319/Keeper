@@ -30,6 +30,11 @@ koa.addrouter('/logincode/', async (ctx) => {
   await ctrl.loginbycode(ctx)
 })
 
+// logincode
+koa.addrouter('/loginstatus/', async (ctx) => {
+  await ctrl.loginstatus(ctx)
+})
+
 // web log
 koa.addrouter('/logger/', async (ctx) => {
   await ctrl.weblogger(ctx)

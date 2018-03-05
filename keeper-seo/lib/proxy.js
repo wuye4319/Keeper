@@ -8,6 +8,8 @@ const puppeteer = require('puppeteer')
 const path = require('path')
 const fs = require('fs')
 
+const Fastpost = require('./fastpost')
+let fastpost = new Fastpost()
 const Taobao = require('./taobao')
 let taobao = new Taobao()
 const Getip = require('./getip')
@@ -29,15 +31,19 @@ const Logger = require('keeper-core')
 let logger = new Logger()
 
 let browser
-let prebrowser
+let selfbrowser
 let ipdate = mytime.mydate('mins')
 logger.myconsole('Program start at : '.blue + ipdate)
 let ipindex = 1
 
+// change ip active
+let changeipactive = false
+
 // ip proxy list
-const iplist = require('../config/iplist')
+const iplist = require('../config/iplist2')
 // change ip interval time, [mins]
 let changeiptime = 10
+let processbox = []
 
 // constructor
 class InitJs {
@@ -48,12 +54,12 @@ class InitJs {
 
   async init () {
     return new Promise(async (resolve) => {
-      browser = await puppeteer.launch({
+      selfbrowser = await puppeteer.launch({
         ignoreHTTPSErrors: true,
         // headless: false,
         args: ['--no-sandbox', '--disable-setuid-sandbox']
       })
-      logger.myconsole('browser is start!'.green)
+      logger.myconsole('self browser is start!'.green)
       await delay.delay(0)
 
       // router
@@ -61,9 +67,15 @@ class InitJs {
     })
   }
 
+  async initproxybrowser () {
+    let proxy = iplist[0].address + ':' + iplist[0].host
+    await this.newbrowser(proxy)
+    await this.getip()
+  }
+
   async newbrowser (tempip) {
     return new Promise(async (resolve) => {
-      prebrowser = browser
+      if (browser) processbox.push(browser)
       let args = ['--no-sandbox', '--disable-setuid-sandbox']
       if (tempip) args.push('--proxy-server=' + tempip)
       browser = await puppeteer.launch({
@@ -78,21 +90,25 @@ class InitJs {
       resolve(true)
 
       setTimeout(function () {
-        prebrowser.close()
+        if (processbox.length) {
+          for (let i in processbox) {
+            processbox[i].close()
+          }
+        }
       }, 12000)
     })
   }
 
   async changeip (index) {
-    if (index) {
-      if (index === iplist.length) {
-        ipindex = -1
-      }
-      let tempip = iplist[index - 1].address + ':' + iplist[index - 1].host
-      await this.restart(tempip)
-    } else {
-      await this.restart()
+    // if (index) {
+    if (index === iplist.length) {
+      ipindex = 0
     }
+    let tempip = iplist[index].address + ':' + iplist[index].host
+    await this.restart(tempip)
+    // } else {
+    //   await this.restart()
+    // }
     await this.getip()
   }
 
@@ -104,19 +120,35 @@ class InitJs {
   }
 
   async close () {
+    await selfbrowser.close()
     await browser.close()
+  }
+
+  manualchangeip () {
+    changeipactive = false
+    this.changeip(ipindex)
+    ipindex += 1
+  }
+
+  autoproxy () {
+    changeipactive = true
+    console.log('Active change ip is start!'.green)
   }
 
   async taobao (type, url) {
     let cache = true
-    let result = await taobao.taobao(browser, type, url, cache)
+    let result = await fastpost.taobao(browser, type, url, cache)
 
     // when the first one is done, it will stop the second
     // check ip date
     let ispass = mytime.dateispass(ipdate.split('-'), changeiptime)
-    if (ispass || result === 'changeip') {
+    if (changeipactive && (ispass || result === 'changeip')) {
       this.changeip(ipindex)
       ipindex += 1
+    }
+
+    if (result === 'changeip' || result === 'Analysis failed!') {
+      result = await fastpost.taobao(selfbrowser, type, url, cache, true)
     }
 
     return result === 'changeip' ? 'Analysis failed!' : result
@@ -135,7 +167,7 @@ class InitJs {
   async login (loginurl, url, account) {
     const page = await browser.newPage()
 
-    let file = path.join(__dirname, '/../tpl/acc.js')
+    let file = path.join(__dirname, '/acc.js')
     const tpl = fs.readFileSync(file).toString()
     let param = {
       acc: accbox[account].acc,

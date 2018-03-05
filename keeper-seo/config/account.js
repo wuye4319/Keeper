@@ -4,6 +4,10 @@
 
 let infor = [
   {
+    acc: '18018748974',
+    psw: 'asd123456@'
+  },
+  {
     acc: '捣腾捣腾001',
     psw: 'dotdotbuy123'
   },

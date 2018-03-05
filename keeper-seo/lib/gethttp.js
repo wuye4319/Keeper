@@ -20,9 +20,9 @@ class InitJs {
       request(options, function optionalCallback (error, resp, body) {
         if (error) { console.log('get code failed : '.red + error) } else {
           if (body) {
-            console.log(body)
+            resolve(body)
           } else {
-            console.log('get code is empty!'.blue)
+            resolve(false)
           }
         }
       })
