@@ -25,7 +25,6 @@ class InitJs {
       let isjson = false
       let templine = '\n<script>\nvar apidata = '
       let endtempline = '\n</script>'
-      if (!cont) logger.myconsole('Html cont is empty!'.red)
 
       if (filterbox) {
         let tempstr = this.subresult(filterbox)
@@ -34,7 +33,7 @@ class InitJs {
         if (isjson) {
           apidata = true
           // if previous api is success, reduce
-          if (logincount) logincount -= 1
+          if (logincount && !selfbrowser) logincount -= 1
         } else {
           let befailed = await this.befailed(filterbox, selfbrowser)
           if (befailed === 'changeip') { resolve('changeip') } else { resolve('Analysis failed!') }
@@ -48,47 +47,63 @@ class InitJs {
     })
   }
 
-  async taobao (browser, type, url, opencache, selfbrowser) {
+  async taobao (browser, type, url, opencache, process, selfbrowser) {
     return new Promise(async (resolve) => {
-      logger.myconsole(mytime.mytime())
       let t = Date.now()
       let filterbox = ''
       let cont = ''
       let isali = false // page from ali
       // let cookiebox = []
       let mylogstr = {}
-      const page = await browser.newPage()
+      let page = await browser.newPage()
       apidata = false
+      let proid = url.substr(url.lastIndexOf('/'))
+      logger.myconsole(mytime.mytime())
 
       try {
-        let waitcont = async () => {
+        let waitcont = async (index) => {
+          index += 1
+          if (index > 60) {
+            cont = 'Get cont failed!'
+            logger.myconsole('Get cont failed!'.red)
+          }
+
           if (!cont) {
             setTimeout(function () {
-              waitcont()
+              logger.myconsole(index + ' p:' + process)
+              waitcont(index)
             }, 100)
           } else {
+            logger.myconsole('Web page opens normally '.green + process)
             cont = await this.getcont(cont, filterbox, selfbrowser)
             resolve(cont)
             t = Date.now() - t
             mylogstr.Loadingtime = (t / 1000).toString() + ' s'
             logger.myconsole('Loading time : '.green + mylogstr.Loadingtime.red)
+
+            if (opencache && apidata && filterbox) cache.writecache(cont, url, type)
           }
         }
 
         // await page.setRequestInterception(true)
         // page.on('request', intercep => { intercep.continue() })
         page.on('response', async (result) => {
+          if (result.url().indexOf(proid) !== -1) {
+            cont += await result.text()
+          }
+
           let filter = result.url().indexOf('initItemDetail.htm') !== -1
           let filter2 = result.url().indexOf('sib.htm') !== -1
           if (filter || filter2) {
             isali = true
             filterbox += await result.text()
+            logger.myconsole('isali '.red + process)
             // filterbox = await http.getcode(result.url(), url)
-            waitcont()
+            waitcont(0)
           }
-          if (result.url() === url) {
-            cont = await result.text()
-          }
+          // if (result.url() === url) {
+          //   cont = await result.text()
+          // }
         })
 
         await page.goto(url)
@@ -98,14 +113,13 @@ class InitJs {
         // close page when analysis is done
         await page.close()
         if (!isali) {
-          logger.myconsole('Product is missing!'.yellow)
+          selfbrowser ? logger.myconsole('Self browser product is missing!'.yellow) : logger.myconsole('Product is missing!'.yellow)
           resolve('Product is missing!')
         }
 
         mylogstr.date = mytime.mytime()
         mylogstr.url = url
         // write date
-        if (opencache && apidata && filterbox) cache.writecache(cont, url, type)
         apidata && filterbox ? mylogstr.apidata = 'success' : mylogstr.apidata = 'Failed'
 
         logger.mybuffer(mylogstr)
@@ -118,20 +132,18 @@ class InitJs {
     })
   }
 
-  async befailed (filterbox, cookiebox, selfbrowser) {
+  async befailed (filterbox, selfbrowser) {
     // check login count, if get api failed more than 2 times, change ip first
-    if (selfbrowser) {
-      logger.myconsole('Self browser analysis failed!'.red)
-    } else {
-      logger.myconsole('Analysis failed!'.red)
+    selfbrowser ? logger.myconsole('Self browser analysis failed!'.red) : logger.myconsole('Analysis failed!'.red)
+    if (!selfbrowser) {
+      if (logincount < 1) {
+        logincount += 1
+      } else {
+        logincount = 0
+        return 'changeip'
+      }
     }
 
-    if (logincount < 1) {
-      logincount += 1
-    } else {
-      logincount = 0
-      return 'changeip'
-    }
     return false
   }
 

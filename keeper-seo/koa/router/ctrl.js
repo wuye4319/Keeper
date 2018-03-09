@@ -24,7 +24,7 @@ class ctrl {
 
     if (internumb > 15) {
       logger.myconsole('Server is busy,please wait...')
-      proxy.restart()
+      await proxy.restart()
       // clear process and url box
       this.clearinternumb()
     } else {
@@ -45,7 +45,7 @@ class ctrl {
           result = hascache
           logger.myconsole('this is cache file!')
         } else {
-          result = await proxy.taobao(rout, myurl)
+          result = await proxy.taobao(rout, myurl, internumb)
         }
 
         // rm url in box

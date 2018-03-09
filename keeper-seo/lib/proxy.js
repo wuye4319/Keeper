@@ -37,7 +37,7 @@ logger.myconsole('Program start at : '.blue + ipdate)
 let ipindex = 1
 
 // change ip active
-let changeipactive = false
+let changeipactive = true
 
 // ip proxy list
 const iplist = require('../config/iplist2')
@@ -83,7 +83,7 @@ class InitJs {
         // headless: false,
         args: args
       })
-      logger.myconsole('browser is start!'.green)
+      logger.myconsole('browser is start!'.magenta)
       await delay.delay(0)
 
       // router
@@ -95,7 +95,7 @@ class InitJs {
             processbox[i].close()
           }
         }
-      }, 12000)
+      }, 8000)
     })
   }
 
@@ -135,9 +135,9 @@ class InitJs {
     console.log('Active change ip is start!'.green)
   }
 
-  async taobao (type, url) {
+  async taobao (type, url, process) {
     let cache = true
-    let result = await fastpost.taobao(browser, type, url, cache)
+    let result = await fastpost.taobao(browser, type, url, cache, process)
 
     // when the first one is done, it will stop the second
     // check ip date
@@ -147,8 +147,8 @@ class InitJs {
       ipindex += 1
     }
 
-    if (result === 'changeip' || result === 'Analysis failed!') {
-      result = await fastpost.taobao(selfbrowser, type, url, cache, true)
+    if (result === 'changeip' || result === 'Analysis failed!' || result === 'Product is missing!') {
+      result = await fastpost.taobao(selfbrowser, type, url, cache, process, true)
     }
 
     return result === 'changeip' ? 'Analysis failed!' : result
