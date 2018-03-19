@@ -26,8 +26,9 @@ koa.addrouter(/^\/taobao(?:\/|$)/, async (ctx) => {
 })
 
 // logincode
-koa.addrouter('/logincode/', async (ctx) => {
-  await ctrl.loginbycode(ctx)
+koa.addrouter('/logincode/:browser', async (ctx) => {
+  let browser = ctx.params.browser
+  await ctrl.loginbycode(ctx, browser)
 })
 
 // logincode

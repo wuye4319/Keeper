@@ -85,9 +85,21 @@ class compile {
       //     NODE_ENV: JSON.stringify(pub ? true : 'production') // production | true
       //   }
       // }),
-      new webpack.optimize.UglifyJsPlugin({
-        compress: {warnings: false},
-        output: {comments: false}
+      // new webpack.optimize.UglifyJsPlugin({
+      //   compress: {warnings: false},
+      //   output: {comments: false}
+      // }),
+      new UglifyJsPlugin({
+        test: /\.js($|\?)/i,
+        sourceMap: false,
+        parallel: true,
+        exclude: /node_modules/,
+        uglifyOptions: {
+          output: {
+            comments: false,
+            beautify: false
+          }
+        }
       }),
       new webpack.BannerPlugin(myinfor.config.userinfor) // write author name into js
     ]

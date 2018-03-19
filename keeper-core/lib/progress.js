@@ -13,13 +13,28 @@ let bar = new ProgressBar(' :title [:bar] :percent ', {
 class progress {
   start (title) {
     if (bar.curr < 99) {
-      bar.tick(1, {title: 'static'})
+      bar.tick(1, {title: 'progress : '})
     }
+  }
+
+  timer (interval, count, time) {
+    let self = this
+    this.start()
+    setTimeout(function () {
+      count += 1
+      if (count < 99) self.timer(interval, count, time)
+    }, interval)
+  }
+
+  probytime (time) {
+    let interval = 1000 / (99 / time)
+    let count = 0
+    this.timer(interval, count, time)
   }
 
   toend () {
     let index = 100 - bar.curr
-    bar.tick(index, {title: 'static'})
+    bar.tick(index, {title: 'progress'})
     // bar.terminate()
   }
 

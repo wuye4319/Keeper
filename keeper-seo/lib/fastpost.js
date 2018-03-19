@@ -64,8 +64,8 @@ class InitJs {
         let waitcont = async (index) => {
           index += 1
           if (index > 60) {
-            cont = 'Get cont failed!'
-            logger.myconsole('Get cont failed!'.red)
+            cont = 'Wait cont failed!'
+            logger.myconsole('Wait cont failed!'.red)
           }
 
           if (!cont) {
@@ -89,14 +89,23 @@ class InitJs {
         // page.on('request', intercep => { intercep.continue() })
         page.on('response', async (result) => {
           if (result.url().indexOf(proid) !== -1) {
-            cont += await result.text()
+            try {
+              cont += await result.text()
+            } catch (e) {
+              logger.myconsole('Get cont failed!'.red + process + e)
+            }
           }
 
           let filter = result.url().indexOf('initItemDetail.htm') !== -1
           let filter2 = result.url().indexOf('sib.htm') !== -1
           if (filter || filter2) {
             isali = true
-            filterbox += await result.text()
+            try {
+              filterbox += await result.text()
+            } catch (e) {
+              logger.myconsole('Get filter failed!'.red + process + e)
+            }
+
             logger.myconsole('isali '.red + process)
             // filterbox = await http.getcode(result.url(), url)
             waitcont(0)

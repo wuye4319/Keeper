@@ -159,8 +159,14 @@ class InitJs {
     return data
   }
 
-  async loginbycode () {
-    let data = await getcodeimg.getimg(browser)
+  async loginbycode (browser) {
+    let data
+    if (browser === 'self') {
+      data = await getcodeimg.getimg(selfbrowser)
+    } else if (browser === 'curr') {
+      data = await getcodeimg.getimg(browser)
+    }
+
     return data
   }
 

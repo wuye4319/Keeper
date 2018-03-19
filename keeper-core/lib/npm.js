@@ -15,6 +15,9 @@ let delay = new Delay()
 const Render = require('./render')
 let render = new Render()
 let lowplugin, heightplugin, lostplugin
+const {exec} = require('child_process')
+const Progress = require('./progress')
+let progress = new Progress()
 
 class initnpm {
   constructor () {
@@ -132,10 +135,23 @@ class initnpm {
             resolve()
           })
         } else {
-          npm.commands.install([plugin], function (er, data) {
-            if (er) console.log(er)
-            resolve()
-          })
+          if (plugin.indexOf('-g') !== -1) {
+            progress.probytime(20)
+            exec('npm install ' + plugin, {env: process.env, maxBuffer: 20 * 1024 * 1024}, function (error, stdout, stderr) {
+              progress.toend()
+              console.log(stdout)
+              resolve()
+              if (stderr) console.log('stderr: ' + stderr)
+              if (error !== null) {
+                console.log('exec error: ' + error)
+              }
+            })
+          } else {
+            npm.commands.install([plugin], function (er, data) {
+              if (er) console.log(er)
+              resolve()
+            })
+          }
         }
       })
     })
@@ -166,21 +182,6 @@ class initnpm {
     }
     return result
   }
-
-  // installnpm () {
-  //   return new Promise((resolve) => {
-  //     console.log('Keeper is preparing the installation resource for you,Please wait...'.green)
-  //     exec('npm install npm@5.6.0', function (error, stdout, stderr) {
-  //       console.log(stdout)
-  //       stderr ? console.log('stderr: ' + stderr) : console.log('keeper is ready!'.green)
-  //       npm = require('npm')
-  //       if (error !== null) {
-  //         console.log('exec error: ' + error)
-  //       }
-  //       resolve()
-  //     })
-  //   })
-  // }
 
   bootstrap () {
     require(this.currplugin + '/bin/builder')

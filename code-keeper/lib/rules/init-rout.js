@@ -91,7 +91,7 @@ class rulinit {
         // single router module
         let myaccount = filelist[(lang[i] || 'cn/').substr(0, 2)] || ''
         // read and write routername.js, always from cn or main dir.
-        let namefile = './front/' + (lang[i] ? 'cn/' : '') + 'source/js/' + myinfor.myModuleDir + '/routername.js'
+        let namefile = './front/' + (lang[i] || '') + 'source/js/' + myinfor.myModuleDir + '/routername.js'
         let namestr = eval(fs.existsSync(namefile) ? fs.readFileSync(namefile).toString() : '')
         let staticfile = this.staticname(namestr, myaccount)
         let navlist = []

@@ -78,12 +78,16 @@ class ctrl {
     urlbox = []
   }
 
-  async loginbycode (ctx) {
-    let result = await proxy.loginbycode()
-    if (result) {
-      ctx.response.body = '<img src="/static/codeimg/codeimg.png" /><p><a href="/loginstatus/">click to check login status</a></p>'
+  async loginbycode (ctx, browser) {
+    if (browser) {
+      let result = await proxy.loginbycode(browser)
+      if (result) {
+        ctx.response.body = '<img src="/static/codeimg/codeimg.png" /><p><a href="/loginstatus/">click to check login status</a></p>'
+      } else {
+        ctx.response.body = 'error'
+      }
     } else {
-      ctx.response.body = 'error'
+      ctx.response.body = 'Please choose browser, use key [self] or [curr]'
     }
   }
 
