@@ -26,20 +26,16 @@ class InitJs {
       let templine = '\n<script>\nvar apidata = '
       let endtempline = '\n</script>'
 
-      if (filterbox) {
-        let tempstr = this.subresult(filterbox)
-        if (tempstr) filterbox = tempstr
-        isjson = this.isJson(filterbox)
-        if (isjson) {
-          apidata = true
-          // if previous api is success, reduce
-          if (logincount && !selfbrowser) logincount -= 1
-        } else {
-          let befailed = await this.befailed(filterbox, selfbrowser)
-          if (befailed === 'changeip') { resolve('changeip') } else { resolve('Analysis failed!') }
-        }
+      let tempstr = this.subresult(filterbox)
+      if (tempstr) filterbox = tempstr
+      isjson = this.isJson(filterbox)
+      if (isjson && filterbox) {
+        apidata = true
+        // if previous api is success, reduce
+        if (logincount && !selfbrowser) logincount -= 1
       } else {
-        logger.myconsole('Filterbox is empty!'.yellow)
+        let befailed = await this.befailed(filterbox, selfbrowser)
+        if (befailed === 'changeip') { resolve('changeip') } else { resolve('Analysis failed!') }
       }
 
       cont = cont + templine + filterbox + endtempline
