@@ -70,12 +70,11 @@ class InitJs {
               waitcont(index)
             }, 100)
           } else {
-            logger.myconsole('Web page opens normally '.green + process)
             cont = await this.getcont(cont, filterbox, selfbrowser)
             resolve(cont)
             t = Date.now() - t
-            mylogstr.Loadingtime = (t / 1000).toString() + ' s'
-            logger.myconsole('Loading time : '.green + mylogstr.Loadingtime.red)
+            mylogstr.Loadingtime = (t / 1000).toString() + ' s '
+            logger.myconsole('Loading time : '.green + mylogstr.Loadingtime.red + process)
 
             if (opencache && apidata && filterbox) cache.writecache(cont, url, type)
           }
@@ -102,7 +101,6 @@ class InitJs {
               logger.myconsole('Get filter failed!'.red + process + e)
             }
 
-            logger.myconsole('isali '.red + process)
             // filterbox = await http.getcode(result.url(), url)
             waitcont(0)
           }
