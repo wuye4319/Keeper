@@ -13,6 +13,7 @@ const webpack = require('webpack')
 let keeper = require('../index')
 // test i18n
 let I18nPlugin = require('i18n-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 // config
 let myinfor = rules.infor()
 let watcher, compiler

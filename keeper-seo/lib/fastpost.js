@@ -66,15 +66,16 @@ class InitJs {
 
           if (!cont) {
             setTimeout(function () {
-              logger.myconsole(index + ' p:' + process)
+              // logger.myconsole(index + ' p:' + process)
               waitcont(index)
             }, 100)
           } else {
+            logger.myconsole('Web page opens normally '.green + process)
             cont = await this.getcont(cont, filterbox, selfbrowser)
             resolve(cont)
             t = Date.now() - t
-            mylogstr.Loadingtime = (t / 1000).toString() + ' s '
-            logger.myconsole('Loading time : '.green + mylogstr.Loadingtime.red + process)
+            mylogstr.Loadingtime = (t / 1000).toString() + ' s'
+            logger.myconsole('Loading time : '.green + mylogstr.Loadingtime.red)
 
             if (opencache && apidata && filterbox) cache.writecache(cont, url, type)
           }
