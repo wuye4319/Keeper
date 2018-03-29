@@ -32,13 +32,13 @@ class InitJs {
         await page.screenshot({path: imgpath})
 
         let mygetout = setTimeout(function () {
-          logger.myconsole('Auto-login timeout! Page closed!'.red)
+          logger.myconsole('Auto-login timeout! Page closed!'.magenta)
           page.close()
         }, 30000)
 
         page.on('load', async () => {
           clearTimeout(mygetout)
-          console.log('Page login success!'.green)
+          console.log('Page login success!'.magenta)
           await delay.delay(1)
           let imgpath = path.join(__dirname, '/../static/codeimg/loginstatus.png')
           await page.screenshot({path: imgpath})

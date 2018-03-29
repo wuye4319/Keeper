@@ -40,7 +40,7 @@ let ipindex = 1
 let changeipactive = true
 
 // ip proxy list
-const iplist = require('../config/iplist2')
+const iplist = require('../config/iplist3')
 // change ip interval time, [mins]
 let changeiptime = 10
 let processbox = []

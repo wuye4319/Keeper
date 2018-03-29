@@ -57,8 +57,8 @@ class initnpm {
     if (fs.existsSync(packagelock)) del.deleteSource(packagelock)
     // lowplugin = lowplugin.concat(heightplugin)
     for (let i in lowplugin) {
-      console.log('keeper uninstalling plugin : ' + lowplugin[i])
-      await this.installplugin(lowplugin[i], 'un')
+      console.log('keeper update plugin : ' + lowplugin[i])
+      await this.installplugin(lowplugin[i])
       await this.clearline()
       await delay.delay(2, true)
     }
@@ -129,30 +129,30 @@ class initnpm {
     return new Promise((resolve) => {
       npm.load(function (err) {
         if (err) return console.log(err)
-        if (type === 'un') {
-          npm.commands.uninstall([plugin], function (er, data) {
+        // if (type === 'un') {
+        //   npm.commands.uninstall([plugin], function (er, data) {
+        //     if (er) console.log(er)
+        //     resolve()
+        //   })
+        // } else {
+        if (plugin.indexOf('-g') !== -1) {
+          progress.probytime(20)
+          exec('npm install ' + plugin, {env: process.env, maxBuffer: 20 * 1024 * 1024}, function (error, stdout, stderr) {
+            progress.toend()
+            console.log(stdout)
+            resolve()
+            if (stderr) console.log('stderr: ' + stderr)
+            if (error !== null) {
+              console.log('exec error: ' + error)
+            }
+          })
+        } else {
+          npm.commands.install([plugin], function (er, data) {
             if (er) console.log(er)
             resolve()
           })
-        } else {
-          if (plugin.indexOf('-g') !== -1) {
-            progress.probytime(20)
-            exec('npm install ' + plugin, {env: process.env, maxBuffer: 20 * 1024 * 1024}, function (error, stdout, stderr) {
-              progress.toend()
-              console.log(stdout)
-              resolve()
-              if (stderr) console.log('stderr: ' + stderr)
-              if (error !== null) {
-                console.log('exec error: ' + error)
-              }
-            })
-          } else {
-            npm.commands.install([plugin], function (er, data) {
-              if (er) console.log(er)
-              resolve()
-            })
-          }
         }
+        // }
       })
     })
   }

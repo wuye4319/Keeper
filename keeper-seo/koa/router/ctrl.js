@@ -81,8 +81,9 @@ class ctrl {
   async loginbycode (ctx, browser) {
     if (browser) {
       let result = await proxy.loginbycode(browser)
+      let rand = Math.ceil(Math.random() * 1000000000)
       if (result) {
-        ctx.response.body = '<img src="/static/codeimg/codeimg.png" /><p><a href="/loginstatus/">click to check login status</a></p>'
+        ctx.response.body = '<img src="/static/codeimg/codeimg.png?' + rand + '" /><p><a href="/loginstatus/">click to check login status</a></p>'
       } else {
         ctx.response.body = 'error'
       }
@@ -92,9 +93,10 @@ class ctrl {
   }
 
   async loginstatus (ctx) {
+    let rand = Math.ceil(Math.random() * 1000000000)
     let imgpath = path.join(__dirname, '/../../static/codeimg/loginstatus.png')
     let status = fs.statSync(imgpath)
-    let labimg = '<img src="/static/codeimg/loginstatus.png" />'
+    let labimg = '<img src="/static/codeimg/loginstatus.png?' + rand + '" />'
     let labp = '<p>' + status.mtime + '</p>'
     ctx.response.body = labimg + labp
   }
