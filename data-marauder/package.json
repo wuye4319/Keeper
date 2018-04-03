@@ -1,0 +1,26 @@
+{
+  "name": "data-marauder",
+  "version": "0.0.1",
+  "description": "data-marauder",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wuye4319/Keeper.git"
+  },
+  "keywords": [
+    "data-marauder"
+  ],
+  "bin": {
+    "seo": "./bin/main.js"
+  },
+  "author": "nero",
+  "bugs": {
+    "url": "https://github.com/wuye4319/Keeper/issues"
+  },
+  "homepage": "https://github.com/wuye4319/Keeper"
+}
