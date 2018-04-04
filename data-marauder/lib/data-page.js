@@ -6,8 +6,6 @@
 'use strict'
 const fs = require('fs')
 const path = require('path')
-const puppeteer = require('puppeteer')
-let seoinfor = require('../config/seoinfor')
 
 const Render = require('keeper-core/lib/render')
 let render = new Render()
@@ -43,8 +41,6 @@ class InitJs {
         const mypageinfor = await page.evaluate(() => {
           return {
             title: document.title || '',
-            keywords: document.getElementsByTagName('meta')[1].content || '',
-            description: document.getElementsByTagName('meta')[2].content || '',
             content: document.getElementById('container').innerHTML || ''
           }
         })
@@ -56,22 +52,11 @@ class InitJs {
 
         let file = path.join(__dirname, '/../tpl/init/init.html')
         const tpl = fs.readFileSync(file).toString()
-        let currpageinfor = seoinfor[type]
         let data = {
-          title: mypageinfor.title,
-          keywords: mypageinfor.keywords,
-          description: mypageinfor.description,
-          loadjs: '/plugin/base/load.js',
-          container: '<div id="container" style="opacity: 0;">' + mypageinfor.content + '</div>',
-          wrapjs: currpageinfor.wrapjs,
-          myjs: currpageinfor.myjs
+          title: mypageinfor.title
         }
         let mystr = render.renderdata(tpl, data)
-        if (mypageinfor.title === 'Superbuy-Shopping Agent-self service') {
-          console.log('Analysis failed! Product is missing!'.red)
-          str += '"error":"Analysis error!",'
-          resolve(false)
-        } else if (mypageinfor.title !== 'Superbuy-Shopping Agent') {
+        if (mypageinfor.title !== 'Superbuy-Shopping Agent') {
           str += cache.writecache(mystr, url, type)
           resolve(mystr)
         } else {
