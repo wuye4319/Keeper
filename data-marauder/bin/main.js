@@ -60,7 +60,7 @@ function boot () {
   console.log('This is a new Object (first time to running keeper) or Keeper is running at wrong Environment! Please comfirm! Enter [y]es or [n]o to continue.'.red)
   global.myvari.anslist = [{y: 'yes'}, {n: 'no'}]
   global.myvari.answer.yes = () => {
-    ready.boot()
+    ready.boot(plugname)
   }
   global.myvari.answer.no = () => {
     global.repls.close()

@@ -6,7 +6,7 @@ const Initnpm = require('keeper-core/lib/npm')
 let mynpm = new Initnpm()
 
 class ready {
-  boot () {
+  boot (plugname) {
     let pluginlist = [
       {name: 'keeper-core', ver: '1.0.60'},
       {name: 'koa', ver: '2.3.0'},
@@ -15,7 +15,7 @@ class ready {
       {name: 'request', ver: '2.83.0'},
       {name: 'puppeteer', ver: '0.12.0'}
     ]
-    mynpm.init(pluginlist, 'data-marauder')
+    mynpm.init(pluginlist, plugname)
   }
 }
 

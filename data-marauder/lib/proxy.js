@@ -5,30 +5,20 @@
  */
 'use strict'
 const puppeteer = require('puppeteer')
-const path = require('path')
-const fs = require('fs')
-
 const Fastpost = require('./data-pipe')
 let fastpost = new Fastpost()
-const Taobao = require('./taobao')
-let taobao = new Taobao()
+const DataPage = require('./data-page')
+let datapage = new DataPage()
 const Getip = require('./getip')
 let getip = new Getip()
-const Getcodeimg = require('./getcodeimg')
-let getcodeimg = new Getcodeimg()
-
-const Myseo = require('./data-page')
-let seo = new Myseo()
 let Delay = require('keeper-core/lib/delay')
 let delay = new Delay()
-const Render = require('keeper-core/lib/render')
-let render = new Render()
-const accbox = require('../config/account')
 
 const Mytime = require('keeper-core/lib/time')
 let mytime = new Mytime()
 const Logger = require('keeper-core')
 let logger = new Logger()
+const systemconfig = require('../config/system')
 
 let browser
 let selfbrowser
@@ -38,11 +28,10 @@ let ipindex = 1
 
 // change ip active
 let changeipactive = true
-
 // ip proxy list
 const iplist = require('../config/iplist3')
 // change ip interval time, [mins]
-let changeiptime = 10
+let changeiptime = systemconfig.changeiptime
 let processbox = []
 
 // constructor
@@ -68,9 +57,11 @@ class InitJs {
   }
 
   async initproxybrowser () {
-    let proxy = iplist[0].address + ':' + iplist[0].host
-    await this.newbrowser(proxy)
-    await this.getip()
+    if (systemconfig.backupserver) {
+      let proxy = iplist[0].address + ':' + iplist[0].host
+      await this.newbrowser(proxy)
+      await this.getip()
+    }
   }
 
   async newbrowser (tempip) {
@@ -135,8 +126,15 @@ class InitJs {
     console.log('Active change ip is start!'.green)
   }
 
-  async taobao (type, url, process) {
-    let cache = true
+  async pipedata (type, url, process) {
+    let cache = systemconfig.cache
+    let result = await fastpost.taobao(systemconfig.backupserver ? browser : selfbrowser, type, url, cache, process)
+
+    return result
+  }
+
+  async pagedata (type, url, process) {
+    let cache = systemconfig.cache
     let result = await fastpost.taobao(browser, type, url, cache, process)
 
     // when the first one is done, it will stop the second
@@ -156,40 +154,6 @@ class InitJs {
 
   async getip () {
     let data = await getip.getip(browser)
-    return data
-  }
-
-  async loginbycode (browser) {
-    let data
-    if (browser === 'self') {
-      data = await getcodeimg.getimg(selfbrowser)
-    } else if (browser === 'curr') {
-      data = await getcodeimg.getimg(browser)
-    }
-
-    return data
-  }
-
-  async login (loginurl, url, account) {
-    const page = await browser.newPage()
-
-    let file = path.join(__dirname, '/acc.js')
-    const tpl = fs.readFileSync(file).toString()
-    let param = {
-      acc: accbox[account].acc,
-      psw: accbox[account].psw
-    }
-    let mystr = render.renderdata(tpl, param)
-
-    const Login = eval(mystr)
-    let login = new Login()
-
-    let data = await login.login(page, loginurl, url)
-    return data
-  }
-
-  async seo (rout, myurl, search, title) {
-    let data = await seo.seo(browser, rout, myurl, search, title)
     return data
   }
 }
