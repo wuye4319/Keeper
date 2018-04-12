@@ -16,7 +16,7 @@
     "data-marauder"
   ],
   "bin": {
-    "seo": "./bin/main.js"
+    "marauder": "./bin/main.js"
   },
   "author": "nero",
   "bugs": {

@@ -7,5 +7,5 @@ let ctrl = new Ctrl()
 
 // subject
 koa.addrouter(/^\/image(?:\/|$)/, async (ctx) => {
-  await ctrl.filtermall(ctx, 'image')
+  await ctrl.filtermall(ctx, 'image', 'pipe')
 })

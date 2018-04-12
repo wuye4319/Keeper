@@ -1,7 +1,6 @@
 /**
  * Created by nero on 2017/6/2.
  */
-const fs = require('fs')
 const Proxy = require('../../lib/proxy')
 let proxy = new Proxy()
 const Logger = require('keeper-core')
@@ -9,13 +8,12 @@ let logger = new Logger()
 
 const Fscache = require('keeper-core/cache/cache')
 const cache = new Fscache()
-const path = require('path')
 
 let internumb = 0
 let urlbox = []
 
 class ctrl {
-  async filtermall (ctx, rout) {
+  async filtermall (ctx, rout, datatype) {
     // filter
     let myurl = ctx.url.substr(rout.length + 2)
     logger.myconsole('process : '.red + internumb.toString().red)
@@ -39,20 +37,17 @@ class ctrl {
         let rct = Date.now()
         let hascache = await cache.readcache(myurl, rout)
         rct = Date.now() - rct
-        logger.myconsole('read cache time : '.green + rct.toString().red +
-          ' ms'.green)
+        logger.myconsole('read cache time : '.green + rct.toString().red + ' ms'.green)
         if (hascache) {
           result = hascache
           logger.myconsole('this is cache file!')
         } else {
-          result = await proxy.taobao(rout, myurl, internumb)
+          result = await (datatype === 'pipe' ? proxy.pipedata(rout, myurl, internumb) : proxy.pagedata(rout, myurl, internumb))
         }
 
         // rm url in box
         urlbox.splice(hasurl - 1, 1)
-        urlbox.length
-          ? logger.myconsole(JSON.stringify(urlbox))
-          : logger.myconsole('[]')
+        urlbox.length ? logger.myconsole(JSON.stringify(urlbox)) : logger.myconsole('[]')
       }
 
       internumb -= 1

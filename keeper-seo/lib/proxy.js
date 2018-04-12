@@ -101,8 +101,8 @@ class InitJs {
 
   async changeip (index) {
     // if (index) {
-    if (index === iplist.length) {
-      ipindex = 0
+    if (index === iplist.length - 1) {
+      ipindex = -1
     }
     let tempip = iplist[index].address + ':' + iplist[index].host
     await this.restart(tempip)

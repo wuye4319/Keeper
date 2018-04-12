@@ -5,10 +5,10 @@
  */
 'use strict'
 const puppeteer = require('puppeteer')
-const Fastpost = require('./data-pipe')
-let fastpost = new Fastpost()
+const Pipedata = require('./data-pipe')
+let pipedata = new Pipedata()
 const DataPage = require('./data-page')
-let datapage = new DataPage()
+let pagedata = new DataPage()
 const Getip = require('./getip')
 let getip = new Getip()
 let Delay = require('keeper-core/lib/delay')
@@ -126,17 +126,14 @@ class InitJs {
     console.log('Active change ip is start!'.green)
   }
 
-  async pipedata (type, url, process) {
-    let cache = systemconfig.cache
-    let result = await fastpost.taobao(systemconfig.backupserver ? browser : selfbrowser, type, url, cache, process)
-
-    return result
-  }
-
   async pagedata (type, url, process) {
     let cache = systemconfig.cache
-    let result = await fastpost.taobao(browser, type, url, cache, process)
+    let result = await pagedata.getdata(systemconfig.backupserver ? browser : selfbrowser, type, url, cache, process)
 
+    return result === 'changeip' ? 'Analysis failed!' : result
+  }
+
+  async servermatrix (type, url, cache, process, result) {
     // when the first one is done, it will stop the second
     // check ip date
     let ispass = mytime.dateispass(ipdate.split('-'), changeiptime)
@@ -146,9 +143,18 @@ class InitJs {
     }
 
     if (result === 'changeip' || result === 'Analysis failed!' || result === 'Product is missing!') {
-      result = await fastpost.taobao(selfbrowser, type, url, cache, process, true)
+      result = await pipedata.getdata(selfbrowser, type, url, cache, process, true)
     }
+    return result
+  }
 
+  async pipedata (type, url, process) {
+    let cache = systemconfig.cache
+    let result = await pipedata.getdata(browser, type, url, cache, process)
+
+    if (systemconfig.backupserver) {
+      result = this.servermatrix(type, url, cache, process, result)
+    }
     return result === 'changeip' ? 'Analysis failed!' : result
   }
 

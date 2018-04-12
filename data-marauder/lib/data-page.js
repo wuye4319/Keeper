@@ -18,7 +18,7 @@ let mytime = new Mytime()
 
 // constructor
 class InitJs {
-  async seo (browser, type, url, seach, title) {
+  async getdata (browser, type, url, seach, title) {
     return new Promise(async (resolve) => {
       let t = Date.now()
       const page = await browser.newPage()

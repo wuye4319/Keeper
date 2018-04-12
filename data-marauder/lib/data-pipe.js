@@ -39,7 +39,7 @@ class InitJs {
     })
   }
 
-  async taobao (browser, type, url, opencache, process, selfbrowser) {
+  async getdata (browser, type, url, opencache, process, selfbrowser) {
     return new Promise(async (resolve) => {
       let t = Date.now()
       let cont = ''
