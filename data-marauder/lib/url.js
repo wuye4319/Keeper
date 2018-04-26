@@ -8,12 +8,12 @@ const request = require('request')
 
 // constructor
 class InitJs {
-  async getcode (apiurl, url) {
+  async getdata (apiurl, ref) {
     return new Promise(async (resolve) => {
       let options = {
         url: apiurl,
         headers: {
-          'referer': url
+          'referer': ref
         }
       }
 

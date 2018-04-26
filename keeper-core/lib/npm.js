@@ -35,15 +35,15 @@ class initnpm {
     console.log('This is the first time to start keeper!'.green)
     this.checkplugin()// keeper will auto install plugin for you,please wait...
     if (lowplugin.length) {
-      console.log('You have some plugin is incorrect,Keeper will uninstall those plugin.'.red)
+      console.log('Some of your plug-ins version are too old, Keeper will update those plug-ins.'.red)
       // let hasnpm = fs.existsSync('./node_modules/npm/package.json')
       // hasnpm || await this.installnpm()
       await delay.delay(5, true)
-      await this.uninstallall()
+      await this.updateall()
       this.checkplugin()
     }
     if (lostplugin.length) {
-      console.log('You have some plugin is missing,Keeper will install those plugin.'.red)
+      console.log('You have some plugin is missing, Keeper will install those plugin.'.red)
       // let hasnpm = fs.existsSync('./node_modules/npm/package.json')
       // hasnpm || await this.installnpm()
       await delay.delay(5, true)
@@ -52,7 +52,7 @@ class initnpm {
     }
   }
 
-  async uninstallall () {
+  async updateall () {
     let packagelock = './package-lock.json'
     if (fs.existsSync(packagelock)) del.deleteSource(packagelock)
     // lowplugin = lowplugin.concat(heightplugin)
@@ -80,7 +80,7 @@ class initnpm {
     lostplugin = []
     for (let i in pluginlist) {
       let packagepath
-      if (pluginlist[i].name === 'webpack') {
+      if (pluginlist[i].ver.indexOf('-g') !== -1) {
         packagepath = path.join(__dirname, '/../../../../' + pluginlist[i].name + '/package.json')
       } else {
         packagepath = './node_modules/' + pluginlist[i].name + '/package.json'

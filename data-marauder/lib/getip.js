@@ -4,7 +4,7 @@
  * plugin:init js
  */
 'use strict'
-const Logger = require('keeper-core')
+const Logger = require('keeper-core/logger/logger')
 let logger = new Logger()
 const Mytime = require('keeper-core/lib/time')
 let mytime = new Mytime()

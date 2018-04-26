@@ -8,7 +8,7 @@ let mynpm = new Initnpm()
 class ready {
   boot (plugname) {
     let pluginlist = [
-      {name: 'keeper-core', ver: '1.0.60'},
+      {name: 'keeper-core', ver: '1.0.61'},
       {name: 'koa', ver: '2.3.0'},
       {name: 'koa-cors', ver: '0.0.16'},
       {name: 'koa-router', ver: '7.2.1'},

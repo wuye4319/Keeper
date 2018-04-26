@@ -5,10 +5,12 @@
  */
 'use strict'
 const puppeteer = require('puppeteer')
-const Pipedata = require('./data-pipe')
+const Pipedata = require('./pipe')
 let pipedata = new Pipedata()
-const DataPage = require('./data-page')
+const DataPage = require('./page')
 let pagedata = new DataPage()
+const Dataurl = require('./url')
+let dataurl = new Dataurl()
 const Getip = require('./getip')
 let getip = new Getip()
 let Delay = require('keeper-core/lib/delay')
@@ -128,7 +130,8 @@ class InitJs {
 
   async pagedata (type, url, process) {
     let cache = systemconfig.cache
-    let result = await pagedata.getdata(systemconfig.backupserver ? browser : selfbrowser, type, url, cache, process)
+    let currbrow = systemconfig.backupserver ? browser : selfbrowser
+    let result = await pagedata.getdata(currbrow, type, url, cache, process)
 
     return result === 'changeip' ? 'Analysis failed!' : result
   }
@@ -150,12 +153,20 @@ class InitJs {
 
   async pipedata (type, url, process) {
     let cache = systemconfig.cache
-    let result = await pipedata.getdata(browser, type, url, cache, process)
+    let currbrow = systemconfig.backupserver ? browser : selfbrowser
+    let result = await pipedata.getdata(currbrow, type, url, cache, process)
 
     if (systemconfig.backupserver) {
       result = this.servermatrix(type, url, cache, process, result)
     }
     return result === 'changeip' ? 'Analysis failed!' : result
+  }
+
+  async urldata (url) {
+    // let cache = systemconfig.cache
+    let result = await dataurl.getdata(url)
+
+    return result
   }
 
   async getip () {
