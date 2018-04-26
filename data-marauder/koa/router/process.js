@@ -59,13 +59,11 @@ class ctrl {
   async getdatatype (type, rout, url) {
     switch (type) {
       case 'pipe':
-        proxy.pipedata(rout, url, internumb)
-        break
+        return proxy.pipedata(rout, url, internumb)
       case 'page':
-        proxy.pagedata(rout, url, internumb)
-        break
+        return proxy.pagedata(rout, url, internumb)
       case 'url':
-        proxy.urldata(url)
+        return proxy.urldata(url)
     }
   }
 

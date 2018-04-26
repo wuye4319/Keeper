@@ -18,7 +18,7 @@ class InitJs {
       }
 
       request(options, function optionalCallback (error, resp, body) {
-        if (error) { console.log('get code failed : '.red + error) } else {
+        if (error) { console.log('get url-data failed : '.red + error) } else {
           if (body) {
             resolve(body)
           } else {

@@ -31,7 +31,7 @@ let ipindex = 1
 // change ip active
 let changeipactive = true
 // ip proxy list
-const iplist = require('../config/iplist3')
+const iplist = require('../config/iplist')
 // change ip interval time, [mins]
 let changeiptime = systemconfig.changeiptime
 let processbox = []
@@ -114,7 +114,7 @@ class InitJs {
 
   async close () {
     await selfbrowser.close()
-    await browser.close()
+    // await browser.close()
   }
 
   manualchangeip () {

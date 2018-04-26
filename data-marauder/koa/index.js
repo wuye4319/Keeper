@@ -30,6 +30,7 @@ app.on('error', function (err, ctx) {
 })
 let lis = app.listen(8080)
 console.log('the server is started!!!'.green)
+console.log('http://localhost:8080/image/url')
 
 let server = {
   addrouter: (url, fn) => {
