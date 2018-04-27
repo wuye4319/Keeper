@@ -13,6 +13,7 @@ const Mytime = require('keeper-core/lib/time')
 let mytime = new Mytime()
 let logincount = 0
 let apidata = false
+const systemconfig = require('../config/system')
 
 // constructor
 class InitJs {
@@ -39,11 +40,11 @@ class InitJs {
     })
   }
 
-  async getdata (browser, type, url, opencache, process, selfbrowser) {
+  async getdata (browser, type, url, rules, process, selfbrowser) {
     return new Promise(async (resolve) => {
       let t = Date.now()
       let cont = ''
-      let isali = false // page from ali
+      let intercept = false // page from ali
       // let cookiebox = []
       let mylogstr = {}
       let page = await browser.newPage()
@@ -72,7 +73,7 @@ class InitJs {
             mylogstr.Loadingtime = (t / 1000).toString() + ' s'
             logger.myconsole('Loading time : '.green + mylogstr.Loadingtime.red)
 
-            if (opencache && apidata && filterbox) cache.writecache(cont, url, type)
+            if (systemconfig.cache && apidata && filterbox) cache.writecache(cont, url, type)
             apidata && filterbox ? mylogstr.apidata = 'success' : mylogstr.apidata = 'Failed'
           }
         }
@@ -80,8 +81,14 @@ class InitJs {
         // await page.setRequestInterception(true)
         // page.on('request', intercep => { intercep.continue() })
         page.on('response', async (result) => {
-          if (!isali) {
+          if (systemconfig.printsourceurl) {
+            console.log(result.url().green)
+          }
+
+          // fn(result)
+          if (!intercept) {
             if (result.url().indexOf(proid) !== -1) {
+              console.log('11111111111111')
               try {
                 cont += await result.text()
               } catch (e) {
@@ -89,9 +96,8 @@ class InitJs {
               }
             }
 
-            let filter = result.url().indexOf('initItemDetail.htm') !== -1
-            let filter2 = result.url().indexOf('sib.htm') !== -1
-            if (filter || filter2) {
+            let filter = this.interceptbox(result, rules)
+            if (filter) {
               let filterbox = ''
               try {
                 filterbox = await result.text()
@@ -102,7 +108,7 @@ class InitJs {
 
               // filterbox = await http.getcode(result.url(), url)
               if (filterbox) {
-                isali = true
+                intercept = true
                 waitcont(0, filterbox)
               }
             }
@@ -118,11 +124,16 @@ class InitJs {
         // console.log(filterbox)
         // close page when analysis is done
         await page.close()
-        if (!isali) {
-          selfbrowser ? logger.myconsole('Self browser product is missing! '.yellow + process) : logger.myconsole('Product is missing! '.yellow +
-            process)
-          resolve('Product is missing!')
+        if (rules) {
+          if (!intercept) {
+            selfbrowser ? logger.myconsole('Self browser product is missing! '.yellow + process) : logger.myconsole('Product is missing! '.yellow +
+              process)
+            resolve('Product is missing!')
+          }
+        } else {
+          resolve(cont)
         }
+
         mylogstr.date = mytime.mytime()
         mylogstr.url = url
         // write date
@@ -134,6 +145,19 @@ class InitJs {
         await page.close()
       }
     })
+  }
+
+  interceptbox (result, rules) {
+    let res = false
+    if (rules) {
+      for (let i in rules) {
+        if (result.url().indexOf(rules[i]) !== -1) {
+          res = true
+        }
+      }
+    }
+
+    return res
   }
 
   async befailed (filterbox, selfbrowser) {

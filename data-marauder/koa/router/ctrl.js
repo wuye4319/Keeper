@@ -4,12 +4,12 @@
 const Process = require('./process')
 let process = new Process()
 
-const Seximg = require('../../work/seximg')
-let seximg = new Seximg()
+const Simg = require('../../work/seximg')
+let simg = new Simg()
 
 class ctrl {
   async getmall (ctx, rout) {
-    let result = await process.filter(ctx, rout)
+    let result = await process.filter(ctx, rout, 'pipe')
 
     if (result) {
       ctx.response.body = result
@@ -18,9 +18,11 @@ class ctrl {
     }
   }
 
-  async getseximage (ctx, rout) {
-    let result = await process.filter(ctx, rout, 'url')
-    seximg.getcont(result)
+  async getimage (ctx, rout) {
+    // get data by url
+    // let result = await process.filter(ctx, rout, 'url')
+    let result = await process.filter(ctx, rout, 'pipe')
+    simg.getcont(result)
   }
 }
 

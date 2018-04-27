@@ -114,7 +114,7 @@ class InitJs {
 
   async close () {
     await selfbrowser.close()
-    // await browser.close()
+    if (systemconfig.backupserver) await browser.close()
   }
 
   manualchangeip () {
@@ -136,7 +136,7 @@ class InitJs {
     return result === 'changeip' ? 'Analysis failed!' : result
   }
 
-  async servermatrix (type, url, cache, process, result) {
+  async servermatrix (type, url, process, result) {
     // when the first one is done, it will stop the second
     // check ip date
     let ispass = mytime.dateispass(ipdate.split('-'), changeiptime)
@@ -146,18 +146,19 @@ class InitJs {
     }
 
     if (result === 'changeip' || result === 'Analysis failed!' || result === 'Product is missing!') {
-      result = await pipedata.getdata(selfbrowser, type, url, cache, process, true)
+      result = await pipedata.getdata(selfbrowser, type, url, process, true)
     }
     return result
   }
 
   async pipedata (type, url, process) {
-    let cache = systemconfig.cache
     let currbrow = systemconfig.backupserver ? browser : selfbrowser
-    let result = await pipedata.getdata(currbrow, type, url, cache, process)
+    // let rules = ['initItemDetail.htm', 'sib.htm']
+    let rules = false
+    let result = await pipedata.getdata(currbrow, type, url, rules, process)
 
     if (systemconfig.backupserver) {
-      result = this.servermatrix(type, url, cache, process, result)
+      result = this.servermatrix(type, url, process, result)
     }
     return result === 'changeip' ? 'Analysis failed!' : result
   }
