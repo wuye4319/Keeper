@@ -160,7 +160,8 @@ class InitJs {
     if (systemconfig.backupserver) {
       result = this.servermatrix(type, url, process, result)
     }
-    return result === 'changeip' ? 'Analysis failed!' : result
+    result.url = url
+    return result
   }
 
   async urldata (url) {

@@ -42,7 +42,7 @@ class ctrl {
           result = hascache
           logger.myconsole('this is cache file!')
         } else {
-          result = await this.getdatatype(datatype, rout, myurl)
+          result = await this.getdatatype(rout, myurl, datatype)
         }
 
         // rm url in box
@@ -56,7 +56,7 @@ class ctrl {
     return result
   }
 
-  async getdatatype (type, rout, url) {
+  async getdatatype (rout, url, type) {
     switch (type) {
       case 'pipe':
         return proxy.pipedata(rout, url, internumb)

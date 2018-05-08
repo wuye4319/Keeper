@@ -8,6 +8,7 @@ let system = {
   cache: false,
   printsourceurl: false,
   ignoreimg: true,
+  downloadimg: false,
   changeiptime: 10
 }
 

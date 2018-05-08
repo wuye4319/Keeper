@@ -5,6 +5,7 @@
  */
 'use strict'
 const request = require('request')
+const fs = require('fs')
 
 // constructor
 class InitJs {
@@ -26,6 +27,14 @@ class InitJs {
           }
         }
       })
+    })
+  }
+
+  async saveimg (imgurl, saveimg) {
+    return new Promise(async (resolve) => {
+      request.get(imgurl).on('error', function (err) {
+        console.log(err)
+      }).pipe(fs.createWriteStream(saveimg))
     })
   }
 }
