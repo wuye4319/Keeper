@@ -2,26 +2,37 @@
  * Created by nero on 2018/4/26
  */
 // http://www.se8pc.com/thread-9283739-1-11.html
-
+const fs = require('fs')
 const Fscache = require('keeper-core/cache/cache')
 const cache = new Fscache()
 const Dataurl = require('../lib/url')
 let dataurl = new Dataurl()
+const Writefile = require('keeper-core/lib/writefile')
+let writefile = new Writefile()
+const Mytime = require('keeper-core/lib/time')
+let mytime = new Mytime()
 
 class simg {
   getcont (cont, url, type) {
     // cache.writecache(cont, url, type)
-    let erg = /<img\sid="\w+"\said="\w+"\ssrc=".+"\szoomfile=".+"\sfile=/g
+    let erg = /<img\s.+file="\S+"/g
     let imgdatabox = cont.match(erg)
 
-    const imgpath = './testimg/'
+    const imgpath = './testimg/' + mytime.mydate('mins') + '/'
+    const initstr = imgpath + 'init.txt'
+    if (!fs.existsSync(initstr)) {
+      writefile.writejs(initstr, '123')
+    }
+
     for (let i in imgdatabox) {
-      let erg2 = /zoomfile="(.+)"/
+      let erg2 = /\sfile="(.+)"/
       let imgurl = imgdatabox[i].match(erg2)[1]
       // console.log(imgurl)
-      let imgname = imgurl.match(/\w+(.jpg|.png)/)
-      // console.log(imgname)
-      dataurl.saveimg(imgurl, imgpath + imgname[0])
+      // let imgname = imgurl.match(/\w+(.jpg|.png)/)
+      let imgtype = imgurl.match(/.jpg|.png/)[0]
+
+      // console.log(i, imgtype, imgname)
+      dataurl.saveimg(imgurl, imgpath + i + imgtype)
     }
   }
 
