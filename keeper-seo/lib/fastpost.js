@@ -156,8 +156,10 @@ class InitJs {
       obj = JSON.parse(obj)
       let isjsonstr = typeof (obj) === 'object' && Object.prototype.toString.call(obj).toLowerCase() === '[object object]' && !obj.length
       if (isjsonstr) {
-        let verifystr = JSON.stringify(obj).indexOf('detailskip.taobao.com/__x5__/query.htm')
-        if (verifystr !== -1) {
+        let verifystr = JSON.stringify(obj).indexOf('detailskip.taobao.com')
+        let verifystr2 = JSON.stringify(obj).indexOf('login.taobao.com')
+        if (verifystr !== -1 && verifystr2 !== -1) {
+          logger.myconsole('Login code! This proxy has been blocked!'.red)
           return false
         } else {
           return true
