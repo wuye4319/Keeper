@@ -1,8 +1,17 @@
+const fs = require('fs')
+const path = require('path')
+const Writefile = require('keeper-core/lib/writefile')
+let writefile = new Writefile()
+if (!fs.existsSync('./config')) {
+  let inconf = path.join(__dirname, '/../tpl/system/config-front.js')
+  let outconf = './config.js'
+  writefile.copy(inconf, outconf)
+}
+
 const Fscompile = require('../lib/compile')
 let compile = new Fscompile()
-
-require('./bdrelease')
 require('./bdinit')
+require('./bdrelease')
 require('./bdrob')
 
 repls.defineCommand('reload', {

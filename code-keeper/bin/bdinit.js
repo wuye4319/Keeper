@@ -1,11 +1,11 @@
 /**
  * Created by nero on 2017/3/23.
  */
-var myctrlinit = require('../lib/ctrl/init')
-myctrlinit = new myctrlinit()
+const Ctrlinit = require('../lib/ctrl/init')
+let ctrlinit = new Ctrlinit()
 
-var fsclear = require('../lib/ctrl/clear')
-clear = new fsclear()//the bin/bdrelease.js used;
+const Fsclear = require('../lib/ctrl/clear')
+let clear = new Fsclear()//the bin/bdrelease.js used;
 
 let fsstatic = require('../lib/ctrl/static')
 let static = new fsstatic()
@@ -24,7 +24,7 @@ repls.defineCommand('conf', {
 repls.defineCommand('static', {
   help: 'static your html'.yellow,
   action: function (param) {
-    static.static(this, param)
+    // static.static(this, param)
   }
 })
 
@@ -48,7 +48,7 @@ repls.defineCommand('clear', {
 repls.defineCommand('init', {
   help: 'init your page'.yellow,
   action: function () {
-    myctrlinit.init()
+    ctrlinit.init()
     this.displayPrompt()
   }
 })
@@ -56,7 +56,7 @@ repls.defineCommand('init', {
 repls.defineCommand('initconf', {
   help: 'init your config.js'.yellow,
   action: function (type) {
-    myctrlinit.initconf(type)
+    ctrlinit.initconf(type)
     this.displayPrompt()
   }
 })
@@ -65,7 +65,7 @@ repls.defineCommand('initconf', {
 repls.defineCommand('createobject', {
   help: 'init your config.js'.yellow,
   action: function (type) {
-    //myctrlinit.createobject(type);
+    //ctrlinit.createobject(type);
     myvari.anslist = [{1: 'one'}, {2: 'two'}, {3: 'three'}]
     console.log('which kind of object do you wanna create?'.green)
     console.log('1.web frontend-react pc'.blue)
@@ -91,7 +91,7 @@ repls.defineCommand('createobject', {
 repls.defineCommand('initrouter', {
   help: 'search dir and rewrite router file and routername'.green,
   action: function () {
-    myctrlinit.initrout()
+    ctrlinit.initrout()
     this.displayPrompt()
   }
 })
