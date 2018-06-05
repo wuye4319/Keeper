@@ -33,6 +33,7 @@ class ctrl {
       let hasurl = this.eachurl(urlbox, myurl)
       if (hasurl) {
         logger.myconsole('Repeat request!'.red)
+        // waiting result
       } else {
         urlbox.push(myurl)
         // read cache file time
