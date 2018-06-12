@@ -57,29 +57,34 @@ class compile {
   }
 
   comsource (pub) {
-    let confdev = rules.dev(pub)
-    let dev = confdev.develop
     let myconfig = myinfor.config
     let webpackconf = []
     for (let i in lang) {
-      let myplugins = this.defaultplugin(pub, lang[i])
-      // webpack
-      let basepath = (myconfig.basepath ? myconfig.basepath + '/' : '')
-      let tempobj = {
-        plugins: myplugins,
-        entry: {[basepath + lang[i] + 'source/js/' + dev]: ['./front/' + lang[i] + 'source/js/' + dev + '.js']},
-        output: {filename: pub ? '[name].min.js' : '[name].js'}
+      let confdev = rules.dev(pub, lang[i])
+      console.log(confdev.input)
+      if (fs.existsSync(confdev.input)) {
+        let myplugins = this.defaultplugin(pub, lang[i], confdev)
+        // webpack
+        let tempobj = {
+          plugins: myplugins,
+          // entry: {[basepath + lang[i] + 'source/js/' + dev]: ['./front/' + lang[i] + 'source/js/' + dev + '.js']},
+          entry: {[confdev.output]: [confdev.input]},
+          output: {filename: pub ? '[name].min.js' : '[name].js'}
+        }
+        if (myconfig.webpack.devtool) tempobj.devtool = (pub ? myconfig.webpack.devtool[1] : myconfig.webpack.devtool[0])
+        Object.assign(tempobj.output, this.confobj.output)
+        webpackconf.push({...this.confobj, ...tempobj})
+      } else {
+        console.log(confdev.input + '\n', confdev.output)
+        console.log('Input is error!'.red)
+        return false
       }
-      if (myconfig.webpack.devtool) tempobj.devtool = (pub ? myconfig.webpack.devtool[1] : myconfig.webpack.devtool[0])
-      Object.assign(tempobj.output, this.confobj.output)
-      webpackconf.push({...this.confobj, ...tempobj})
     }
     compiler = webpack(webpackconf)
   }
 
-  defaultplugin (pub, lang, wrap) {
+  defaultplugin (pub, lang, confdev, wrap) {
     let transfile = this.checktrans(lang)
-    let confdev = rules.dev(pub)
     let pubconf = [
       // new webpack.DefinePlugin({
       //   'process.env': {
@@ -110,13 +115,13 @@ class compile {
       myplug = [
         new I18nPlugin(wrap || transfile, {functionName: '_'})
       ]
-      wrap || myplug.push(new keeper(confdev.webdev[1] || confdev.webdev[0]))
+      wrap || myplug.push(new keeper(confdev.webdev))
     } else {
       myplug = [
         new I18nPlugin('', {functionName: '_'})
       ]
       // wrap do not need html
-      wrap || myplug.push(new keeper(confdev.webdev[0]))
+      wrap || myplug.push(new keeper(confdev.webdev))
     }
 
     if (pub) myplug = myplug.concat(pubconf)
@@ -124,7 +129,7 @@ class compile {
   }
 
   dev (param) {
-    this.comsource()
+    this.comsource(false)
     console.log('program is ready to compile,please wait...'.green)
     let config = myinfor.config.webpack.config
     watcher = compiler.watch({
@@ -156,29 +161,36 @@ class compile {
   }
 
   wrapconfig (pub) {
-    let myconfig = myinfor.config
     let webpackconf = []
     let mytrans
+    let myconfig = myinfor.config
     for (let i in lang) {
-      let wrapdir = myconfig.wrapper.substr(0, myconfig.wrapper.lastIndexOf('/'))
-      let wrappath = './front/en/' + wrapdir + '/' + myconfig.transfile
-      if (fs.existsSync(wrappath)) {
-        mytrans = JSON.parse(fs.readFileSync(wrappath).toString())
-      } else {
-        console.log(wrappath.green + ' trans file is missing!'.red)
+      let wrap = rules.wrap(lang[i])
+      if (lang[i]) {
+        if (fs.existsSync(wrap.mypath)) {
+          mytrans = JSON.parse(fs.readFileSync(wrap.mypath).toString())
+        } else {
+          console.log(wrap.mypath.green + ' trans file is missing!'.red)
+        }
       }
 
-      let wranojs = myconfig.wrapper.substr(0, myconfig.wrapper.indexOf('.js'))
-      let basepath = (myconfig.basepath ? myconfig.basepath + '/' : '')
-      let myplugins = this.defaultplugin(pub, lang[i], mytrans || true) // wrap must be true
-      let tempobj = {
-        plugins: myplugins,
-        entry: {[basepath + lang[i] + wranojs]: ['./front/' + lang[i] + myconfig.wrapper]},
-        output: {filename: pub ? '[name].min.js' : '[name].js'}
+      let myplugins = this.defaultplugin(pub, lang[i], '', mytrans || true) // wrap must be true
+      // console.log(wrap.input, wrap.output)
+      if (fs.existsSync(wrap.input)) {
+        let tempobj = {
+          plugins: myplugins,
+          entry: {[wrap.output]: [wrap.input]},
+          // entry: {[basepath + lang[i] + wranojs]: ['./front/' + lang[i] + myconfig.wrapper]},
+          output: {filename: pub ? '[name].min.js' : '[name].js'}
+        }
+        if (myconfig.webpack.devtool) tempobj.devtool = (pub ? myconfig.webpack.devtool[1] : myconfig.webpack.devtool[0])
+        Object.assign(tempobj.output, this.confobj.output)
+        // Object.assign(this.confobj, tempobj)
+        webpackconf.push({...this.confobj, ...tempobj})
+      } else {
+        console.log('Input is error!'.red)
+        return false
       }
-      Object.assign(tempobj.output, this.confobj.output)
-      // Object.assign(this.confobj, tempobj)
-      webpackconf.push({...this.confobj, ...tempobj})
     }
     compiler = webpack(webpackconf)
   }

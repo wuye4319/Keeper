@@ -68,7 +68,7 @@ class Cache {
 
     let file = path.join(__dirname, this.options.gpath + type + '/' + name + '/' + date.getTime() + '.html')
     writefile.writejs(file, html)
-    log.myconsole('Create cache file!'.blue)
+    type === 'error' ? log.myconsole('Create error cache file!'.red) : log.myconsole('Create cache file!'.blue)
     log.mybuffer({'Cache': name + '/' + date.getTime() + '.html'})
   }
 

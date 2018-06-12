@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const Writefile = require('keeper-core/lib/writefile')
 let writefile = new Writefile()
-if (!fs.existsSync('./config')) {
+if (!fs.existsSync('./config.js')) {
   let inconf = path.join(__dirname, '/../tpl/system/config-front.js')
   let outconf = './config.js'
   writefile.copy(inconf, outconf)

@@ -11,7 +11,7 @@ proxy.init()
 proxy.initproxybrowser()
 
 repls.defineCommand('clear', {
-  help: 'Clear all cache, confirm your opration carefully!'.green,
+  help: 'Clear all cache, conform your opration carefully!'.green,
   action: function () {
     // temp
     let mycache = path.join(__dirname, '../../../cache/')

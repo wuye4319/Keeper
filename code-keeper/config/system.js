@@ -4,9 +4,11 @@
  */
 
 let systemconfig = {
-  'base': './front/plugin/init',
-  // example : ./front/
-
+  plugin: 'plugin/init/',
+  root: './',
+  frontdir: 'front/',
+  staticdir: 'static/',
+  source: 'source/js/'
 }
 
 module.exports = systemconfig

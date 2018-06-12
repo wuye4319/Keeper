@@ -16,11 +16,12 @@ let apidata = false
 
 // constructor
 class InitJs {
-  async getcont (cont, filterbox, selfbrowser) {
+  async getcont (cont, filterbox, selfbrowser, url) {
     return new Promise(async resolve => {
       let isjson = false
       let templine = '\n<script>\nvar apidata = '
       let endtempline = '\n</script>'
+      let splitline = '\n================================================\n'
 
       let tempstr = this.subresult(filterbox)
       if (tempstr) filterbox = tempstr
@@ -30,7 +31,8 @@ class InitJs {
         // if previous api is success, reduce
         if (logincount && !selfbrowser) logincount -= 1
       } else {
-        let befailed = await this.befailed(filterbox, selfbrowser)
+        let errcont = cont + splitline + filterbox
+        let befailed = await this.befailed(filterbox, selfbrowser, errcont, url)
         if (befailed === 'changeip') { resolve('changeip') } else { resolve('Analysis failed!') }
       }
 
@@ -66,7 +68,7 @@ class InitJs {
             }, 100)
           } else {
             logger.myconsole('Web page opens normally '.green + process + (selfbrowser ? ', backup service!'.red : ''))
-            cont = await this.getcont(cont, filterbox, selfbrowser)
+            cont = await this.getcont(cont, filterbox, selfbrowser, url)
             resolve(cont)
             t = Date.now() - t
             mylogstr.Loadingtime = (t / 1000).toString() + ' s'
@@ -136,7 +138,7 @@ class InitJs {
     })
   }
 
-  async befailed (filterbox, selfbrowser) {
+  async befailed (filterbox, selfbrowser, cont, url) {
     // check login count, if get api failed more than 2 times, change ip first
     selfbrowser ? logger.myconsole('Self browser analysis failed!'.red) : logger.myconsole('Analysis failed!'.red)
     if (!selfbrowser) {
@@ -147,6 +149,7 @@ class InitJs {
         return 'changeip'
       }
     }
+    cache.writecache(cont, url, 'error')
 
     return false
   }
@@ -156,9 +159,10 @@ class InitJs {
       obj = JSON.parse(obj)
       let isjsonstr = typeof (obj) === 'object' && Object.prototype.toString.call(obj).toLowerCase() === '[object object]' && !obj.length
       if (isjsonstr) {
-        let verifystr = JSON.stringify(obj).indexOf('detailskip.taobao.com')
-        let verifystr2 = JSON.stringify(obj).indexOf('login.taobao.com')
-        if (verifystr !== -1 && verifystr2 !== -1) {
+        // let verifystr = JSON.stringify(obj).indexOf('detailskip.taobao.com')
+        let verifystr2 = JSON.stringify(obj).indexOf('login.taobao.com/member/login.jhtml?style=')
+        // console.log(verifystr2, verifystr)
+        if (verifystr2 !== -1) {
           logger.myconsole('Login redirect!'.red)
           return false
         } else {

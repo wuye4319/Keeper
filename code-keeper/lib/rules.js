@@ -6,21 +6,22 @@
 let fs = require('fs')
 const path = require('path')
 let mypathlist = []
-let myModule, myModuleDir, childModule, routerdir
+let myModule, myModuleDir, childModule, routerdir, currtheme
 let proxy, wrapper, configtransfile, lang, basepath, isrouter
 let htmlbasepath, myChildDir, myChildName, mySource, myAutoPath
 
 let langbox = ['cn/', 'en/']
 let config
-let systemconfig = require('../config/system')
+let sysconf = require('../config/system')
 
 let initpath = {
-  imgpath: systemconfig.base + '/source/img/.gitkeep',
-  htmlpath: systemconfig.base + '/page/init.html',
-  jspath: systemconfig.base + '/source/js/init.js',
-  lesspath: systemconfig.base + '/source/less/init.less',
-  rout: systemconfig.base + '/source/js/init-rout.txt',
-  routjs: systemconfig.base + '/source/js/router.txt'
+  // ./front/plugin/init/source/js/router.txt
+  imgpath: sysconf.root + sysconf.frontdir + sysconf.plugin + 'source/img/.gitkeep',
+  htmlpath: sysconf.root + sysconf.frontdir + sysconf.plugin + 'page/init.html',
+  jspath: sysconf.root + sysconf.frontdir + sysconf.plugin + sysconf.source + 'init.js',
+  lesspath: sysconf.root + sysconf.frontdir + sysconf.plugin + 'source/less/init.less',
+  rout: sysconf.root + sysconf.frontdir + sysconf.plugin + sysconf.source + 'init-rout.txt',
+  routjs: sysconf.root + sysconf.frontdir + sysconf.plugin + sysconf.source + 'router.txt'
 }
 
 // construct
@@ -39,6 +40,7 @@ class rules {
 
     myModule = config.myModule
     myModuleDir = config.myModule.toLocaleLowerCase()
+    currtheme = (config.currTheme ? config.currTheme + '/' : '')
     childModule = config.childModule
     routerdir = config.routerdir
     proxy = config.proxy
@@ -168,48 +170,57 @@ class rules {
         myseoinfor = eval('seoconfig.' + myModuleDir + '[\'' + childModule + '\']') || eval('seoconfig.default.default')
       }
     } else if (myModuleDir) {
-      myseoinfor = (eval('seoconfig.' + myModuleDir) ? (eval('seoconfig.' + myModuleDir + '.construct') || eval('seoconfig.default.construct')) : false) || eval('seoconfig.default.construct')
+      myseoinfor = (eval('seoconfig.' + myModuleDir)
+        ? (eval('seoconfig.' + myModuleDir + '.construct') || eval('seoconfig.default.construct'))
+        : false) || eval('seoconfig.default.construct')
     }
     return myseoinfor
   }
 
-  dev (ispub) {
-    let arrwebpack = []
+  dev (ispub, lang) {
     let develop
     let myseoinfor = this.seoinfor()
+    let mypathlist = this.mypath(lang)
 
     // dev and pub
-    for (let i in lang) {
-      let singleinfor = (lang[i] === 'cn/' ? myseoinfor[0] : myseoinfor[1])
-      let tempobj = {
-        template: initpath.htmlpath,
-        data: {
-          title: singleinfor.title,
-          keywords: singleinfor.keyword,
-          description: singleinfor.description,
-          container: '<div id="container"><div style="position:fixed;top:0;right:0;bottom:0;left:0;background:url(\'/cn/source/img/orion/loading_normal_62.gif\') no-repeat center;"></div><div class="static" style="opacity: 0;"><%= container %></div></div>',
-          loadjs: '/' + basepath + 'plugin/' + (ispub ? 'base' : 'dev') + '/load.js',
-          wrapjs: mypathlist[i].wrapjs
-        }
+    let singleinfor = (lang === 'cn/' ? myseoinfor[0] : myseoinfor[1])
+    let tempobj = {
+      template: initpath.htmlpath,
+      data: {
+        title: singleinfor.title,
+        keywords: singleinfor.keyword,
+        description: singleinfor.description,
+        container: '<div id="container"><div style="position:fixed;top:0;right:0;bottom:0;left:0;background:url(\'/cn/source/img/orion/loading_normal_62.gif\') no-repeat center;"></div><div class="static" style="opacity: 0;"><%= container %></div></div>',
+        loadjs: '/' + basepath + 'plugin/' + (ispub ? 'base' : 'dev') + '/load.js',
+        wrapjs: mypathlist.wrapjs
       }
-      if (isrouter !== -1) {
-        // router dir
-        tempobj.filename = '/' + basepath + mypathlist[i].html + 'index.html'
-        tempobj.data.myjs = mypathlist[i].myroutjs + (ispub ? '.min.js' : '.js')
-        arrwebpack.push(tempobj)
-        develop = myModuleDir + '/' + myModule
-      } else {
-        // normal dir
-        tempobj.filename = '/' + basepath + mypathlist[i].html + myChildDir + 'index.html'
-        tempobj.data.myjs = mypathlist[i].myjs + (ispub ? '.min.js' : '.js')
-        arrwebpack.push(tempobj)
-        develop = myModuleDir + '/' + myChildDir + mySource
-      }
+    }
+    if (isrouter !== -1) {
+      // router dir
+      tempobj.filename = '/' + basepath + mypathlist.html + 'index.html'
+      tempobj.data.myjs = mypathlist.myroutjs + (ispub ? '.min.js' : '.js')
+      develop = sysconf.source + myModuleDir + '/' + myModule
+    } else {
+      // normal dir
+      tempobj.filename = '/' + basepath + currtheme + mypathlist.html + myChildDir + 'index.html'
+      tempobj.data.myjs = mypathlist.myjs + (ispub ? '.min.js' : '.js')
+      develop = sysconf.source + myModuleDir + '/' + myChildDir + mySource
     }
     let data = {
-      webdev: arrwebpack,
-      develop: develop
+      webdev: tempobj,
+      input: sysconf.root + sysconf.frontdir + currtheme + lang + develop + '.js',
+      output: basepath + currtheme + lang + develop
     }
+    return data
+  }
+
+  wrap (lang) {
+    let data = {}
+    let wranojs = wrapper.substr(0, wrapper.indexOf('.js'))
+    let wrapdir = wrapper.substr(0, wrapper.lastIndexOf('/') + 1)
+    data.input = sysconf.root + sysconf.frontdir + currtheme + lang + wrapper
+    data.output = basepath + currtheme + lang + wranojs
+    data.mypath = sysconf.root + sysconf.frontdir + currtheme + lang + wrapdir + config.transfile
     return data
   }
 }

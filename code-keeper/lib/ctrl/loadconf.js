@@ -13,8 +13,12 @@ class loadconf {
     return rules.seoinfor()
   }
 
-  dev (ispub) {
-    return rules.dev(ispub)
+  dev (ispub, lang) {
+    return rules.dev(ispub, lang)
+  }
+
+  wrap (lang) {
+    return rules.wrap(lang)
   }
 
   transfile (lang) {

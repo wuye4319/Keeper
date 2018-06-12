@@ -8,7 +8,7 @@ let rules = new Fsrules()
 class myvers {
   constructor () {
     this.options = {
-      version: '1.2.0'
+      version: '1.2.1'
     }
   }
 

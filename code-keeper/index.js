@@ -54,27 +54,10 @@ InitJs.prototype.apply = function (compiler) {
   })
 }
 
-InitJs.prototype.hascont = function (str, content) {
-  let strn = str + '\n'
-  let strr = str + '\r'
-  let strnr = str + '\r\n'
-  if (content.indexOf(strn) !== -1) {
-    return content.indexOf(strn) + strn.length
-  } else if (content.indexOf(strnr) !== -1) {
-    return content.indexOf(strnr) + strnr.length
-  } else if (content.indexOf(strr) !== -1) {
-    return content.indexOf(strr) + strr.length
-  }
-}
-
 InitJs.prototype.contstr = function (file) {
   let content = fs.readFileSync(file).toString()
-  // windows \r\n
-  let firstStr = '<body>'
-  let endStr = '\n<!-- common module -->'
-  let hascont = this.hascont(firstStr, content)
-  let contstr = content.substr(hascont)
-  let newcont = contstr.substr(0, contstr.indexOf(endStr))
+  let rule = /<body>\s([\s\S]+)\s<!-- common module -->/
+  let newcont = content.match(rule)[1]
   return newcont
 }
 
