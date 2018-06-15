@@ -106,9 +106,6 @@ class InitJs {
     }
     let tempip = iplist[index].address + ':' + iplist[index].host
     await this.restart(tempip)
-    // } else {
-    //   await this.restart()
-    // }
     await this.getip()
   }
 

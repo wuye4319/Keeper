@@ -24,7 +24,9 @@ class ctrl {
 
     if (internumb > 15) {
       logger.myconsole('Server is busy,please wait...')
-      await proxy.restart()
+      await proxy.close()
+      await proxy.init()
+      await proxy.initproxybrowser()
       // clear process and url box
       this.clearinternumb()
     } else {
