@@ -25,7 +25,7 @@ class myvers {
       {name: 'basepath', value: myinfor.config.basepath},
       {name: 'htmlbasepath', value: myinfor.config.htmlbasepath},
       {name: 'lang', value: myinfor.lang},
-      {name: 'wrapper', value: myinfor.config.wrapper.substr(0, myinfor.config.wrapper.lastIndexOf('/'))}
+      {name: 'wrapper', value: myinfor.wrapper.substr(0, myinfor.wrapper.lastIndexOf('/'))}
     ]
     let result = true
     if (versconf !== this.options.version) {
