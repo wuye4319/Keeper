@@ -3,9 +3,10 @@
  * 通过.xx执行命令
  */
 const config = {
-  version: '1.2.0',
+  version: '1.2.1',
   myModule: 'test', // myModule:1级目录
   childModule: '', // childModule:2级目录
+  currTheme: '',
   basepath: 'newadmin',
   htmlbasepath: '', // html根目录，空则没有
   lang: '', // cn:中文，en:英文，all:中英文同时编译

@@ -8,21 +8,11 @@ const path = require('path')
 let mypathlist = []
 let myModule, myModuleDir, childModule, routerdir, currtheme
 let proxy, wrapper, configtransfile, lang, basepath, isrouter
-let htmlbasepath, myChildDir, myChildName, mySource, myAutoPath
+let htmlbasepath, myChildDir, myChildName, mySource, myAutoPath, initpath
 
 let langbox = ['cn/', 'en/']
 let config
 let sysconf = require('../config/system')
-
-let initpath = {
-  // ./front/plugin/init/source/js/router.txt
-  imgpath: sysconf.root + sysconf.frontdir + sysconf.plugin + 'source/img/.gitkeep',
-  htmlpath: sysconf.root + sysconf.frontdir + sysconf.plugin + 'page/init.html',
-  jspath: sysconf.root + sysconf.frontdir + sysconf.plugin + sysconf.source + 'init.js',
-  lesspath: sysconf.root + sysconf.frontdir + sysconf.plugin + 'source/less/init.less',
-  rout: sysconf.root + sysconf.frontdir + sysconf.plugin + sysconf.source + 'init-rout.txt',
-  routjs: sysconf.root + sysconf.frontdir + sysconf.plugin + sysconf.source + 'router.txt'
-}
 
 // construct
 class rules {
@@ -44,7 +34,7 @@ class rules {
     childModule = config.childModule
     routerdir = config.routerdir
     proxy = config.proxy
-    wrapper = config.wrapper
+    wrapper = config.wrapper || ''
     configtransfile = config.transfile
     lang = (config.lang ? config.lang + '/' : '')
     basepath = (config.basepath ? config.basepath + '/' : '')
@@ -65,6 +55,16 @@ class rules {
     for (let i in lang) {
       mypathlist.push(this.mypath(lang[i]))
     }
+
+    initpath = {
+      // ./front/plugin/init/source/js/router.txt
+      imgpath: sysconf.root + sysconf.frontdir + currtheme + sysconf.plugin + 'source/img/.gitkeep',
+      htmlpath: sysconf.root + sysconf.frontdir + currtheme + sysconf.plugin + 'page/init.html',
+      jspath: sysconf.root + sysconf.frontdir + currtheme + sysconf.plugin + sysconf.source + 'init.js',
+      lesspath: sysconf.root + sysconf.frontdir + currtheme + sysconf.plugin + 'source/less/init.less',
+      rout: sysconf.root + sysconf.frontdir + currtheme + sysconf.plugin + sysconf.source + 'init-rout.txt',
+      routjs: sysconf.root + sysconf.frontdir + currtheme + sysconf.plugin + sysconf.source + 'router.txt'
+    }
   }
 
   // config
@@ -77,7 +77,8 @@ class rules {
       basepath: basepath,
       myChildDir: myChildDir,
       myModuleDir: myModuleDir,
-      mySource: mySource
+      mySource: mySource,
+      wrapper: wrapper
     }
     return data
   }
@@ -147,7 +148,7 @@ class rules {
       myless: './' + mySource + '.less',
       commonless: myAutoPath + '../../../../plugin/less/class.less',
       myroutjs: '/' + basepath + base.js + myModule,
-      wrapjs: '/' + basepath + lang + wrapper,
+      wrapjs: (basepath + lang + wrapper) ? '/' + basepath + lang + wrapper : false,
       myjs: '/' + basepath + base.js + myChildDir + mySource
     }
     let mypath = {}
