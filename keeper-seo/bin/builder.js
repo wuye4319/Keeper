@@ -7,6 +7,8 @@ require('../koa/router/rout')
 // proxy taobao
 const Proxy = require('../lib/proxy')
 let proxy = new Proxy()
+const Ctrl = require('../koa/router/ctrl')
+let ctrl = new Ctrl()
 proxy.init()
 proxy.initproxybrowser()
 
@@ -16,6 +18,13 @@ repls.defineCommand('clear', {
     // temp
     let mycache = path.join(__dirname, '../../../cache/')
     del.deleteSource(mycache, 'all')
+  }
+})
+repls.defineCommand('clearprocess', {
+  help: 'Clear all cache, conform your opration carefully!'.green,
+  action: function () {
+    // temp
+    ctrl.clearinternumb()
   }
 })
 repls.defineCommand('ipinterval', {

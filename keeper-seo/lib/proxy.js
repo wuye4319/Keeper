@@ -34,6 +34,7 @@ let browser
 let selfbrowser
 let ipdate = mytime.mydate('mins')
 logger.myconsole('Program start at : '.blue + ipdate)
+const systemconfig = require('../config/system')
 let ipindex = 1
 
 // change ip active
@@ -42,7 +43,7 @@ let changeipactive = true
 // ip proxy list
 const iplist = require('../config/iplist')
 // change ip interval time, [mins]
-let changeiptime = 10
+let changeiptime = systemconfig.changeiptime
 let processbox = []
 
 // constructor
@@ -68,9 +69,11 @@ class InitJs {
   }
 
   async initproxybrowser () {
-    let proxy = iplist[0].address + ':' + iplist[0].host
-    await this.newbrowser(proxy)
-    await this.getip()
+    if (systemconfig.proxyserver) {
+      let proxy = iplist[0].address + ':' + iplist[0].host
+      await this.newbrowser(proxy)
+      await this.getip()
+    }
   }
 
   async newbrowser (tempip) {
@@ -106,6 +109,9 @@ class InitJs {
     }
     let tempip = iplist[index].address + ':' + iplist[index].host
     await this.restart(tempip)
+    // } else {
+    //   await this.restart()
+    // }
     await this.getip()
   }
 
@@ -118,7 +124,7 @@ class InitJs {
 
   async close () {
     await selfbrowser.close()
-    await browser.close()
+    if (systemconfig.proxyserver) await browser.close()
   }
 
   manualchangeip () {
@@ -132,10 +138,7 @@ class InitJs {
     console.log('Active change ip is start!'.green)
   }
 
-  async taobao (type, url, process) {
-    let cache = true
-    let result = await fastpost.taobao(browser, type, url, cache, process)
-
+  async servermatrix (type, url, process, result) {
     // when the first one is done, it will stop the second
     // check ip date
     let ispass = mytime.dateispass(ipdate.split('-'), changeiptime)
@@ -145,9 +148,20 @@ class InitJs {
     }
 
     if (result === 'changeip' || result === 'Analysis failed!' || result === 'Product is missing!') {
-      result = await fastpost.taobao(selfbrowser, type, url, cache, process, true)
+      result = await fastpost.taobao(selfbrowser, type, url, process, true)
     }
+    return result
+  }
 
+  async taobao (type, url, process) {
+    let cache = systemconfig.cache
+    let currbrow = systemconfig.proxyserver ? browser : selfbrowser
+    let result = await fastpost.taobao(currbrow, type, url, cache, process)
+
+    if (systemconfig.proxyserver) {
+      result = this.servermatrix(type, url, process, result)
+    }
+    // result.url = url
     return result === 'changeip' ? 'Analysis failed!' : result
   }
 

@@ -119,6 +119,7 @@ class InitJs {
         // let cont = await page.content()
         // console.log(filterbox)
         // close page when analysis is done
+        await page.goto('about:blank')
         await page.close()
         if (!isali) {
           selfbrowser ? logger.myconsole('Self browser product is missing! '.yellow + process) : logger.myconsole('Product is missing! '.yellow +
@@ -133,6 +134,7 @@ class InitJs {
       } catch (e) {
         resolve(false)
         logger.myconsole('System error! Or page timeout!'.red)
+        await page.goto('about:blank')
         await page.close()
       }
     })

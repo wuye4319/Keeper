@@ -13,59 +13,94 @@ const path = require('path')
 
 let internumb = 0
 let urlbox = []
+let repeat = []
 
 class ctrl {
   async filtermall (ctx, rout) {
-    // filter
-    let myurl = ctx.url.substr(rout.length + 2)
-    logger.myconsole('process : '.red + internumb.toString().red)
-    logger.myconsole(myurl)
-    let result
+    return new Promise(async resolve => {
+      // filter
+      let myurl = ctx.url.substr(rout.length + 2)
+      logger.myconsole('process : '.red + internumb.toString().red)
+      logger.myconsole(myurl)
+      let result
 
-    if (internumb > 15) {
-      logger.myconsole('Server is busy,please wait...')
-      await proxy.close()
-      await proxy.init()
-      await proxy.initproxybrowser()
-      // clear process and url box
-      this.clearinternumb()
-    } else {
-      // do not cache url
-      internumb += 1
-      let hasurl = this.eachurl(urlbox, myurl)
-      if (hasurl) {
-        logger.myconsole('Repeat request!'.red)
+      if (internumb > 15) {
+        logger.myconsole('Server is busy,please wait...')
+        await proxy.close()
+        await proxy.init()
+        await proxy.initproxybrowser()
+        // clear process and url box
+        this.clearinternumb()
       } else {
-        urlbox.push(myurl)
-        // read cache file time
-        let rct = Date.now()
-        let hascache = await cache.readcache(myurl, rout)
-        rct = Date.now() - rct
-        logger.myconsole('read cache time : '.green + rct.toString().red +
-          ' ms'.green)
-        if (hascache) {
-          result = hascache
-          logger.myconsole('this is cache file!')
+        // do not cache url
+        internumb += 1
+        let hasurl = this.eachurl(urlbox, myurl)
+        if (hasurl) {
+          logger.myconsole('Repeat request!'.red)
+          console.log(repeat)
+          // let waitresult = async (index, myurl) => {
+          //   index += 1
+          //   if (index > 90) {
+          //     result = 'Wait result timeout!'
+          //     logger.myconsole('Wait result timeout!'.red)
+          //   }
+          //
+          //   let result = await this.eachrepeat(myurl)
+          //   if (!result) {
+          //     setTimeout(function () {
+          //       waitresult(index, myurl)
+          //     }, 100)
+          //   } else {
+          //     ctx.response.body = result
+          //     resolve(result)
+          //   }
+          // }
+          // await waitresult(0, myurl)
         } else {
-          result = await proxy.taobao(rout, myurl, internumb)
+          urlbox.push(myurl)
+          // read cache file time
+          let rct = Date.now()
+          let hascache = await cache.readcache(myurl, rout)
+          rct = Date.now() - rct
+          logger.myconsole('read cache time : '.green + rct.toString().red + ' ms'.green)
+          if (hascache) {
+            result = hascache
+            logger.myconsole('this is cache file!')
+          } else {
+            result = await proxy.taobao(rout, myurl, internumb)
+            // repeat url
+            // let temp = {}
+            // temp[myurl] = result
+            // repeat.push(temp)
+            // this.clearRepeat(myurl)
+          }
+
+          // rm url in box
+          urlbox.splice(hasurl - 1, 1)
+          urlbox.length ? logger.myconsole(JSON.stringify(urlbox)) : logger.myconsole('[]')
         }
 
-        // rm url in box
-        urlbox.splice(hasurl - 1, 1)
-        urlbox.length
-          ? logger.myconsole(JSON.stringify(urlbox))
-          : logger.myconsole('[]')
+        internumb -= 1
       }
 
-      internumb -= 1
-    }
-
-    if (result) {
-      ctx.response.body = result
-    } else {
-      ctx.response.body = 'Get data failed!'
-    }
+      if (result) {
+        ctx.response.body = result
+        resolve(result)
+      }
+    })
   }
+
+  // async eachrepeat (url) {
+  //   let result = false
+  //   for (let i in repeat) {
+  //     if (repeat[i][url]) {
+  //       result = repeat[i][url]
+  //       repeat.splice(i, 1)
+  //       break
+  //     }
+  //   }
+  //   return result
+  // }
 
   eachurl (box, url) {
     let result = false
@@ -116,8 +151,7 @@ class ctrl {
     // filter
     let myurl = ctx.url.substr(rout.length + 2)
     let search = ctx.request.header['user-agent'] || ''
-    console.log('process : '.red +
-      internumb.toString().red, ' | search : '.green + search.yellow)
+    console.log('process : '.red + internumb.toString().red, ' | search : '.green + search.yellow)
     console.log(myurl)
 
     let result
