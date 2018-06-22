@@ -57,7 +57,7 @@ class InitJs {
         let waitcont = async (index, filterbox) => {
           index += 1
           if (index > 60) {
-            cont = 'Wait cont failed!'
+            cont = false
             logger.myconsole('Wait cont failed!'.red)
           }
 
@@ -87,7 +87,7 @@ class InitJs {
               try {
                 cont += await result.text()
               } catch (e) {
-                logger.myconsole('Get cont failed!'.red + process + e)
+                logger.myconsole(e + ' ' + process)
               }
             }
 
@@ -109,17 +109,12 @@ class InitJs {
               }
             }
           }
-
-          // if (result.url() === url) {
-          //   cont = await result.text()
-          // }
         })
 
         await page.goto(url)
         // let cont = await page.content()
         // console.log(filterbox)
         // close page when analysis is done
-        await page.goto('about:blank')
         await page.close()
         if (!isali) {
           selfbrowser ? logger.myconsole('Self browser product is missing! '.yellow + process) : logger.myconsole('Product is missing! '.yellow +
@@ -134,7 +129,6 @@ class InitJs {
       } catch (e) {
         resolve(false)
         logger.myconsole('System error! Or page timeout!'.red)
-        await page.goto('about:blank')
         await page.close()
       }
     })
