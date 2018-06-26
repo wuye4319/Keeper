@@ -19,6 +19,7 @@ class InitJs {
   async getcont (cont, filterbox, selfbrowser, url) {
     return new Promise(async resolve => {
       let isjson = false
+      if (cont === 'Failed') cont = false
       let templine = '\n<script>\nvar apidata = '
       let endtempline = '\n</script>'
       let splitline = '\n================================================\n'
@@ -57,7 +58,7 @@ class InitJs {
         let waitcont = async (index, filterbox) => {
           index += 1
           if (index > 60) {
-            cont = false
+            cont = 'Failed'
             logger.myconsole('Wait cont failed!'.red)
           }
 

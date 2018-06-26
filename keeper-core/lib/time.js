@@ -19,21 +19,21 @@ class time {
     return date
   }
 
-  dateispass (datearr, keepdate) {
+  dateispass (currdate, keepdate) {
     let ruletime = this.getdate()
     ruletime.setMinutes(ruletime.getMinutes() - keepdate)
     ruletime = ruletime.getTime()
 
-    let date = this.getdate()
-    date.setYear(datearr[0])
-    date.setMonth(datearr[1] - 1)
-    date.setDate(datearr[2])
-    date.setHours(datearr[3])
-    date.setMinutes(datearr[4])
-    date.setSeconds(0)
-    date = date.getTime()
+    // let date = this.getdate()
+    // date.setYear(datearr[0])
+    // date.setMonth(datearr[1] - 1)
+    // date.setDate(datearr[2])
+    // date.setHours(datearr[3])
+    // date.setMinutes(datearr[4])
+    // date.setSeconds(0)
+    // date = date.getTime()
 
-    return date < ruletime ? 1 : 0
+    return currdate < ruletime ? 1 : 0
   }
 
   mytime () {

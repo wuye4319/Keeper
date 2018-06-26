@@ -34,19 +34,26 @@ class Cache {
         let temparr = JSON.parse('[' + mycacheinfor + ']')
         // console.log(temparr)
         temparr.reverse()
+        let ruletime = mytime.getdate()
+        ruletime.setMinutes(ruletime.getMinutes() - this.options.cachemins)
+        ruletime = ruletime.getTime()
         for (let i in temparr) {
           let tmpurl = Object.values(temparr[i])
-          if (tmpurl[0] === url) {
-            let cachefile = Object.keys(temparr[i])
-            let tempdatearr = cachefile[0].substr(0, cachefile[0].indexOf('/'))
-            tempdatearr = tempdatearr.split('-')
-            let ispass = mytime.dateispass(tempdatearr, this.options.cachemins)
-            let mypath = path.join(__dirname, this.options.gpath + type + '/' + cachefile[0] + '.html')
-            if (fs.existsSync(mypath) && !ispass) {
-              result = fs.readFileSync(mypath).toString()
+          let cachefile = Object.keys(temparr[i])
+          let mycurrdate = cachefile[0].substr(cachefile[0].indexOf('/') + 1)
+          // tempdatearr = tempdatearr.split('-')
+          let istrue = (mycurrdate > ruletime ? 1 : 0)
+          // In current cache date, if url is exist
+          if (istrue) {
+            if (tmpurl[0] === url) {
+              let mypath = path.join(__dirname, this.options.gpath + type + '/' + cachefile[0] + '.html')
+              if (fs.existsSync(mypath)) {
+                result = fs.readFileSync(mypath).toString()
+              }
+              log.mybuffer({'Read': cachefile + '.html', 'date': mytime.mytime(), 'url': url})
+              log.writelog('success', type)
             }
-            log.mybuffer({'Read': cachefile + '.html', 'date': mytime.mytime(), 'url': url})
-            log.writelog('success', type)
+          } else {
             break
           }
         }
