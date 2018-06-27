@@ -56,7 +56,7 @@ class InitJs {
 
   getother (file) {
     let content = fs.readFileSync(file).toString()
-    let rule = /<!-- other -->\s([\s\S]+)\s<!-- other end -->/
+    let rule = /<!-- other -->\s([\s\S]+)\s<\/head>/
     let newcont = content.match(rule)[1]
     console.log(newcont)
     return newcont

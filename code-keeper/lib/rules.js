@@ -72,6 +72,7 @@ class rules {
     let data = {
       config: config,
       lang: lang,
+      currtheme: currtheme,
       isrouter: isrouter,
       initpath: initpath,
       basepath: basepath,
@@ -134,7 +135,7 @@ class rules {
   // my path
   mypath (lang) {
     let base = {
-      stat: './static/' + basepath,
+      stat: './static/' + basepath + currtheme,
       html: lang + htmlbasepath + myModuleDir + '/',
       js: lang + 'source/js/' + myModuleDir + '/',
       img: lang + 'source/img/' + myModuleDir + '/',

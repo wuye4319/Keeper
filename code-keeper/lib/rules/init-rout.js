@@ -20,12 +20,13 @@ class rulinit {
       let mypathlist = rules.mypath(lang[i])
       let singleinfor = (lang[i] === 'cn/' ? myseoinfor[0] : myseoinfor[1])
 
+      let frontsource = './front/' + myinfor.currtheme + mypathlist.js + myinfor.myChildDir + myinfor.mySource
       arrinit.push({
         // img
         filename: mypathlist.stat + mypathlist.img + myinfor.myChildDir + '.gitkeep',
         template: initpath.imgpath
       }, {
-        filename: './front/' + mypathlist.js + myinfor.myChildDir + myinfor.mySource + '.less',
+        filename: frontsource + '.less',
         template: initpath.lesspath,
         data: {'commonless': mypathlist.commonless}
       }, {
@@ -38,13 +39,14 @@ class rulinit {
           container: '<div id="container"><div style="position:fixed;top:0;right:0;bottom:0;left:0;background:url(\'/cn/source/img/orion/loading_normal_62.gif\') no-repeat center;"></div><div class="static" style="opacity: 0;"><%= container %></div></div>',
           myjs: mypathlist.myroutjs + '.js',
           loadjs: '/' + myinfor.basepath + 'plugin/base/load.js',
+          other: '',
           wrapjs: mypathlist.wrapjs
         }
       })
       if (isrouter !== -1) {
         // no html,creat (img dir,test.js,routerdir .js,test.less)
         arrinit.push({
-          filename: './front/' + mypathlist.js + myinfor.myChildDir + myinfor.mySource + '.js', // write into myjs
+          filename: frontsource + '.js', // write into myjs
           template: initpath.rout,
           data: {
             'modulename': mypathlist.myupchildname,
@@ -55,7 +57,7 @@ class rulinit {
         // normal dir
         // init
         arrinit.push({
-          filename: './front/' + mypathlist.js + myinfor.myChildDir + myinfor.mySource + '.js', // write into myjs
+          filename: frontsource + '.js', // write into myjs
           template: initpath.jspath,
           data: {'myless': mypathlist.myless}
         })

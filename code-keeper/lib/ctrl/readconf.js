@@ -22,7 +22,7 @@ class conf {
     let myseo = rules.seoinfor()
     console.log('myModule : \''.green + myconfig.myModule.red + '\''.green)
     console.log('childModule : \''.green + myconfig.childModule.red + '\''.green)
-    console.log('currTheme : \''.green + myconfig.currTheme.red + '\''.green)
+    console.log('currTheme : \''.green + (myconfig.currTheme ? myconfig.currTheme.red : '') + '\''.green)
     console.log('lang : \''.cyan + myconfig.lang.red + '\''.cyan)
     console.log('proxy : \''.cyan + myconfig.proxy.red + '\''.cyan)
     console.log('cn : '.blue)
