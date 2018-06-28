@@ -52,8 +52,8 @@ class clear {
         {filename: mypathlist.stat + mypathlist.img + myinfor.myChildDir},
         {filename: mypathlist.stat + mypathlist.html + myinfor.myChildDir},
         // ./front/cn/source/js/test/test.js
-        {filename: './front/' + mypathlist.js + myinfor.myChildDir},
-        {filename: './front/' + mypathlist.less + myinfor.myChildDir},
+        {filename: mypathlist.front + mypathlist.js + myinfor.myChildDir},
+        {filename: mypathlist.front + mypathlist.less + myinfor.myChildDir},
         {filename: mypathlist.stat + mypathlist.js + myinfor.myChildDir})
     }
     return arrdel

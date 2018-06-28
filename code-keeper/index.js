@@ -41,7 +41,8 @@ class InitJs {
       data.other = ''
       // reset all except content
       if (fs.existsSync(outfile)) {
-        data.container = self.contstr(outfile)
+        let oldcont = self.contstr(outfile)
+        if (oldcont) data.container = oldcont
         data.other = self.getother(outfile)
         data.myjs = myhash
       }
@@ -57,15 +58,22 @@ class InitJs {
   getother (file) {
     let content = fs.readFileSync(file).toString()
     let rule = /<!-- other -->\s([\s\S]+)\s<\/head>/
-    let newcont = content.match(rule)[1]
-    console.log(newcont)
-    return newcont
+    let res = content.match(rule)
+    let other = ''
+    if (res) {
+      other = res[1]
+    }
+    return other
   }
 
   contstr (file) {
     let content = fs.readFileSync(file).toString()
     let rule = /<body>\s([\s\S]+)\s<!-- common module -->/
-    let newcont = content.match(rule)[1]
+    let res = content.match(rule)
+    let newcont = false
+    if (res) {
+      newcont = res[1]
+    }
     return newcont
   }
 

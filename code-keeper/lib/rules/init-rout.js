@@ -20,7 +20,7 @@ class rulinit {
       let mypathlist = rules.mypath(lang[i])
       let singleinfor = (lang[i] === 'cn/' ? myseoinfor[0] : myseoinfor[1])
 
-      let frontsource = './front/' + myinfor.currtheme + mypathlist.js + myinfor.myChildDir + myinfor.mySource
+      let frontsource = mypathlist.front + mypathlist.js + myinfor.myChildDir + myinfor.mySource
       arrinit.push({
         // img
         filename: mypathlist.stat + mypathlist.img + myinfor.myChildDir + '.gitkeep',
