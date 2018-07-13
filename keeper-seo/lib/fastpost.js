@@ -156,11 +156,15 @@ class InitJs {
       obj = JSON.parse(obj)
       let isjsonstr = typeof (obj) === 'object' && Object.prototype.toString.call(obj).toLowerCase() === '[object object]' && !obj.length
       if (isjsonstr) {
-        // let verifystr = JSON.stringify(obj).indexOf('detailskip.taobao.com')
-        let verifystr2 = JSON.stringify(obj).indexOf('login.taobao.com/member/login.jhtml?style=')
+        let verifystr = JSON.stringify(obj).indexOf('//detailskip.taobao.com:443/service/getData/1/p1/item/detail/sib.htm')
+        let verifystr2 = JSON.stringify(obj).indexOf('sec.taobao.com/query.htm?smApp')
+        let verifystrLogin = JSON.stringify(obj).indexOf('login.taobao.com/member/login.jhtml?style=')
         // console.log(verifystr2, verifystr)
-        if (verifystr2 !== -1) {
+        if (verifystrLogin !== -1) {
           logger.myconsole('Login redirect!'.red)
+          return false
+        } else if (verifystr !== -1 || verifystr2 !== -1) {
+          logger.myconsole('Verification Code!'.red)
           return false
         } else {
           return true

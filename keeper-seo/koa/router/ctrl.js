@@ -94,11 +94,12 @@ class ctrl {
     }
   }
 
-  async loginstatus (ctx) {
+  async loginstatus (ctx, browser) {
     let rand = Math.ceil(Math.random() * 1000000000)
-    let imgpath = path.join(__dirname, '/../../static/codeimg/loginstatus.png')
+    browser = browser || ''
+    let imgpath = path.join(__dirname, '/../../static/codeimg/loginstatus' + browser + '.png')
     let status = fs.statSync(imgpath)
-    let labimg = '<img src="/static/codeimg/loginstatus.png?' + rand + '" />'
+    let labimg = '<img src="/static/codeimg/loginstatus' + browser + '.png?' + rand + '" />'
     let labp = '<p>' + status.mtime + '</p>'
     ctx.response.body = labimg + labp
   }

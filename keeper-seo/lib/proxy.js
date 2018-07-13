@@ -38,7 +38,7 @@ const systemconfig = require('../config/system')
 let ipindex = 1
 
 // change ip active
-let changeipactive = true
+let changeipactive = false
 
 // ip proxy list
 const iplist = require('../config/iplist')
@@ -139,6 +139,7 @@ class InitJs {
   }
 
   async servermatrix (type, url, process, result) {
+    let cache = systemconfig.cache
     // when the first one is done, it will stop the second
     // check ip date
     let ispass = mytime.dateispass(ipdate.split('-'), changeiptime)
@@ -148,7 +149,7 @@ class InitJs {
     }
 
     if (result === 'changeip' || result === 'Analysis failed!' || result === 'Product is missing!') {
-      result = await fastpost.taobao(selfbrowser, type, url, process, true)
+      result = await fastpost.taobao(selfbrowser, type, url, cache, process, true)
     }
     return result
   }
@@ -173,9 +174,9 @@ class InitJs {
   async loginbycode (browsertype) {
     let data
     if (browsertype === 'self') {
-      data = await getcodeimg.getimg(selfbrowser)
+      data = await getcodeimg.getimg(selfbrowser, browsertype)
     } else if (browsertype === 'curr') {
-      data = await getcodeimg.getimg(browser)
+      data = await getcodeimg.getimg(browser, browsertype)
     }
 
     return data

@@ -32,8 +32,9 @@ koa.addrouter('/logincode/:browser', async (ctx) => {
 })
 
 // logincode
-koa.addrouter('/loginstatus/', async (ctx) => {
-  await ctrl.loginstatus(ctx)
+koa.addrouter('/loginstatus/:browser', async (ctx) => {
+  let browser = ctx.params.browser
+  await ctrl.loginstatus(ctx, browser)
 })
 
 // web log

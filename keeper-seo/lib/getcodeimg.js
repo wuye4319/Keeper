@@ -14,7 +14,7 @@ let delay = new Delay()
 
 // constructor
 class InitJs {
-  getimg (browser) {
+  getimg (browser, type) {
     return new Promise(async (resolve) => {
       const page = await browser.newPage()
 
@@ -40,7 +40,7 @@ class InitJs {
           clearTimeout(mygetout)
           logger.myconsole('Page login success!'.magenta)
           await delay.delay(1)
-          let imgpath = path.join(__dirname, '/../static/codeimg/loginstatus.png')
+          let imgpath = path.join(__dirname, '/../static/codeimg/loginstatus' + (type || '') + '.png')
           await page.screenshot({path: imgpath})
           await page.close()
         })
