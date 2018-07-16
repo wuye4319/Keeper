@@ -181,18 +181,18 @@ class InitJs {
     return filterbox
   }
 
-  checklogin (cookiebox) {
-    let result = false
-    for (let i in cookiebox) {
-      let key1 = 'lgc'
-      let key2 = 'tracknick'
-      if (cookiebox[i].name === key1 || cookiebox[i].name === key2) {
-        result = true
-        break
-      }
-    }
-    return result
-  }
+  // checklogin (cookiebox) {
+  //   let result = false
+  //   for (let i in cookiebox) {
+  //     let key1 = 'lgc'
+  //     let key2 = 'tracknick'
+  //     if (cookiebox[i].name === key1 || cookiebox[i].name === key2) {
+  //       result = true
+  //       break
+  //     }
+  //   }
+  //   return result
+  // }
 }
 
 module.exports = InitJs

@@ -43,7 +43,7 @@ repls.defineCommand('clear', {
     global.myvari.answer.buy = () => {
       this.getday('buy')
     }
-    global.myvari.answer.subject = () => {
+    global.myvari.answer.error = () => {
       this.getday('error')
     }
     global.myvari.answer.taobao = () => {
