@@ -149,7 +149,7 @@ class rules {
       myless: './' + mySource + '.less',
       commonless: myAutoPath + '../../../../plugin/less/class.less',
       myroutjs: '/' + basepath + base.js + myModule,
-      wrapjs: (basepath + lang + wrapper) ? '/' + basepath + lang + wrapper : false,
+      wrapjs: wrapper ? '/' + basepath + lang + wrapper : false,
       myjs: '/' + basepath + base.js + myChildDir + mySource
     }
     let mypath = {}

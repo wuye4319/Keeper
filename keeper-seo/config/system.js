@@ -4,10 +4,10 @@
  */
 
 const system = {
-  proxyserver: false,
-  cache: true,
-  printsourceurl: false,
-  ignoreimg: true,
+  proxyserver: 1,
+  cache: 1,
+  printsourceurl: 0,
+  ignoreimg: 1,
   changeiptime: 10
 }
 
