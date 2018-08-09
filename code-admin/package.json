@@ -21,6 +21,7 @@
     "admin": "./bin/main.js"
   },
   "author": "nero",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/wuye4319/Code-Admin/issues"
   },

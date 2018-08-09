@@ -19,6 +19,7 @@
     "marauder": "./bin/main.js"
   },
   "author": "nero",
+  "license": "BSD",
   "bugs": {
     "url": "https://github.com/wuye4319/Keeper/issues"
   },

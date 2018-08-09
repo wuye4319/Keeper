@@ -20,6 +20,9 @@ class ctrl {
     let myurl = ctx.url.substr(rout.length + 2)
     logger.myconsole('process : '.red + internumb.toString().red)
     logger.myconsole(myurl)
+    // web log
+    logger.myconsole('<p style="color: red">process : ' + internumb + '</p>', 'web')
+    logger.myconsole('<p>' + myurl + '</p>', 'web')
     let result
 
     if (internumb > 15) {
@@ -36,6 +39,7 @@ class ctrl {
       let hasurl = this.eachurl(urlbox, myurl)
       if (hasurl) {
         logger.myconsole('Repeat request!'.red)
+        logger.myconsole('<p style="color: red">Repeat request!</p>', 'web')
       } else {
         urlbox.push(myurl)
         // read cache file time
@@ -44,9 +48,12 @@ class ctrl {
         rct = Date.now() - rct
         logger.myconsole('read cache time : '.green + rct.toString().red +
           ' ms'.green)
+        logger.myconsole('<p style="color: green">read cache time : <span style="color: red">' + rct.toString() +
+          '</span> ms</p>', 'web')
         if (hascache) {
           result = hascache
           logger.myconsole('this is cache file!')
+          logger.myconsole('<p>this is cache file!</p>')
         } else {
           result = await proxy.taobao(rout, myurl, internumb)
         }
@@ -56,6 +63,9 @@ class ctrl {
         urlbox.length
           ? logger.myconsole(JSON.stringify(urlbox))
           : logger.myconsole('[]')
+        urlbox.length
+          ? logger.myconsole('<p>' + JSON.stringify(urlbox) + '</p>', 'web')
+          : logger.myconsole('<p>[]</p>', 'web')
       }
 
       internumb -= 1
@@ -81,12 +91,36 @@ class ctrl {
     urlbox = []
   }
 
-  async loginbycode (ctx, browser) {
-    if (browser) {
-      let result = await proxy.loginbycode(browser)
+  //proxy ctrl
+  closeproxy (ctx) {
+    proxy.closeproxy()
+    ctx.response.body = 'success'
+  }
+
+  openproxy (ctx) {
+    proxy.openproxy()
+    ctx.response.body = 'success'
+  }
+
+  async nextproxy (ctx) {
+    await proxy.manualchangeip()
+    ctx.response.body = 'success'
+  }
+
+  nextbrowser (ctx) {
+    proxy.changebrowser()
+    ctx.response.body = 'success'
+  }
+
+  // login
+  async loginbycode (ctx, browsertype, index) {
+    if (browsertype) {
+      let result = await proxy.loginbycode(browsertype, index)
       let rand = Math.ceil(Math.random() * 1000000000)
       if (result) {
-        ctx.response.body = '<img src="/static/codeimg/codeimg.png?' + rand + '" /><p><a href="/loginstatus/">click to check login status</a></p>'
+        ctx.response.body = '<img src="/source/img/warmachine/codeimg/codeimg' + browsertype + (index || '') + '.png?' + rand +
+          '" /><p><a href="/loginstatus/' + browsertype + (index || '') + '/">click to check login status</a></p>'
+        // ctx.response.body = 'codeimg' + browsertype + (index || '') + '.png'
       } else {
         ctx.response.body = 'error'
       }
@@ -98,20 +132,23 @@ class ctrl {
   async loginstatus (ctx, browser) {
     let rand = Math.ceil(Math.random() * 1000000000)
     browser = browser || ''
-    let imgpath = path.join(__dirname, '/../../static/codeimg/loginstatus' + browser + '.png')
+    let imgpath = './static/source/img/warmachine/codeimg/loginstatus' + browser + '.png'
     let status = fs.statSync(imgpath)
-    let labimg = '<img src="/static/codeimg/loginstatus' + browser + '.png?' + rand + '" />'
+    let labimg = '<img src="/source/img/warmachine/codeimg/loginstatus' + browser + '.png?' + rand + '" />'
     let labp = '<p>' + status.mtime + '</p>'
     ctx.response.body = labimg + labp
   }
 
   async weblogger (ctx) {
-    let startdate = logger.startdate()
-    let fslog = path.join(__dirname, '../../../logger/' + startdate + '.txt')
-    fs.watchFile(fslog, (curr, prev) => {
-      console.log(`the current mtime is: ${curr.mtime}`)
-      console.log(`the previous mtime was: ${prev.mtime}`)
-    })
+    // let startdate = logger.startdate()
+    let logname = logger.getweblog()
+    let fslog = './weblog/' + logname + '.txt'
+    // fs.watchFile(fslog, (curr, prev) => {
+    let txt = fs.readFileSync(fslog).toString()
+    // console.log(`the current mtime is: ${curr.mtime}`)
+    // console.log(`the previous mtime was: ${prev.mtime}`)
+    // })
+    ctx.response.body = txt
   }
 
   async filter (ctx, rout, title) {

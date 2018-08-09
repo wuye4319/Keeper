@@ -8,7 +8,9 @@ const system = {
   cache: 1,
   printsourceurl: 0,
   ignoreimg: 1,
-  changeiptime: 10
+  changeiptime: 10,
+  browsernumb: 2,
+  changeipactive: 0
 }
 
 module.exports = system

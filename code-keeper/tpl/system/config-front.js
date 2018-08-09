@@ -3,7 +3,7 @@
  * 通过.xx执行命令
  */
 const config = {
-  version: '1.2.1',
+  version: '1.2.2',
   myModule: 'test', // myModule:1级目录
   childModule: '', // childModule:2级目录
   currTheme: 'theme',
@@ -15,6 +15,7 @@ const config = {
   transfile: 'trans/trans.json', // 默认目录：当前js的同目录下 [trans/trans.json]
   sourcedir: ['src'], // js需要过滤的资源目录
   routerdir: ['account', 'partner'], // router的根目录
+  loadimg: '<div style="position:fixed;top:0;right:0;bottom:0;left:0;background:url(\'/cn/source/img/orion/loading_normal_62.gif\') no-repeat center;"></div>',
   wrapper: 'react-plugin/Wrap.min.js?57a1f3a41f8a5338e6d1779ac', // 公共模块
   userinfor: '@author Nero @time ' + new Date().toISOString().split('T')[0],
   webpack: {

@@ -36,7 +36,7 @@ class rulinit {
           title: singleinfor.title,
           keywords: singleinfor.keyword,
           description: singleinfor.description,
-          container: '<div id="container"><div style="position:fixed;top:0;right:0;bottom:0;left:0;background:url(\'/cn/source/img/orion/loading_normal_62.gif\') no-repeat center;"></div><div class="static" style="opacity: 0;"><%= container %></div></div>',
+          container: '<div id="container">' + mypathlist.container + '<div class="static" style="opacity: 0;"><%= container %></div></div>',
           myjs: mypathlist.myroutjs + '.js',
           loadjs: '/' + myinfor.basepath + 'plugin/base/load.js',
           other: '',
@@ -61,7 +61,7 @@ class rulinit {
           template: initpath.jspath,
           data: {'myless': mypathlist.myless}
         })
-        arrinit[2].data.myjs = mypathlist.myjs
+        arrinit[2].data.myjs = mypathlist.myjs + '.js'
       }
     }
 

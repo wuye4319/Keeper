@@ -53,6 +53,7 @@ class InitJs {
       apidata = false
       let proid = url.substr(url.lastIndexOf('/'))
       logger.myconsole(mytime.mytime())
+      logger.myconsole('<p>' + mytime.mytime() + '</p>', 'web')
 
       try {
         let waitcont = async (index, filterbox) => {
@@ -60,6 +61,7 @@ class InitJs {
           if (index > 60) {
             cont = 'Failed'
             logger.myconsole('Wait cont failed!'.red)
+            logger.myconsole('<p style="color: red">Wait cont failed!</p>', 'web')
           }
 
           if (!cont) {
@@ -69,11 +71,14 @@ class InitJs {
             }, 100)
           } else {
             logger.myconsole('Web page opens normally '.green + process + (selfbrowser ? ', backup service!'.red : ''))
+            logger.myconsole('<p style="color: green">Web page opens normally ' + process +
+              (selfbrowser ? ', <span style="color: red">backup service!</span>' : '') + '</p>', 'web')
             cont = await this.getcont(cont, filterbox, selfbrowser, url)
             resolve(cont)
             t = Date.now() - t
             mylogstr.Loadingtime = (t / 1000).toString() + ' s'
             logger.myconsole('Loading time : '.green + mylogstr.Loadingtime.red)
+            logger.myconsole('<p style="color: green">Loading time : <span style="color: red">' + mylogstr.Loadingtime + '</span></p>', 'web')
 
             if (opencache && apidata && filterbox) cache.writecache(cont, url, type)
             apidata && filterbox ? mylogstr.apidata = 'success' : mylogstr.apidata = 'Failed'
@@ -101,6 +106,7 @@ class InitJs {
               } catch (e) {
                 resolve('Analysis failed!')
                 logger.myconsole('Get filter failed!'.red + process + e)
+                logger.myconsole('<p style="color: red">Get filter failed!</p>' + process + e, 'web')
               }
 
               // filterbox = await http.getcode(result.url(), url)
@@ -120,6 +126,9 @@ class InitJs {
         if (!isali) {
           selfbrowser ? logger.myconsole('Self browser product is missing! '.yellow + process) : logger.myconsole('Product is missing! '.yellow +
             process)
+          selfbrowser
+            ? logger.myconsole('<p style="color: yellow">Self browser product is missing! </p>' + process, 'web')
+            : logger.myconsole('<p style="color: yellow">Product is missing! </p>' + process, 'web')
           resolve('Product is missing!')
         }
         mylogstr.date = mytime.mytime()
@@ -130,6 +139,7 @@ class InitJs {
       } catch (e) {
         resolve(false)
         logger.myconsole('System error! Or page timeout!'.red)
+        logger.myconsole('<p style="color: red">System error! Or page timeout!</p>', 'web')
         await page.close()
       }
     })
@@ -138,6 +148,8 @@ class InitJs {
   async befailed (filterbox, selfbrowser, cont, url) {
     // check login count, if get api failed more than 2 times, change ip first
     selfbrowser ? logger.myconsole('Self browser analysis failed!'.red) : logger.myconsole('Analysis failed!'.red)
+    selfbrowser ? logger.myconsole('<p style="color: red">Self browser analysis failed!</p>', 'web') : logger.myconsole(
+      '<p style="color: red">Analysis failed!</p>', 'web')
     if (!selfbrowser) {
       if (logincount < 1) {
         logincount += 1
@@ -162,9 +174,11 @@ class InitJs {
         // console.log(verifystr2, verifystr)
         if (verifystrLogin !== -1) {
           logger.myconsole('Login redirect!'.red)
+          logger.myconsole('<p style="color: red">Login redirect!</p>', 'web')
           return false
         } else if (verifystr !== -1 || verifystr2 !== -1) {
           logger.myconsole('Verification Code!'.red)
+          logger.myconsole('<p style="color: red">Verification Code!</p>', 'web')
           return false
         } else {
           return true

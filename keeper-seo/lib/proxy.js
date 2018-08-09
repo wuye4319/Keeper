@@ -31,45 +31,69 @@ const Logger = require('keeper-core')
 let logger = new Logger()
 
 let browser
-let selfbrowser
+let selfbrowser = {}
 let ipdate = mytime.mydate('mins')
 logger.myconsole('Program start at : '.blue + ipdate)
+logger.myconsole('<p style="color: blue;">Program start at : ' + ipdate + '</p>', 'web')
 const systemconfig = require('../config/system')
-let ipindex = 1
+let ipindex = 0
+let browserindex = 0
 
 // change ip active
-let changeipactive = false
-
+let changeipactive = systemconfig.changeipactive
 // ip proxy list
 const iplist = require('../config/iplist')
 // change ip interval time, [mins]
 let changeiptime = systemconfig.changeiptime
 let processbox = []
+let proxyserver = systemconfig.proxyserver
 
 // constructor
 class InitJs {
+  // controll proxy
+  closeproxy () {
+    proxyserver = 0
+  }
+
+  openproxy () {
+    proxyserver = 1
+  }
+
   setipinterval (time) {
     changeiptime = time
     console.log('set ip interval : ' + changeiptime + ' mins')
   }
 
+  changebrowser () {
+    browserindex += 1
+    // if (index) {
+    if (browserindex >= systemconfig.browsernumb) {
+      browserindex = 0
+    }
+  }
+
   async init () {
+    let numb = systemconfig.browsernumb
+    for (let i = 0; i < numb; i++) {
+      selfbrowser[i] = await this.creatbrowser(i)
+    }
+  }
+
+  async creatbrowser (i) {
     return new Promise(async (resolve) => {
-      selfbrowser = await puppeteer.launch({
+      let tempbrowser = await puppeteer.launch({
         ignoreHTTPSErrors: true,
         // headless: false,
         args: ['--no-sandbox', '--disable-setuid-sandbox']
       })
-      logger.myconsole('self browser is start!'.green)
-      await delay.delay(0)
-
+      logger.myconsole('self browser' + i + ' is start!'.green)
       // router
-      resolve(true)
+      resolve(tempbrowser)
     })
   }
 
   async initproxybrowser () {
-    if (systemconfig.proxyserver) {
+    if (proxyserver) {
       let proxy = iplist[0].address + ':' + iplist[0].host
       await this.newbrowser(proxy)
       await this.getip()
@@ -102,12 +126,13 @@ class InitJs {
     })
   }
 
-  async changeip (index) {
+  async changeip () {
+    ipindex += 1
     // if (index) {
-    if (index === iplist.length - 1) {
-      ipindex = -1
+    if (ipindex >= iplist.length) {
+      ipindex = 0
     }
-    let tempip = iplist[index].address + ':' + iplist[index].host
+    let tempip = iplist[ipindex].address + ':' + iplist[ipindex].host
     await this.restart(tempip)
     // } else {
     //   await this.restart()
@@ -119,23 +144,41 @@ class InitJs {
     ipdate = mytime.mydate('mins')
     logger.myconsole(ipdate)
     logger.myconsole('changeiptime : '.green + changeiptime)
+    // web log
+    logger.myconsole('<p>' + ipdate + '</p>', 'web')
+    logger.myconsole('<p style="color: green">changeiptime : </p>' + changeiptime, 'web')
     await this.newbrowser(proxy)
   }
 
-  async close () {
-    await selfbrowser.close()
-    if (systemconfig.proxyserver) await browser.close()
+  getproxystatus () {
+    let temp = {
+      'ipindex': proxyserver ? ipindex : -1,
+      'browserindex': browserindex,
+      'changeipactive': changeipactive,
+      'changeiptime': changeiptime
+    }
+    return temp
   }
 
-  manualchangeip () {
+  async close () {
+    for (let i in selfbrowser) {
+      await selfbrowser[i].close()
+    }
+    if (proxyserver) await browser.close()
+  }
+
+  async manualchangeip () {
     changeipactive = false
-    this.changeip(ipindex)
-    ipindex += 1
+    await this.changeip()
   }
 
   autoproxy () {
     changeipactive = true
     console.log('Active change ip is start!'.green)
+  }
+
+  getproxylist () {
+    return iplist
   }
 
   async servermatrix (type, url, process, result) {
@@ -144,22 +187,21 @@ class InitJs {
     // check ip date
     let ispass = mytime.dateispass(ipdate.split('-'), changeiptime)
     if (changeipactive && (ispass || result === 'changeip')) {
-      this.changeip(ipindex)
-      ipindex += 1
+      this.changeip()
     }
 
     if (result === 'changeip' || result === 'Analysis failed!' || result === 'Product is missing!') {
-      result = await fastpost.taobao(selfbrowser, type, url, cache, process, true)
+      result = await fastpost.taobao(selfbrowser[browserindex], type, url, cache, process, true)
     }
     return result
   }
 
   async taobao (type, url, process) {
     let cache = systemconfig.cache
-    let currbrow = systemconfig.proxyserver ? browser : selfbrowser
+    let currbrow = proxyserver ? browser : selfbrowser[browserindex]
     let result = await fastpost.taobao(currbrow, type, url, cache, process)
 
-    if (systemconfig.proxyserver) {
+    if (proxyserver) {
       result = this.servermatrix(type, url, process, result)
     }
     // result.url = url
@@ -171,12 +213,14 @@ class InitJs {
     return data
   }
 
-  async loginbycode (browsertype) {
+  async loginbycode (browsertype, index) {
     let data
     if (browsertype === 'self') {
-      data = await getcodeimg.getimg(selfbrowser, browsertype)
-    } else if (browsertype === 'curr') {
+      data = await getcodeimg.getimg(selfbrowser[index || browserindex], browsertype + (index || browserindex))
+    } else if (browsertype === 'curr' && proxyserver) {
       data = await getcodeimg.getimg(browser, browsertype)
+    } else {
+      data = false
     }
 
     return data

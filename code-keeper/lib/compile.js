@@ -86,11 +86,11 @@ class compile {
   defaultplugin (pub, lang, confdev, wrap) {
     let transfile = this.checktrans(lang)
     let pubconf = [
-      // new webpack.DefinePlugin({
-      //   'process.env': {
-      //     NODE_ENV: JSON.stringify(pub ? true : 'production') // production | true
-      //   }
-      // }),
+      new webpack.DefinePlugin({
+        'process.env': {
+          NODE_ENV: JSON.stringify(pub ? 'production' : 'development') // production | true
+        }
+      }),
       // new webpack.optimize.UglifyJsPlugin({
       //   compress: {warnings: false},
       //   output: {comments: false}
@@ -111,18 +111,10 @@ class compile {
     ]
 
     let myplug
-    if (lang === 'en/') {
-      myplug = [
-        new I18nPlugin(wrap || transfile, {functionName: '_'})
-      ]
-      wrap || myplug.push(new keeper(confdev.webdev))
-    } else {
-      myplug = [
-        new I18nPlugin('', {functionName: '_'})
-      ]
-      // wrap do not need html
-      wrap || myplug.push(new keeper(confdev.webdev))
-    }
+    myplug = [
+      new I18nPlugin(wrap || transfile, {functionName: '_'})
+    ]
+    wrap || myplug.push(new keeper(confdev.webdev))
 
     if (pub) myplug = myplug.concat(pubconf)
     return myinfor.config.webpack.plugins.concat(myplug)

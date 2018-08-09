@@ -148,6 +148,7 @@ class rules {
       myupchildname: myChildName.substr(0, 1).toLocaleUpperCase() + myChildName.substr(1),
       myless: './' + mySource + '.less',
       commonless: myAutoPath + '../../../../plugin/less/class.less',
+      container: '',
       myroutjs: '/' + basepath + base.js + myModule,
       wrapjs: wrapper ? '/' + basepath + lang + wrapper : false,
       myjs: '/' + basepath + base.js + myChildDir + mySource
@@ -192,7 +193,7 @@ class rules {
         title: singleinfor.title,
         keywords: singleinfor.keyword,
         description: singleinfor.description,
-        container: '<div id="container"><div style="position:fixed;top:0;right:0;bottom:0;left:0;background:url(\'/cn/source/img/orion/loading_normal_62.gif\') no-repeat center;"></div><div class="static" style="opacity: 0;"><%= container %></div></div>',
+        container: '<div id="container">' + mypathlist.container + '<div class="static" style="opacity: 0;"><%= container %></div></div>',
         loadjs: '/' + basepath + 'plugin/' + (ispub ? 'base' : 'dev') + '/load.js',
         wrapjs: mypathlist.wrapjs
       }

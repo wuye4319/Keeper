@@ -10,6 +10,7 @@ let mytime = new Mytime()
 
 let startdate = mytime.mydate()
 let buffobj = {}
+let weblog = 'log1'
 
 class Logger {
   constructor () {
@@ -24,9 +25,22 @@ class Logger {
     Object.assign(buffobj, obj)
   }
 
-  myconsole (str) {
-    let file = path.join(__dirname, this.options.glog + startdate + '.txt')
-    writefile.append(file, str + '\n')
+  myconsole (str, type) {
+    if (type === 'web') {
+      let file = './weblog/' + weblog + '.txt'
+      writefile.append(file, str + '\n')
+    } else {
+      let file = path.join(__dirname, this.options.glog + startdate + '.txt')
+      writefile.append(file, str + '\n')
+    }
+  }
+
+  changelog () {
+    weblog = weblog === 'log1' ? 'log2' : 'log1'
+  }
+
+  getweblog () {
+    return weblog
   }
 
   startdate () {
