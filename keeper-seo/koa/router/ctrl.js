@@ -91,7 +91,7 @@ class ctrl {
     urlbox = []
   }
 
-  //proxy ctrl
+  // proxy ctrl
   closeproxy (ctx) {
     proxy.closeproxy()
     ctx.response.body = 'success'

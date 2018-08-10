@@ -30,6 +30,8 @@ class Logger {
       let file = './weblog/' + weblog + '.txt'
       writefile.append(file, str + '\n')
     } else {
+      let rule = /(\[32m)+/
+      // console.log(str.match(rule))
       let file = path.join(__dirname, this.options.glog + startdate + '.txt')
       writefile.append(file, str + '\n')
     }
