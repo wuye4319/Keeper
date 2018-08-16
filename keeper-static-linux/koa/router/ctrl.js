@@ -84,7 +84,8 @@ class ctrl {
   }
 
   async filtersearch (ctx, rout, key) {
-    let myurl = 'https://pub.alimama.com/promo/search/index.htm?q=' + key
+    // let myurl = 'https://pub.alimama.com/promo/search/index.htm?q=' + key
+    let myurl = 'https://pub.alimama.com/items/search.json?' + key
     let result = await this.filter(myurl, rout)
     if (result) {
       ctx.response.body = result

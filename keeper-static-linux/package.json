@@ -1,9 +1,11 @@
 {
   "name": "keeper-static-linux",
-  "version": "1.0.2",
+  "version": "1.0.14",
   "description": "keeper-static-linux",
-  "main": "./lib/index.js",
-  "dependencies": {},
+  "main": "index.js",
+  "dependencies": {
+    "keeper-core": "^1.0.67"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "test"
@@ -15,8 +17,11 @@
   "keywords": [
     "keeper-static"
   ],
+  "bin": {
+    "search": "./bin/main.js"
+  },
   "author": "nero",
-  "license": "ISC",
+  "license": "BSD",
   "bugs": {
     "url": "https://github.com/wuye4319/Keeper/issues"
   },
