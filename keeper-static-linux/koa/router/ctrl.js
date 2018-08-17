@@ -127,6 +127,23 @@ class ctrl {
     ctx.response.body = 'success'
   }
 
+  /**
+   * auto proxy
+   * 0 close, 1 open
+   */
+  async autoproxy (ctx, type) {
+    switch (type) {
+      case '0':
+        proxy.manualchangeip()
+        break
+      case '1':
+        proxy.autoproxy()
+        break
+    }
+
+    ctx.response.body = 'success'
+  }
+
   nextbrowser (ctx) {
     proxy.changebrowser()
     ctx.response.body = 'success'

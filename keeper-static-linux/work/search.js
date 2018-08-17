@@ -83,8 +83,7 @@ class InitJs {
         page.on('response', async (result) => {
           if (!isali) {
             let filter = result.url().indexOf('items/search.json') !== -1
-            let filter2 = result.url().indexOf('sib.htm') !== -1
-            if (filter || filter2) {
+            if (filter) {
               try {
                 cont = await result.text()
                 isali = true
@@ -100,7 +99,6 @@ class InitJs {
 
         await page.goto(url, {waitUntil: 'networkidle2'})
         // let cont = await page.content()
-        // console.log(filterbox)
         // close page when analysis is done
         await page.close()
         if (!isali) {

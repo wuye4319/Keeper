@@ -84,7 +84,8 @@ class ctrl {
   }
 
   async filtersearch (ctx, rout, key) {
-    let myurl = 'https://pub.alimama.com/promo/search/index.htm?q=' + key
+    // let myurl = 'https://pub.alimama.com/promo/search/index.htm?q=' + key
+    let myurl = 'https://pub.alimama.com/items/search.json?' + key
     let result = await this.filter(myurl, rout)
     if (result) {
       ctx.response.body = result
@@ -120,6 +121,23 @@ class ctrl {
         break
       case '2':
         await proxy.manualchangeip()
+        break
+    }
+
+    ctx.response.body = 'success'
+  }
+
+  /**
+   * auto proxy
+   * 0 close, 1 open
+   */
+  async autoproxy (ctx, type) {
+    switch (type) {
+      case '0':
+        proxy.manualchangeip()
+        break
+      case '1':
+        proxy.autoproxy()
         break
     }
 

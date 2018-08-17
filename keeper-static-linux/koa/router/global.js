@@ -38,6 +38,10 @@ koa.addrouter('/proxy/:status/', async (ctx) => {
   let params = ctx.params.status
   await ctrl.ctrlproxy(ctx, params)
 })
+koa.addrouter('/autoproxy/:status/', async (ctx) => {
+  let params = ctx.params.status
+  await ctrl.autoproxy(ctx, params)
+})
 koa.addrouter('/browser/next/', async (ctx) => {
   await ctrl.nextbrowser(ctx)
 })

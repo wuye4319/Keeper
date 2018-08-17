@@ -10,7 +10,7 @@ const system = {
   ignoreimg: 1,
   changeiptime: 10,
   browsernumb: 1,
-  changeipactive: 1
+  changeipactive: 0
 }
 
 module.exports = system

@@ -138,6 +138,7 @@ class InitJs {
     //   await this.restart()
     // }
     await this.getip()
+    await getcodeimg.writeacc(false, 'curr')
   }
 
   async restart (proxy) {
