@@ -57,6 +57,11 @@ class machine {
     }
     let numb = systemconfig.browsernumb
 
+    // version
+    let tempver = fs.readFileSync(path.join(__dirname, '/../../package.json')).toString()
+    data.vers = JSON.parse(tempver).version
+
+    // acc
     let file = './static/source/img/warmachine/loginacc/acc.txt'
     let acc = fs.readFileSync(file).toString()
     acc = JSON.parse(acc)

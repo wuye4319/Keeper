@@ -18,7 +18,7 @@ class staticFiles {
         if (!isend) fp += '/'
         fp += 'index.html'
       }
-      ctx.response.type = mime.lookup(fp)
+      ctx.response.type = mime.getType(fp)
       ctx.response.body = fs.readFileSync(fp)
     } else {
       // Not found

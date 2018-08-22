@@ -10,14 +10,14 @@ let mytime = new Mytime()
 
 let startdate = mytime.mydate()
 let buffobj = {}
-let weblog = 'log1'
 
 class Logger {
   constructor () {
     this.options = {
       errfile: '../logfile/error.txt',
       gpath: '../../../success/',
-      glog: '../../../logger/'
+      glog: '../../../logger/',
+      weblog: 'log1'
     }
   }
 
@@ -27,8 +27,14 @@ class Logger {
 
   myconsole (str, type) {
     if (type === 'web') {
-      let file = './weblog/' + weblog + '.txt'
+      let file = './weblog/' + this.options.weblog + '.txt'
       writefile.append(file, str + '\n')
+      fs.stat(file, (err, stats) => {
+        if (err) throw err
+        if (stats.size > 10000) {
+          writefile.writejs(file, '')
+        }
+      })
     } else {
       let rule = /(\[32m)+/
       // console.log(str.match(rule))
@@ -37,12 +43,8 @@ class Logger {
     }
   }
 
-  changelog () {
-    weblog = weblog === 'log1' ? 'log2' : 'log1'
-  }
-
   getweblog () {
-    return weblog
+    return this.options.weblog
   }
 
   startdate () {
