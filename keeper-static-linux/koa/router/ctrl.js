@@ -52,7 +52,7 @@ class ctrl {
         if (hascache) {
           result = hascache
           logger.myconsole('this is cache file!')
-          logger.myconsole('<p>this is cache file!</p>')
+          logger.myconsole('<p>this is cache file!</p>', 'web')
         } else {
           result = await proxy.taobao(rout, myurl, internumb)
         }

@@ -147,7 +147,7 @@ class rules {
       // init
       myupchildname: myChildName.substr(0, 1).toLocaleUpperCase() + myChildName.substr(1),
       myless: './' + mySource + '.less',
-      commonless: myAutoPath + '../../../../plugin/less/class.less',
+      commonless: myAutoPath + (lang ? '../' : '') + '../../../plugin/less/class.less',
       container: '',
       myroutjs: '/' + basepath + base.js + myModule,
       wrapjs: wrapper ? '/' + basepath + lang + wrapper : false,

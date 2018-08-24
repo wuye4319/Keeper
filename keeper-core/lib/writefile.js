@@ -35,10 +35,9 @@ class Writefile {
   writejs (file, content) {
     this.mymkdirs(file)
     // write file
-    fs.writeFileSync(file, content)
-    this.options.newfile = true
+    let res = fs.writeFileSync(file, content)
     // return
-    return this.options.newfile
+    return res || true
   }
 
   append (file, content) {

@@ -6,7 +6,7 @@ const Initnpm = require('keeper-core/lib/npm')
 let mynpm = new Initnpm()
 
 class ready {
-  boot () {
+  boot (plugname) {
     let pluginlist = [
       {name: 'koa', ver: '2.3.0'},
       {name: 'koa-cors', ver: '0.0.16'},
@@ -16,7 +16,7 @@ class ready {
       {name: 'mime', ver: '2.3.1'},
       {name: 'puppeteer', ver: '0.12.0'}
     ]
-    mynpm.init(pluginlist, 'keeper-seo')
+    mynpm.init(pluginlist, plugname)
   }
 }
 

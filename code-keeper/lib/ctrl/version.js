@@ -29,7 +29,7 @@ class myvers {
     ]
     let result = true
     if (versconf !== this.options.version) {
-      console.log('!!! Warnning : Your config.js is not the latest version, Please create a new config.js buy \'.initconf\','.red)
+      console.log('!!! Warnning : Your config.js is not the latest version, Please create a new config.js by \'.initconf\','.red)
       result = false
     }
     if (myinfor.config.transfile.trim() === '') {

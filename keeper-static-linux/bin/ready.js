@@ -13,7 +13,7 @@ class ready {
       {name: 'koa-router', ver: '7.2.1'},
       {name: 'request', ver: '2.83.0'},
       // {name: 'gm', ver: '1.23.1'},
-      {name: 'mime', ver: '1.6.0'},
+      {name: 'mime', ver: '2.3.1'},
       {name: 'puppeteer', ver: '0.12.0'}
     ]
     mynpm.init(pluginlist, plugname)
