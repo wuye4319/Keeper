@@ -100,7 +100,7 @@ class InitJs {
             if (result.url().indexOf(proid) !== -1) {
               try {
                 cont += await result.text()
-                if (result.url().indexOf('detail.tmall.com/item.htm?') && cont) {
+                if (result.url().indexOf('detail.tmall.com/item.htm?') !== -1 && cont) {
                   isali = true
                   let myurl = 'https://detail.m.tmall.com' + proid
                   let tmalldata = await tmall.tmall(browser, 'tmall', myurl, true, process, selfbrowser)
