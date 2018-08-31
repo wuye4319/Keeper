@@ -22,6 +22,9 @@ koa.addrouter(/^\/subject_cn(?:\/|$)/, async (ctx) => {
 koa.addrouter(/^\/taobao(?:\/|$)/, async (ctx) => {
   await ctrl.filtermall(ctx, 'taobao')
 })
+koa.addrouter(/^\/slidelock(?:\/|$)/, async (ctx) => {
+  await ctrl.slidelock(ctx, 'slidelock')
+})
 
 // static
 koa.addrouter(/^\/(\w+)(?:\/|$)/, async (ctx) => {

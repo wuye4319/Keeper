@@ -52,7 +52,7 @@ class ctrl {
         if (hascache) {
           result = hascache
           logger.myconsole('this is cache file!')
-          logger.myconsole('<p>this is cache file!</p>')
+          logger.myconsole('<p>this is cache file!</p>', 'web')
         } else {
           result = await proxy.taobao(rout, myurl, internumb)
         }
@@ -76,6 +76,16 @@ class ctrl {
   async filtermall (ctx, rout) {
     let myurl = ctx.url.substr(rout.length + 2)
     let result = await this.filter(myurl, rout)
+    if (result) {
+      ctx.response.body = result
+    } else {
+      ctx.response.body = 'Get data failed!'
+    }
+  }
+
+  async slidelock (ctx, rout) {
+    let myurl = ctx.url.substr(rout.length + 2)
+    let result = await proxy.autoslide(myurl)
     if (result) {
       ctx.response.body = result
     } else {

@@ -1,6 +1,6 @@
 {
   "name": "keeper-static-linux",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "keeper-static-linux",
   "main": "index.js",
   "dependencies": {

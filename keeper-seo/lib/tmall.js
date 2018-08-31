@@ -13,41 +13,35 @@ const Mytime = require('keeper-core/lib/time')
 let mytime = new Mytime()
 // const SlideLock = require('./slidelock')
 // let slidelock = new SlideLock()
-const Tmall = require('./tmall')
-let tmall = new Tmall()
-
 let logincount = 0
 let apidata = false
 
 // constructor
 class InitJs {
-  async getcont (browser, cont, filterbox, selfbrowser, url) {
+  async getcont (browser, cont, selfbrowser, url) {
     return new Promise(async resolve => {
       let isjson = false
       if (cont === 'Failed') cont = false
-      let templine = '\n<script>\nvar apidata = '
+      let templine = '\n<script>\nvar apidata_tmall = '
       let endtempline = '\n</script>'
-      let splitline = '\n================================================\n'
 
-      let tempstr = this.subresult(filterbox)
-      if (tempstr) filterbox = tempstr
-      isjson = this.isJson(filterbox, browser)
-      if (isjson && filterbox && cont) {
+      let str = cont.match(/<script>var _DATA_Mdskip =  ([\s\S]+) <\/script>\s+<script src=/)[1]
+      isjson = str ? this.isJson(str, browser) : false
+      if (isjson && cont) {
         apidata = true
         // if previous api is success, reduce
         if (logincount && !selfbrowser) logincount -= 1
       } else {
-        let errcont = cont + splitline + filterbox
-        let befailed = await this.befailed(filterbox, selfbrowser, errcont, url)
+        let befailed = await this.befailed(cont, selfbrowser, url)
         if (befailed === 'changeip') { resolve('changeip') } else { resolve('Analysis failed!') }
       }
 
-      cont = cont + templine + filterbox + endtempline
+      cont = templine + str + endtempline
       resolve(cont)
     })
   }
 
-  async taobao (browser, type, url, opencache, process, selfbrowser) {
+  async tmall (browser, type, url, opencache, process, selfbrowser) {
     return new Promise(async (resolve) => {
       let t = Date.now()
       let cont = ''
@@ -61,7 +55,7 @@ class InitJs {
       logger.myconsole('<p>' + mytime.mytime() + '</p>', 'web')
 
       try {
-        let waitcont = async (index, filterbox) => {
+        let waitcont = async (index) => {
           index += 1
           if (index > 60) {
             cont = 'Failed'
@@ -72,21 +66,21 @@ class InitJs {
           if (!cont) {
             setTimeout(function () {
               // logger.myconsole(index + ' p:' + process)
-              waitcont(index, filterbox)
+              waitcont(index)
             }, 100)
           } else {
             logger.myconsole('Web page opens normally '.green + process + (selfbrowser ? ', backup service!'.red : ''))
             logger.myconsole('<p style="color: green">Web page opens normally ' + process +
               (selfbrowser ? ', <span style="color: red">backup service!</span>' : '') + '</p>', 'web')
-            cont = await this.getcont(browser, cont, filterbox, selfbrowser, url)
+            cont = await this.getcont(browser, cont, selfbrowser, url)
             resolve(cont)
             t = Date.now() - t
             mylogstr.Loadingtime = (t / 1000).toString() + ' s'
             logger.myconsole('Loading time : '.green + mylogstr.Loadingtime.red)
             logger.myconsole('<p style="color: green">Loading time : <span style="color: red">' + mylogstr.Loadingtime + '</span></p>', 'web')
 
-            if (opencache && apidata && filterbox) cache.writecache(cont, url, type)
-            apidata && filterbox ? mylogstr.apidata = 'success' : mylogstr.apidata = 'Failed'
+            if (opencache && apidata) cache.writecache(cont, url, type)
+            apidata ? mylogstr.apidata = 'success' : mylogstr.apidata = 'Failed'
           }
         }
 
@@ -94,34 +88,16 @@ class InitJs {
         // page.on('request', intercep => { intercep.continue() })
         page.on('response', async (result) => {
           if (!isali) {
-            let filter = result.url().indexOf('initItemDetail.htm') !== -1
-            let filter2 = result.url().indexOf('sib.htm') !== -1
-            let filterbox = ''
             if (result.url().indexOf(proid) !== -1) {
               try {
                 cont += await result.text()
-                if (result.url().indexOf('detail.tmall.com/item.htm?') && cont) {
+                if (cont) {
                   isali = true
-                  let myurl = 'https://detail.m.tmall.com' + proid
-                  let tmalldata = await tmall.tmall(browser, 'tmall', myurl, true, process, selfbrowser)
-                  resolve(cont + tmalldata)
+                  waitcont(0, cont)
                 }
               } catch (e) {
                 logger.myconsole(e + ' ' + process)
               }
-            } else if (filter || filter2) {
-              try {
-                filterbox = await result.text()
-                if (filterbox) {
-                  isali = true
-                  waitcont(0, filterbox)
-                }
-              } catch (e) {
-                resolve('Analysis failed!')
-                logger.myconsole('Get filter failed!'.red + process + e)
-                logger.myconsole('<p style="color: red">Get filter failed!</p>' + process + e, 'web')
-              }
-              // filterbox = await http.getcode(result.url(), url)
             }
           }
         })
@@ -167,7 +143,6 @@ class InitJs {
       }
     }
     cache.writecache(cont, url, 'error')
-
     return false
   }
 
@@ -175,29 +150,7 @@ class InitJs {
     try {
       obj = JSON.parse(obj)
       let isjsonstr = typeof (obj) === 'object' && Object.prototype.toString.call(obj).toLowerCase() === '[object object]' && !obj.length
-      if (isjsonstr) {
-        let verifystr = JSON.stringify(obj).indexOf('//detailskip.taobao.com:443/service/getData/1/p1/item/detail/sib.htm')
-        let verifystr2 = JSON.stringify(obj).indexOf('sec.taobao.com/query.htm?smApp')
-        let verifystrLogin = JSON.stringify(obj).indexOf('login.taobao.com/member/login.jhtml?style=')
-        // let slidelock = JSON.stringify(obj).indexOf('mdskip.taobao.com:443//core/initItemDetail.htm/_____tmd_____/punish')
-        // console.log(verifystr2, verifystr)
-        // if (slidelock !== -1) {
-        //   logger.myconsole('Slide lock Verification!'.red)
-        //   slidelock.autoslide(browser, obj.url)
-        //   return 'slidelock'
-        // } else
-        if (verifystrLogin !== -1) {
-          logger.myconsole('Login redirect!'.red)
-          logger.myconsole('<p style="color: red">Login redirect!</p>', 'web')
-          return false
-        } else if (verifystr !== -1 || verifystr2 !== -1) {
-          logger.myconsole('Verification Code!'.red)
-          logger.myconsole('<p style="color: red">Verification Code!</p>', 'web')
-          return false
-        } else {
-          return true
-        }
-      }
+      return isjsonstr
     } catch (e) {
       return false
     }
@@ -208,19 +161,6 @@ class InitJs {
     filterbox = filterbox.substr(0, filterbox.lastIndexOf(')'))
     return filterbox
   }
-
-  // checklogin (cookiebox) {
-  //   let result = false
-  //   for (let i in cookiebox) {
-  //     let key1 = 'lgc'
-  //     let key2 = 'tracknick'
-  //     if (cookiebox[i].name === key1 || cookiebox[i].name === key2) {
-  //       result = true
-  //       break
-  //     }
-  //   }
-  //   return result
-  // }
 }
 
 module.exports = InitJs

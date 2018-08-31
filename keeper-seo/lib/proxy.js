@@ -48,15 +48,25 @@ let changeiptime = systemconfig.changeiptime
 let processbox = []
 let proxyserver = systemconfig.proxyserver
 
+const SlideLock = require('./slidelock')
+let slidelock = new SlideLock()
+
 // constructor
 class InitJs {
+  async autoslide (url) {
+    let res = await slidelock.autoslide(selfbrowser[browserindex], url)
+    return res
+  }
+
   // controll proxy
   closeproxy () {
     proxyserver = 0
+    browser.close()
   }
 
   openproxy () {
     proxyserver = 1
+    this.initproxybrowser()
   }
 
   setipinterval (time) {
@@ -82,7 +92,7 @@ class InitJs {
   async creatbrowser (i) {
     return new Promise(async (resolve) => {
       let tempbrowser = await puppeteer.launch({
-        ignoreHTTPSErrors: true,
+        ignoreDefaultArgs: true,
         // headless: false,
         args: ['--no-sandbox', '--disable-setuid-sandbox']
       })
@@ -106,7 +116,7 @@ class InitJs {
       let args = ['--no-sandbox', '--disable-setuid-sandbox']
       if (tempip) args.push('--proxy-server=' + tempip)
       browser = await puppeteer.launch({
-        ignoreHTTPSErrors: true,
+        ignoreDefaultArgs: true,
         // headless: false,
         args: args
       })
