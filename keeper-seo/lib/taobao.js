@@ -4,150 +4,155 @@
  * plugin:init js
  */
 'use strict'
-const Fscache = require('keeper-core/cache/cache')
-const cache = new Fscache()
 const Fslog = require('keeper-core')
 let logger = new Fslog()
-
+const Fscache = require('keeper-core/cache/cache')
+const cache = new Fscache()
 const Mytime = require('keeper-core/lib/time')
 let mytime = new Mytime()
-const Login = require('./auto-login')
-let login = new Login()
+// const SlideLock = require('./slidelock')
+// let slidelock = new SlideLock()
 let logincount = 0
-const Http = require('./gethttp')
-let http = new Http()
+let apidata = false
 
 // constructor
 class InitJs {
-  // ignoresource (url) {
-  //   let result = false
-  //   let ignorebox = ['.jpg', '.png', '.css', 'js']
-  //   for (let i in ignorebox) {
-  //     if (url.indexOf(ignorebox[i]) !== -1) {
-  //       result = true
-  //     }
-  //   }
-  //   return result
-  // }
+  async getcont (browser, cont, selfbrowser, url) {
+    return new Promise(async resolve => {
+      let isjson = false
+      if (cont === 'Failed') cont = false
+      let templine = '\n<script>\nvar apidata = '
+      let endtempline = '\n</script>'
 
-  async taobao (browser, type, url, opencache, autologin) {
+      // let str = cont.match(/<script>var _DATA_Mdskip =  ([\s\S]+) <\/script>\s+<script src=/)[1]
+      isjson = cont ? this.isJson(cont, browser) : false
+      if (isjson && cont) {
+        apidata = true
+        // if previous api is success, reduce
+        if (logincount && !selfbrowser) logincount -= 1
+      } else {
+        let befailed = await this.befailed(cont, selfbrowser, url)
+        if (befailed === 'changeip') { resolve('changeip') } else { resolve('Analysis failed!') }
+      }
+
+      cont = templine + cont + endtempline
+      resolve(cont)
+    })
+  }
+
+  async taobao (browser, type, url, opencache, process, selfbrowser) {
     return new Promise(async (resolve) => {
       let t = Date.now()
-      let filterbox = ''
+      let cont = ''
       let isali = false // page from ali
-      let cookiebox = []
-      let apidata = false
+      let freepage = false
+      // let cookiebox = []
       let mylogstr = {}
-      let isjson = false
-      const page = await browser.newPage()
+      let page = await browser.newPage()
+      await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36')
+      apidata = false
+      let proid = url.substr(url.lastIndexOf('/'))
+      logger.myconsole(mytime.mytime())
+      logger.myconsole('<p>' + mytime.mytime() + '</p>', 'web')
 
       try {
+        let waitcont = async (index) => {
+          index += 1
+          if (index > 60) {
+            cont = 'Failed'
+            resolve(cont)
+            logger.myconsole('Wait cont failed!'.red)
+            logger.myconsole('<p style="color: red">Wait cont failed!</p>', 'web')
+            if (freepage) page.close()
+            freepage = true
+          }
+
+          if (!cont) {
+            setTimeout(function () {
+              // logger.myconsole(index + ' p:' + process)
+              waitcont(index)
+            }, 100)
+          } else {
+            isali = true
+            if (cont.indexOf('h5.m.taobao.com/detailplugin/expired.html') !== -1) {
+              selfbrowser ? logger.myconsole('Self browser product is missing! '.yellow + process) : logger.myconsole('Product is missing! '.yellow +
+                process)
+              selfbrowser
+                ? logger.myconsole('<p style="color: yellow">Self browser product is missing! </p>' + process, 'web')
+                : logger.myconsole('<p style="color: yellow">Product is missing! </p>' + process, 'web')
+              resolve('Product is missing!')
+            } else {
+              logger.myconsole('Web page opens normally '.green + process + (selfbrowser ? ', backup service!'.red : ''))
+              logger.myconsole('<p style="color: green">Web page opens normally ' + process +
+                (selfbrowser ? ', <span style="color: red">backup service!</span>' : '') + '</p>', 'web')
+              cont = await this.getcont(browser, cont, selfbrowser, url)
+              resolve(cont)
+              t = Date.now() - t
+              mylogstr.Loadingtime = (t / 1000).toString() + ' s'
+              logger.myconsole('Loading time : '.green + mylogstr.Loadingtime.red)
+              logger.myconsole('<p style="color: green">Loading time : <span style="color: red">' + mylogstr.Loadingtime + '</span></p>', 'web')
+            }
+            if (freepage) page.close()
+            freepage = true
+          }
+        }
+
         // await page.setRequestInterception(true)
         // page.on('request', intercep => { intercep.continue() })
         page.on('response', async (result) => {
-          let filter = result.url().indexOf('initItemDetail.htm') !== -1
-          let filter2 = result.url().indexOf('sib.htm') !== -1
-          if (filter || filter2) {
-            // http.getcode(result.url(), url)
-            isali = true
-            filterbox += await result.text()
+          if (!isali) {
+            if (result.url().indexOf(proid) !== -1) {
+              try {
+                cont += await result.text()
+                await waitcont(0, cont)
+              } catch (e) {
+                logger.myconsole(e + ' ' + process)
+              }
+            }
           }
         })
-
         await page.goto(url)
-        let cont = await page.content()
-
-        let templine = '\n<script>\nvar apidata = '
-        let endtempline = '\n</script>'
-        // let tmallkey = 'setMdskip'
-        // let taobaokey = 'onSibRequestSuccess'
-        // let chaoshi = 'onMdskip'
-
-        if (filterbox && isali) {
-          // if (filterbox.indexOf(tmallkey) !== -1 || filterbox.indexOf(taobaokey) !== -1 || filterbox.indexOf(chaoshi) !== -1) {
-          let tempstr = this.subresult(filterbox)
-          if (tempstr) filterbox = tempstr
-          isjson = this.isJson(filterbox)
-          if (isjson) {
-            apidata = true
-            // if previous api is success, reduce
-            if (logincount) logincount -= 1
-          } else {
-            let befailed = await this.befailed(filterbox, cookiebox)
-            if (befailed === 'changeip') resolve('changeip')
-          }
-          // } else {
-          //   let befailed = await this.befailed(filterbox, cookiebox)
-          //   if (befailed === 'changeip') resolve('changeip')
-          //   logger.myconsole('Taobao verification code or login!'.red)
-          // }
-        } else {
-          logger.myconsole('Product is missing!'.yellow)
-        }
-
-        cont = cont + templine + filterbox + endtempline
+        // let cont = await page.content()
+        // console.log(filterbox)
         // close page when analysis is done
-        await page.close()
-        resolve(cont)
-
-        t = Date.now() - t
-        mylogstr.Loadingtime = (t / 1000).toString() + ' s'
         mylogstr.date = mytime.mytime()
         mylogstr.url = url
-        logger.myconsole(mytime.mytime())
         // write date
-        if (opencache && apidata && filterbox) cache.writecache(cont, url, type)
-        apidata && filterbox ? mylogstr.apidata = 'success' : mylogstr.apidata = 'Failed'
-        logger.myconsole('Loading time : '.green + mylogstr.Loadingtime.red)
         logger.mybuffer(mylogstr)
         logger.writelog('success', type)
+        if (freepage) page.close()
+        freepage = true
       } catch (e) {
         resolve(false)
-        logger.myconsole('System error!'.red)
+        logger.myconsole('System error! Or page timeout!'.red)
+        logger.myconsole('<p style="color: red">System error! Or page timeout!</p>', 'web')
         await page.close()
       }
     })
   }
 
-  async befailed (filterbox, cookiebox) {
-    let VerificationCode = 'taobao.com/query.htm'
-    // check login status, prevent repeat login
-    if (this.checklogin(cookiebox)) {
-      logger.myconsole('page has already login!')
-      if (filterbox.indexOf(VerificationCode) !== -1) logger.myconsole('Verification Code!!!'.red)
-    } else {
-      // check login count, if get api failed more than 2 times, change ip first
-      logger.myconsole('Analysis failed!'.red)
+  async befailed (cont, selfbrowser, url) {
+    // check login count, if get api failed more than 2 times, change ip first
+    selfbrowser ? logger.myconsole('Self browser analysis failed!'.red) : logger.myconsole('Analysis failed!'.red)
+    selfbrowser ? logger.myconsole('<p style="color: red">Self browser analysis failed!</p>', 'web') : logger.myconsole(
+      '<p style="color: red">Analysis failed!</p>', 'web')
+    if (!selfbrowser) {
       if (logincount < 1) {
         logincount += 1
       } else {
         logincount = 0
         return 'changeip'
       }
-
-      // auto-login
-      // if (autologin) {
-      //   let loginurl = 'https://login.tmall.com/?from=sm&redirectURL='
-      //   filterbox = await        login.login(page, loginurl, url)
-      //   logger.myconsole('login count : '.green + logincount)
-      //   if (filterbox && filterbox !== 'Auto-login failed!') {
-      //     mylogstr.login = 1
-      //     apidata = true
-      //     console.log('Auto login successed! '.red + mytime.mytime())
-      //     filterbox = this.subresult(filterbox)
-      //   } else {
-      //     mylogstr.login = 'failed'
-      //     logger.myconsole('Auto login failed!'.red)
-      //   }
-      // }
     }
+    cache.writecache(cont, url, 'error')
     return false
   }
 
-  isJson (obj) {
+  isJson (obj, browser) {
     try {
       obj = JSON.parse(obj)
-      return typeof (obj) === 'object' && Object.prototype.toString.call(obj).toLowerCase() === '[object object]' && !obj.length
+      let isjsonstr = typeof (obj) === 'object' && Object.prototype.toString.call(obj).toLowerCase() === '[object object]' && !obj.length
+      return isjsonstr
     } catch (e) {
       return false
     }
@@ -157,19 +162,6 @@ class InitJs {
     filterbox = filterbox.substr(filterbox.indexOf('(') + 1)
     filterbox = filterbox.substr(0, filterbox.lastIndexOf(')'))
     return filterbox
-  }
-
-  checklogin (cookiebox) {
-    let result = false
-    for (let i in cookiebox) {
-      let key1 = 'lgc'
-      let key2 = 'tracknick'
-      if (cookiebox[i].name === key1 || cookiebox[i].name === key2) {
-        result = true
-        break
-      }
-    }
-    return result
   }
 }
 

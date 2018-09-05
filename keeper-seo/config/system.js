@@ -9,7 +9,7 @@ const system = {
   printsourceurl: 0,
   ignoreimg: 1,
   changeiptime: 10,
-  browsernumb: 2,
+  browsernumb: 1,
   changeipactive: 0
 }
 

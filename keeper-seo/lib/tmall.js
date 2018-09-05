@@ -4,11 +4,10 @@
  * plugin:init js
  */
 'use strict'
-const Fscache = require('keeper-core/cache/cache')
-const cache = new Fscache()
 const Fslog = require('keeper-core')
 let logger = new Fslog()
-
+const Fscache = require('keeper-core/cache/cache')
+const cache = new Fscache()
 const Mytime = require('keeper-core/lib/time')
 let mytime = new Mytime()
 // const SlideLock = require('./slidelock')
@@ -24,8 +23,12 @@ class InitJs {
       if (cont === 'Failed') cont = false
       let templine = '\n<script>\nvar apidata_tmall = '
       let endtempline = '\n</script>'
-
-      let str = cont.match(/<script>var _DATA_Mdskip =  ([\s\S]+) <\/script>\s+<script src=/)[1]
+      let str
+      try {
+        str = cont.match(/<script>var _DATA_Mdskip =  ([\s\S]+) <\/script>\s+<script src=/)[1]
+      } catch (e) {
+        logger.myconsole('String is error : '.red + e)
+      }
       isjson = str ? this.isJson(str, browser) : false
       if (isjson && cont) {
         apidata = true
@@ -46,9 +49,11 @@ class InitJs {
       let t = Date.now()
       let cont = ''
       let isali = false // page from ali
+      let freepage = false
       // let cookiebox = []
       let mylogstr = {}
       let page = await browser.newPage()
+      await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36')
       apidata = false
       let proid = url.substr(url.lastIndexOf('/'))
       logger.myconsole(mytime.mytime())
@@ -59,8 +64,11 @@ class InitJs {
           index += 1
           if (index > 60) {
             cont = 'Failed'
+            resolve(cont)
             logger.myconsole('Wait cont failed!'.red)
             logger.myconsole('<p style="color: red">Wait cont failed!</p>', 'web')
+            if (freepage) page.close()
+            freepage = true
           }
 
           if (!cont) {
@@ -69,6 +77,7 @@ class InitJs {
               waitcont(index)
             }, 100)
           } else {
+            isali = true
             logger.myconsole('Web page opens normally '.green + process + (selfbrowser ? ', backup service!'.red : ''))
             logger.myconsole('<p style="color: green">Web page opens normally ' + process +
               (selfbrowser ? ', <span style="color: red">backup service!</span>' : '') + '</p>', 'web')
@@ -78,9 +87,8 @@ class InitJs {
             mylogstr.Loadingtime = (t / 1000).toString() + ' s'
             logger.myconsole('Loading time : '.green + mylogstr.Loadingtime.red)
             logger.myconsole('<p style="color: green">Loading time : <span style="color: red">' + mylogstr.Loadingtime + '</span></p>', 'web')
-
-            if (opencache && apidata) cache.writecache(cont, url, type)
-            apidata ? mylogstr.apidata = 'success' : mylogstr.apidata = 'Failed'
+            if (freepage) page.close()
+            freepage = true
           }
         }
 
@@ -91,35 +99,34 @@ class InitJs {
             if (result.url().indexOf(proid) !== -1) {
               try {
                 cont += await result.text()
-                if (cont) {
-                  isali = true
-                  waitcont(0, cont)
-                }
+                await waitcont(0, cont)
               } catch (e) {
                 logger.myconsole(e + ' ' + process)
               }
             }
+
+            if (result.url().indexOf('mdetail.tmall.com/mobile/notfound.htm') !== -1) {
+              selfbrowser ? logger.myconsole('Self browser product is missing! '.yellow + process) : logger.myconsole('Product is missing! '.yellow +
+                process)
+              selfbrowser
+                ? logger.myconsole('<p style="color: yellow">Self browser product is missing! </p>' + process, 'web')
+                : logger.myconsole('<p style="color: yellow">Product is missing! </p>' + process, 'web')
+              resolve('Product is missing!')
+              page.close()
+            }
           }
         })
-
         await page.goto(url)
         // let cont = await page.content()
         // console.log(filterbox)
         // close page when analysis is done
-        await page.close()
-        if (!isali) {
-          selfbrowser ? logger.myconsole('Self browser product is missing! '.yellow + process) : logger.myconsole('Product is missing! '.yellow +
-            process)
-          selfbrowser
-            ? logger.myconsole('<p style="color: yellow">Self browser product is missing! </p>' + process, 'web')
-            : logger.myconsole('<p style="color: yellow">Product is missing! </p>' + process, 'web')
-          resolve('Product is missing!')
-        }
         mylogstr.date = mytime.mytime()
         mylogstr.url = url
         // write date
         logger.mybuffer(mylogstr)
         logger.writelog('success', type)
+        if (freepage) page.close()
+        freepage = true
       } catch (e) {
         resolve(false)
         logger.myconsole('System error! Or page timeout!'.red)
@@ -129,7 +136,7 @@ class InitJs {
     })
   }
 
-  async befailed (filterbox, selfbrowser, cont, url) {
+  async befailed (cont, selfbrowser, url) {
     // check login count, if get api failed more than 2 times, change ip first
     selfbrowser ? logger.myconsole('Self browser analysis failed!'.red) : logger.myconsole('Analysis failed!'.red)
     selfbrowser ? logger.myconsole('<p style="color: red">Self browser analysis failed!</p>', 'web') : logger.myconsole(

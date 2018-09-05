@@ -8,10 +8,8 @@ const puppeteer = require('puppeteer')
 const path = require('path')
 const fs = require('fs')
 
-const Fastpost = require('./fastpost')
+const Fastpost = require('./urldata')
 let fastpost = new Fastpost()
-// const Taobao = require('./taobao')
-// let taobao = new Taobao()
 const Getip = require('./getip')
 let getip = new Getip()
 const Getcodeimg = require('./getcodeimg')
@@ -89,6 +87,7 @@ class InitJs {
     }
   }
 
+  // self browser
   async creatbrowser (i) {
     return new Promise(async (resolve) => {
       let tempbrowser = await puppeteer.launch({

@@ -31,7 +31,7 @@ class ctrl {
       await proxy.initproxybrowser()
       // clear process and url box
       this.clearinternumb()
-      await proxy.autoproxy()
+      // await proxy.autoproxy()
     } else {
       // do not cache url
       internumb += 1
