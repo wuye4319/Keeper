@@ -105,7 +105,7 @@ class InitJs {
               }
             }
 
-            if (result.url().indexOf('mdetail.tmall.com/mobile/notfound.htm') !== -1) {
+            if (result.url().indexOf('mdetail.tmall.com/mobile/') !== -1) {
               selfbrowser ? logger.myconsole('Self browser product is missing! '.yellow + process) : logger.myconsole('Product is missing! '.yellow +
                 process)
               selfbrowser
