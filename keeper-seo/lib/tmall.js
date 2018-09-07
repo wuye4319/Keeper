@@ -113,6 +113,9 @@ class InitJs {
                 : logger.myconsole('<p style="color: yellow">Product is missing! </p>' + process, 'web')
               resolve('Product is missing!')
               page.close()
+            } else if (result.url().indexOf('sec.taobao.com/query.htm') !== -1) {
+              logger.myconsole('Verification Code!'.red)
+              page.close()
             }
           }
         })

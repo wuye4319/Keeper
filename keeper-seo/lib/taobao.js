@@ -108,6 +108,9 @@ class InitJs {
               } catch (e) {
                 logger.myconsole(e + ' ' + process)
               }
+            } else if (result.url().indexOf('sec.taobao.com/query.htm') !== -1) {
+              logger.myconsole('Verification Code!'.red)
+              page.close()
             }
           }
         })
