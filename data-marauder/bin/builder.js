@@ -10,6 +10,15 @@ let proxy = new Proxy()
 proxy.init()
 proxy.initproxybrowser()
 
+const Ctrl = require('../koa/router/ctrl')
+let ctrl = new Ctrl()
+repls.defineCommand('sex', {
+  help: 'Clear all cache, confirm your opration carefully!'.green,
+  action: function () {
+    // temp
+    ctrl.getimg('image')
+  }
+})
 repls.defineCommand('clear', {
   help: 'Clear all cache, confirm your opration carefully!'.green,
   action: function () {
