@@ -8,11 +8,6 @@ const Logger = require('keeper-core')
 let logger = new Logger()
 const Process = require('./process')
 let process = new Process()
-const Fscache = require('keeper-core/cache/cache')
-const cache = new Fscache()
-
-const Taobao = require('../../work/taobao')
-let taobao = new Taobao()
 
 class ctrl {
   /**
