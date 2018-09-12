@@ -83,6 +83,11 @@ class InitJs {
                 await waitcont(0)
               } catch (e) {
                 logger.myconsole(e + ' ' + process)
+                if (e.toString().indexOf('Protocol error') !== -1) {
+                  freepage = true
+                  resolve('Analysis failed!')
+                  logger.myconsole('Cont analysis failed!'.red)
+                }
               }
             }
           }

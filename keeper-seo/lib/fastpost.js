@@ -55,6 +55,7 @@ class InitJs {
       // let cookiebox = []
       let mylogstr = {}
       let page = await browser.newPage()
+      await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36')
       apidata = false
       let proid = url.substr(url.lastIndexOf('/'))
       logger.myconsole(mytime.mytime())

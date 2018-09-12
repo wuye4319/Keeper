@@ -1,8 +1,8 @@
 {
   "name": "keeper-proxy",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "keeper-proxy",
-  "main": "index.js",
+  "main": "./koa/router/rout.js",
   "dependencies": {
     "keeper-core": "^1.0.68"
   },

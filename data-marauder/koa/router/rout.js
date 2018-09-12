@@ -1,15 +1,17 @@
 /**
  * Created by nero on 2017/6/2.
  */
-const koa = require('../index')
-const Ctrl = require('./ctrl')
-let ctrl = new Ctrl()
+const Proxy = require('keeper-proxy')
+let proxy = new Proxy()
+const Action = require('./action')
+let action = new Action()
+require('./global')
 
 // subject
-koa.addrouter(/^\/image(?:\/|$)/, async (ctx) => {
-  await ctrl.getimage(ctx, 'image')
+proxy.addrouter(/^\/image(?:\/|$)/, async (ctx) => {
+  await action.getimage(ctx, 'image')
 })
 // subject
-koa.addrouter(/^\/taobao(?:\/|$)/, async (ctx) => {
-  await ctrl.getmall(ctx, 'taobao')
+proxy.addrouter(/^\/taobao(?:\/|$)/, async (ctx) => {
+  await action.getmall(ctx, 'taobao')
 })

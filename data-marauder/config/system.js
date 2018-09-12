@@ -1,15 +1,16 @@
 /**
- * system config of this plugin
+ * Created by nero on 2017/2/15.
+ * system count
  */
 
-let system = {
-  ipproxy: false,
-  backupserver: false,
-  cache: false,
-  printsourceurl: false,
-  ignoreimg: true,
-  downloadimg: false,
-  changeiptime: 10
+const system = {
+  proxyserver: 0,
+  cache: 1,
+  printsourceurl: 0,
+  ignoreimg: 1,
+  changeiptime: 10,
+  browsernumb: 1,
+  changeipactive: 0
 }
 
 module.exports = system

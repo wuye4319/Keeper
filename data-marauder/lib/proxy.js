@@ -21,45 +21,71 @@ let mytime = new Mytime()
 const Logger = require('keeper-core')
 let logger = new Logger()
 const systemconfig = require('../config/system')
+const Getcodeimg = require('./getcodeimg')
+let getcodeimg = new Getcodeimg()
 
 let browser
-let selfbrowser
+let selfbrowser = {}
 let ipdate = mytime.mydate('mins')
 logger.myconsole('Program start at : '.blue + ipdate)
-let ipindex = 1
+let ipindex = 0
+let browserindex = 0
 
 // change ip active
-let changeipactive = true
+let changeipactive = systemconfig.changeipactive
 // ip proxy list
-const iplist = require('../config/iplist')
+const iplist = require('../config/tempip')
 // change ip interval time, [mins]
 let changeiptime = systemconfig.changeiptime
 let processbox = []
+let proxyserver = systemconfig.proxyserver
 
 // constructor
 class InitJs {
+  // controll proxy
+  closeproxy () {
+    proxyserver = 0
+  }
+
+  openproxy () {
+    proxyserver = 1
+  }
+
+  changebrowser () {
+    browserindex += 1
+    // if (index) {
+    if (browserindex >= systemconfig.browsernumb) {
+      browserindex = 0
+    }
+  }
+
   setipinterval (time) {
     changeiptime = time
     console.log('set ip interval : ' + changeiptime + ' mins')
   }
 
   async init () {
+    let numb = systemconfig.browsernumb
+    for (let i = 0; i < numb; i++) {
+      selfbrowser[i] = await this.creatbrowser(i)
+    }
+  }
+
+  async creatbrowser (i) {
     return new Promise(async (resolve) => {
-      selfbrowser = await puppeteer.launch({
+      let tempbrowser = await puppeteer.launch({
         ignoreHTTPSErrors: true,
         // headless: false,
         args: ['--no-sandbox', '--disable-setuid-sandbox']
       })
-      logger.myconsole('self browser is start!'.green)
-      await delay.delay(0)
-
+      logger.myconsole('self browser' + i + ' is start!'.green)
       // router
-      resolve(true)
+      resolve(tempbrowser)
     })
   }
 
   async initproxybrowser () {
-    if (systemconfig.backupserver) {
+    if (proxyserver) {
       let proxy = iplist[0].address + ':' + iplist[0].host
       await this.newbrowser(proxy)
       await this.getip()
@@ -92,17 +118,19 @@ class InitJs {
     })
   }
 
-  async changeip (index) {
+  async changeip () {
+    ipindex += 1
     // if (index) {
-    if (index === iplist.length) {
+    if (ipindex >= iplist.length) {
       ipindex = 0
     }
-    let tempip = iplist[index].address + ':' + iplist[index].host
+    let tempip = iplist[ipindex].address + ':' + iplist[ipindex].host
     await this.restart(tempip)
     // } else {
     //   await this.restart()
     // }
     await this.getip()
+    await getcodeimg.writeacc(false, 'curr')
   }
 
   async restart (proxy) {
@@ -112,20 +140,35 @@ class InitJs {
     await this.newbrowser(proxy)
   }
 
-  async close () {
-    await selfbrowser.close()
-    if (systemconfig.backupserver) await browser.close()
+  getproxystatus () {
+    let temp = {
+      'ipindex': proxyserver ? ipindex : -1,
+      'browserindex': browserindex,
+      'changeipactive': changeipactive,
+      'changeiptime': changeiptime
+    }
+    return temp
   }
 
-  manualchangeip () {
+  async close () {
+    for (let i in selfbrowser) {
+      await selfbrowser[i].close()
+    }
+    if (proxyserver) await browser.close()
+  }
+
+  async manualchangeip () {
     changeipactive = false
-    this.changeip(ipindex)
-    ipindex += 1
+    await this.changeip()
   }
 
   autoproxy () {
     changeipactive = true
     console.log('Active change ip is start!'.green)
+  }
+
+  getproxylist () {
+    return iplist
   }
 
   async pagedata (type, url, process) {
@@ -141,18 +184,18 @@ class InitJs {
     // check ip date
     let ispass = mytime.dateispass(ipdate.split('-'), changeiptime)
     if (changeipactive && (ispass || result === 'changeip')) {
-      this.changeip(ipindex)
-      ipindex += 1
+      this.changeip()
     }
 
     if (result === 'changeip' || result === 'Analysis failed!' || result === 'Product is missing!') {
-      result = await pipedata.getdata(selfbrowser, type, url, process, true)
+      result = await pipedata.getdata(selfbrowser[browserindex], type, url, process, true)
     }
     return result
   }
 
   async pipedata (type, url, process) {
-    let currbrow = systemconfig.backupserver ? browser : selfbrowser
+    let cache = systemconfig.cache
+    let currbrow = proxyserver ? browser : selfbrowser[browserindex]
     // let rules = ['initItemDetail.htm', 'sib.htm']
     let rules = false
     let result = await pipedata.getdata(currbrow, type, url, rules, process)
@@ -173,6 +216,37 @@ class InitJs {
 
   async getip () {
     let data = await getip.getip(browser)
+    return data
+  }
+
+  async loginbycode (browsertype, index) {
+    let data
+    if (browsertype === 'self') {
+      data = await getcodeimg.getimg(selfbrowser[index || browserindex], browsertype + (index || browserindex))
+    } else if (browsertype === 'curr' && proxyserver) {
+      data = await getcodeimg.getimg(browser, browsertype)
+    } else {
+      data = false
+    }
+
+    return data
+  }
+
+  async login (loginurl, url, account) {
+    const page = await browser.newPage()
+
+    let file = path.join(__dirname, '/acc.js')
+    const tpl = fs.readFileSync(file).toString()
+    let param = {
+      acc: accbox[account].acc,
+      psw: accbox[account].psw
+    }
+    let mystr = render.renderdata(tpl, param)
+
+    const Login = eval(mystr)
+    let login = new Login()
+
+    let data = await login.login(page, loginurl, url)
     return data
   }
 }

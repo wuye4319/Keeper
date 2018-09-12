@@ -107,10 +107,12 @@ class InitJs {
                 await waitcont(0, cont)
               } catch (e) {
                 logger.myconsole(e + ' ' + process)
+                if (e.toString().indexOf('Response body is unavailable') !== -1) {
+                  freepage = true
+                  resolve('Analysis failed!')
+                  logger.myconsole('Analysis failed!'.red)
+                }
               }
-            } else if (result.url().indexOf('sec.taobao.com/query.htm') !== -1) {
-              logger.myconsole('Verification Code!'.red)
-              page.close()
             }
           }
         })
@@ -155,7 +157,15 @@ class InitJs {
     try {
       obj = JSON.parse(obj)
       let isjsonstr = typeof (obj) === 'object' && Object.prototype.toString.call(obj).toLowerCase() === '[object object]' && !obj.length
-      return isjsonstr
+      if (isjsonstr) {
+        let verifystrLogin = JSON.stringify(obj).indexOf('h5api.m.taobao.com:443//h5/mtop.taobao.detail.getdetail')
+        if (verifystrLogin !== -1) {
+          logger.myconsole('Slide verification code!'.red)
+          return false
+        } else {
+          return true
+        }
+      }
     } catch (e) {
       return false
     }

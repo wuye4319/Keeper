@@ -13,18 +13,20 @@ let internumb = 0
 let urlbox = []
 
 class ctrl {
-  async filter (ctx, rout, datatype) {
+  async filter (myurl, rout, datatype) {
     // filter
-    let myurl = ctx.url.substr(rout.length + 2)
     logger.myconsole('process : '.red + internumb.toString().red)
     logger.myconsole(myurl)
     let result
 
     if (internumb > 15) {
       logger.myconsole('Server is busy,please wait...')
-      await proxy.restart()
+      await proxy.close()
+      await proxy.init()
+      await proxy.initproxybrowser()
       // clear process and url box
       this.clearinternumb()
+      await proxy.autoproxy()
     } else {
       // do not cache url
       internumb += 1

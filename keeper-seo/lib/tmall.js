@@ -115,6 +115,7 @@ class InitJs {
               page.close()
             } else if (result.url().indexOf('sec.taobao.com/query.htm') !== -1) {
               logger.myconsole('Verification Code!'.red)
+              resolve('Product is missing!')
               page.close()
             }
           }

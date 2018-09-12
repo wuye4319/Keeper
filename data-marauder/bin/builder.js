@@ -1,12 +1,15 @@
 let path = require('path')
 const Fsdel = require('keeper-core/lib/delete')
 let del = new Fsdel()
-const koa = require('../koa/index')
+const KoaProxy = require('keeper-proxy')
+let koaproxy = new KoaProxy()
 require('../koa/router/rout')
 
 // proxy taobao
 const Proxy = require('../lib/proxy')
 let proxy = new Proxy()
+const Ctrl = require('../koa/router/ctrl')
+let ctrl = new Ctrl()
 proxy.init()
 proxy.initproxybrowser()
 
@@ -16,6 +19,13 @@ repls.defineCommand('clear', {
     // temp
     let mycache = path.join(__dirname, '../../../cache/')
     del.deleteSource(mycache, 'all')
+  }
+})
+repls.defineCommand('clearprocess', {
+  help: 'Clear all cache, conform your opration carefully!'.green,
+  action: function () {
+    // temp
+    ctrl.clearinternumb()
   }
 })
 repls.defineCommand('ipinterval', {
@@ -56,7 +66,7 @@ repls.defineCommand('/', {
   action: async function () {
     await proxy.close()
     // koa,do not merge to proxy!
-    koa.close()
+    koaproxy.close()
     console.log('Thanks for using! Bye~~~'.rainbow)
     this.close()
   }

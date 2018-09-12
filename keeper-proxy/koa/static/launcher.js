@@ -26,10 +26,10 @@ app.use(router.routes()).use(router.allowedMethods())
 // app.on('error', function (err, ctx) {
 //   console.log('server error', err, ctx)
 // })
-var lis = app.listen(80)
+let lis = app.listen(80)
 console.log('Launcher is started! port is 80'.green)
 
-var server = {
+let server = {
   addrouter: (url, fn) => {
     router.get(url, fn).post(url, fn)
   },

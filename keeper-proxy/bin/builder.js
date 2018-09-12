@@ -1,13 +1,11 @@
-const koa = require('../koa/index')
-const stat = require('../koa/static/launcher')
-require('../koa/router/rout')
+const Rout = require('../koa/router/rout')
+let rout = new Rout()
 
 repls.defineCommand('/', {
   help: 'end and exit'.red,
   action: async function () {
     // koa,do not merge to proxy!
-    koa.close()
-    stat.close()
+    rout.close()
     console.log('Thanks for using! Bye~~~'.rainbow)
     this.close()
   }
