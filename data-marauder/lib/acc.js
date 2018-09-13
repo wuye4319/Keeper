@@ -4,7 +4,6 @@
  * plugin:init js
  */
 'use strict'
-const koa = require('../koa/index')
 const Logger = require('keeper-core/logger/logger')
 let logger = new Logger()
 

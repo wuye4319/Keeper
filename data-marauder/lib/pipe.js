@@ -10,7 +10,6 @@ let logger = new Fslog()
 
 const Mytime = require('keeper-core/lib/time')
 let mytime = new Mytime()
-const systemconfig = require('../config/system')
 
 // constructor
 class InitJs {
@@ -22,6 +21,7 @@ class InitJs {
       // let cookiebox = []
       let mylogstr = {}
       let page = await browser.newPage()
+      await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36')
       let proid = url.substr(url.lastIndexOf('/'))
       logger.myconsole(mytime.mytime())
 
@@ -39,7 +39,8 @@ class InitJs {
               waitcont(index)
             }, 100)
           } else {
-            logger.myconsole('Web page opens normally '.green + process + (selfbrowser ? ', backup service!'.red : ''))
+            logger.myconsole((selfbrowser ? 'Backup service!'.red : 'Web page!'.green) + process)
+            cont.status = 'success'
             resolve(cont)
             t = Date.now() - t
             mylogstr.Loadingtime = (t / 1000).toString() + ' s'
@@ -50,10 +51,7 @@ class InitJs {
         // await page.setRequestInterception(true)
         // page.on('request', intercep => { intercep.continue() })
         page.on('response', async (result) => {
-          if (systemconfig.printsourceurl) {
-            console.log(result.url().green)
-          }
-
+          // console.log(result.url().green)
           // fn(result)
           if (!intercept) {
             if (result.url().indexOf(proid) !== -1) {
@@ -64,7 +62,12 @@ class InitJs {
                   waitcont(0)
                 }
               } catch (e) {
-                logger.myconsole('Get cont failed!'.red + process + e)
+                logger.myconsole(e + ' ' + process)
+                logger.myconsole(result.url())
+                if (e.toString().indexOf('Protocol error') !== -1) {
+                  resolve('Cont analysis failed!')
+                  logger.myconsole('Cont analysis failed!'.red)
+                }
               }
             }
 
@@ -105,7 +108,7 @@ class InitJs {
         logger.mybuffer(mylogstr)
         logger.writelog('success', type)
       } catch (e) {
-        resolve(cont)
+        resolve(false)
         logger.myconsole('System error! Or page timeout!'.red)
         await page.close()
       }

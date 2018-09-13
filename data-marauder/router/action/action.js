@@ -1,7 +1,7 @@
 /**
  * Created by nero on 2017/6/2.
  */
-const Process = require('./process')
+const Process = require('../process')
 let process = new Process()
 
 const Simg = require('../../work/simg')

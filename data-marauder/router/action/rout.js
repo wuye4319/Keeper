@@ -5,7 +5,7 @@ const Proxy = require('keeper-proxy')
 let proxy = new Proxy()
 const Action = require('./action')
 let action = new Action()
-require('./global')
+require('../global')
 
 // subject
 proxy.addrouter(/^\/image(?:\/|$)/, async (ctx) => {

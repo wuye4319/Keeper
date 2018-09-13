@@ -6,7 +6,6 @@
 const system = {
   proxyserver: 0,
   cache: 1,
-  printsourceurl: 0,
   ignoreimg: 1,
   changeiptime: 10,
   browsernumb: 1,

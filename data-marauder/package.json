@@ -1,9 +1,12 @@
 {
   "name": "data-marauder",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "data-marauder",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "keeper-core": "^1.0.68",
+    "keeper-proxy": "^0.0.4"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "test"
