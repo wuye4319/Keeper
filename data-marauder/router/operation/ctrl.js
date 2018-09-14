@@ -2,11 +2,11 @@
  * Created by nero on 2017/6/2.
  */
 const fs = require('fs')
-const Proxy = require('../lib/proxy')
+const Proxy = require('../../lib/proxy')
 let proxy = new Proxy()
 const Logger = require('keeper-core')
 let logger = new Logger()
-const Process = require('./process')
+const Process = require('../process')
 let process = new Process()
 
 class ctrl {

@@ -124,6 +124,7 @@ class InitJs {
         // let cont = await page.content()
         // console.log(filterbox)
         // close page when analysis is done
+        await page.close()
         mylogstr.date = mytime.mytime()
         mylogstr.url = url
         // write date

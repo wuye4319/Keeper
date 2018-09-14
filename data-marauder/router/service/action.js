@@ -6,6 +6,8 @@ let process = new Process()
 
 const Simg = require('../../work/simg')
 let simg = new Simg()
+const Snav = require('../../work/snav')
+let snav = new Snav()
 const Taobao = require('../../work/taobao')
 let taobao = new Taobao()
 
@@ -24,6 +26,16 @@ class ctrl {
     let result = await process.filter(ctx, rout, 'pipe')
     let result1 = await simg.getcont(result.cont, result.url, rout)
     result ? ctx.response.body = result : ctx.response.body = 'Get data failed!'
+  }
+
+  async getimg (url, rout) {
+    // get data by url
+    let result = await process.filter(url, rout, 'pipe')
+    if (result.cont && result.cont !== null) {
+      snav.getcont(result.cont, result.url, rout)
+    } else {
+      console.log('cont is empty!'.red)
+    }
   }
 }
 

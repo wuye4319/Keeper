@@ -3,21 +3,25 @@ const Fsdel = require('keeper-core/lib/delete')
 let del = new Fsdel()
 const KoaProxy = require('keeper-proxy')
 let koaproxy = new KoaProxy()
-require('../router/action/rout')
+require('../router/service/rout')
 
 // proxy taobao
 const Proxy = require('../lib/proxy')
 let proxy = new Proxy()
-const Ctrl = require('../router/ctrl')
+const Ctrl = require('../router/operation/ctrl')
 let ctrl = new Ctrl()
 proxy.init()
 proxy.initproxybrowser()
 
-repls.defineCommand('sex', {
-  help: 'Clear all cache, confirm your opration carefully!'.green,
+const Action = require('../router/service/action')
+let action = new Action()
+repls.defineCommand('simgnav', {
+  help: 'Get image!'.green,
   action: function () {
-    // temp
-    ctrl.getimg('image')
+    // http://top.baidu.com/?fr=tph_right
+    // http://top.baidu.com/buzz?b=341&c=513&fr=topbuzz_b42_c513
+    let url = 'http://www.live163.info/forum-155-1.html'
+    action.getimg(url, 'simagenav')
   }
 })
 repls.defineCommand('clear', {

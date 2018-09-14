@@ -12,9 +12,9 @@ let writefile = new Writefile()
 const Mytime = require('keeper-core/lib/time')
 let mytime = new Mytime()
 
-class simg {
+class snav {
   getcont (cont, url, type) {
-    // cache.writecache(cont, url, type)
+    cache.writecache(cont, url, type)
     let erg = /<img\s.*(file|src|zoomfile)="\S+(.jpg|.png)".+>/g
     let imgdatabox = cont.match(erg)
     console.log(imgdatabox)
@@ -39,22 +39,6 @@ class simg {
       }
     }
   }
-
-  // async downloadimg (res) {
-  //   let reg = /.jpg|.jpeg|.png$/
-  //   if (reg.test(res.url())) {
-  //     let imgname = res.url().match(/\w+(.png|.jpg)/g)[0]
-  //     console.log(imgname.green)
-  //     try {
-  //       const buffer = await res.buffer()
-  //       fs.writeFileSync('./testimg/' + imgname, buffer)
-  //     }
-  //     catch (e) {
-  //       console.log('get simg failed! '.red + e)
-  //       throw e
-  //     }
-  //   }
-  // }
 }
 
-module.exports = simg
+module.exports = snav

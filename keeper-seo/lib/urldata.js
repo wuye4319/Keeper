@@ -83,6 +83,7 @@ class InitJs {
                 await waitcont(0)
               } catch (e) {
                 logger.myconsole(e + ' ' + process)
+                logger.myconsole(result.url())
                 if (e.toString().indexOf('Protocol error') !== -1) {
                   freepage = true
                   resolve('Analysis failed!')
@@ -96,6 +97,7 @@ class InitJs {
         await page.goto(url)
         // let cont = await page.content()
         // close page when analysis is done
+        await page.close()
         mylogstr.date = mytime.mytime()
         mylogstr.url = url
         // write date

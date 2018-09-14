@@ -3,9 +3,9 @@
  * get current information for prerender
  */
 const path = require('path')
-const systemconfig = require('../config/system')
+const systemconfig = require('../../config/system')
 let fs = require('fs')
-const Proxy = require('../lib/proxy')
+const Proxy = require('../../lib/proxy')
 let proxy = new Proxy()
 const Writefile = require('keeper-core/lib/writefile')
 let writefile = new Writefile()

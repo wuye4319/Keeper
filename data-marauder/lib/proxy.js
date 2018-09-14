@@ -21,7 +21,7 @@ let mytime = new Mytime()
 const Logger = require('keeper-core')
 let logger = new Logger()
 const systemconfig = require('../config/system')
-const Getcodeimg = require('./getcodeimg')
+const Getcodeimg = require('./codeimg')
 let getcodeimg = new Getcodeimg()
 
 let browser
@@ -34,7 +34,7 @@ let browserindex = 0
 // change ip active
 let changeipactive = systemconfig.changeipactive
 // ip proxy list
-const iplist = require('../config/tempip')
+const iplist = require('../config/iplist')
 // change ip interval time, [mins]
 let changeiptime = systemconfig.changeiptime
 let processbox = []
