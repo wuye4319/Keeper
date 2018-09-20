@@ -1,10 +1,10 @@
 {
   "name": "keeper-proxy",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "keeper-proxy",
   "main": "./koa/router/rout.js",
   "dependencies": {
-    "keeper-core": "^1.0.68"
+    "keeper-core": "^1.0.70"
   },
   "devDependencies": {},
   "scripts": {
