@@ -42,10 +42,11 @@ repls.defineCommand('auto-login', {
   help: 'auto login for taobao'.green,
   action: function (account) {
     // temp
-    let tempPro = 'https://detail.tmall.com/item.htm?id=554802892200'
+    let tempPro = 'https://www.tmall.com/'
     // let tempPro = 'https://www.tmall.com/'
-    let url = 'https://login.tmall.com/?from=sm&redirectURL='
-    proxy.login(url, tempPro, account || 0)
+    let url = 'https://login.taobao.com/member/login.jhtml?tpl_redirect_url='
+    // proxy.login(url, tempPro, account || 0)
+    proxy.logintest(url, tempPro)
   }
 })
 repls.defineCommand('manualchangeip', {

@@ -27,6 +27,8 @@ const Mytime = require('keeper-core/lib/time')
 let mytime = new Mytime()
 const Logger = require('keeper-core')
 let logger = new Logger()
+const Logintest = require('../lib/auto-login')
+let logintest = new Logintest()
 
 let browser
 let selfbrowser = {}
@@ -237,7 +239,7 @@ class InitJs {
   }
 
   async login (loginurl, url, account) {
-    const page = await browser.newPage()
+    const page = await selfbrowser[browserindex].newPage()
 
     let file = path.join(__dirname, '/acc.js')
     const tpl = fs.readFileSync(file).toString()
@@ -251,6 +253,13 @@ class InitJs {
     let login = new Login()
 
     let data = await login.login(page, loginurl, url)
+    return data
+  }
+
+  async logintest (loginurl, url) {
+    const page = await selfbrowser[browserindex].newPage()
+
+    let data = await logintest.login(page, loginurl, url)
     return data
   }
 

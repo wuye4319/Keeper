@@ -166,16 +166,12 @@ class rules {
     let seoconfig = JSON.parse(tempseoconfig)
 
     let myseoinfor
+    let name = seoconfig[myModuleDir]
+    let defstr = seoconfig['default']['construct']
     if (myChildDir) {
-      if (!eval('seoconfig.' + myModuleDir)) {
-        myseoinfor = eval('seoconfig.default.default')
-      } else {
-        myseoinfor = eval('seoconfig.' + myModuleDir + '[\'' + childModule + '\']') || eval('seoconfig.default.default')
-      }
+      myseoinfor = name ? (seoconfig[myModuleDir][childModule] || defstr) : defstr
     } else if (myModuleDir) {
-      myseoinfor = (eval('seoconfig.' + myModuleDir)
-        ? (eval('seoconfig.' + myModuleDir + '.construct') || eval('seoconfig.default.construct'))
-        : false) || eval('seoconfig.default.construct')
+      myseoinfor = name ? (seoconfig[myModuleDir]['construct'] || defstr) : defstr
     }
     return myseoinfor
   }

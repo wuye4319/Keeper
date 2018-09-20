@@ -12,6 +12,7 @@ class ready {
       {name: 'koa', ver: '2.3.0'},
       {name: 'koa-cors', ver: '0.0.16'},
       {name: 'koa-router', ver: '7.2.1'},
+      {name: 'mime', ver: '2.3.1'},
       {name: 'request', ver: '2.83.0'}
       // {name: 'puppeteer', ver: '0.12.0'}
     ]

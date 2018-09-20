@@ -23,7 +23,7 @@ class snav {
       const imgpath = './testimg/' + mytime.mydate('mins') + '/'
       const initstr = imgpath + 'init.txt'
       if (!fs.existsSync(initstr)) {
-        writefile.writejs(initstr, '123')
+        writefile.writejs(initstr, imgdatabox)
       }
 
       for (let i in imgdatabox) {
