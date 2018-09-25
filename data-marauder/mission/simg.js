@@ -40,6 +40,28 @@ class simg {
     }
   }
 
+  saveimg (imgdatabox) {
+    if (imgdatabox) {
+      const imgpath = './testimg/' + mytime.mydate('mins') + '/'
+      const initstr = imgpath + 'init.txt'
+      if (!fs.existsSync(initstr)) {
+        writefile.writejs(initstr, '123')
+      }
+
+      for (let i in imgdatabox) {
+        let erg2 = /\s(file|src|zoomfile)="(.+)"/
+        // console.log(imgdatabox[i])
+        let imgurl = imgdatabox[i].match(erg2)[2]
+        // console.log(imgurl)
+        // let imgname = imgurl.match(/\w+(.jpg|.png)/)
+        let imgtype = imgurl.match(/.jpg|.png/)[0]
+
+        // console.log(i, imgtype, imgname)
+        if (imgurl) dataurl.saveimg(imgurl, imgpath + i + imgtype)
+      }
+    }
+  }
+
   // async downloadimg (res) {
   //   let reg = /.jpg|.jpeg|.png$/
   //   if (reg.test(res.url())) {

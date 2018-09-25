@@ -1,33 +1,29 @@
 let path = require('path')
 const fs = require('fs')
 
-const Fswritefile = require('../lib/writefile')
+const Fswritefile = require('keeper-core/lib/writefile')
 let writefile = new Fswritefile()
-const Fsdel = require('../lib/delete')
+const Fsdel = require('keeper-core/lib/delete')
 let del = new Fsdel()
 
 class readcache {
   constructor () {
     this.options = {
-      errfile: '../logfile/error.txt',
       gpath: '../../../cache/',
-      cacheinfor: '/infor.txt',
-      cachemins: 30 // minutes
+      cacheinfor: '/infor.txt'
     }
   }
 
   readcache (type) {
-    return new Promise((resolve) => {
-      let infor = path.join(__dirname, this.options.gpath + type + this.options.cacheinfor)
+    let infor = path.join(__dirname, this.options.gpath + type + this.options.cacheinfor)
 
-      if (fs.existsSync(infor)) {
-        let mycacheinfor = fs.readFileSync(infor).toString()
-        let temparr = JSON.parse('[' + mycacheinfor + ']')
-        // console.log(temparr)
-        temparr.reverse()
-        return temparr
-      }
-    })
+    if (fs.existsSync(infor)) {
+      let mycacheinfor = fs.readFileSync(infor).toString()
+      let temparr = JSON.parse('[' + mycacheinfor + ']')
+      // console.log(temparr)
+      temparr.reverse()
+      return temparr
+    }
   }
 
   cachestr (type, cachefile) {

@@ -1,6 +1,6 @@
 {
   "name": "data-marauder-mining",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "data-marauder-mining",
   "main": "index.js",
   "dependencies": {
