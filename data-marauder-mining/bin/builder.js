@@ -6,7 +6,7 @@ repls.defineCommand('img', {
   action: function () {
     // http://top.baidu.com/?fr=tph_right
     // http://top.baidu.com/buzz?b=341&c=513&fr=topbuzz_b42_c513
-    center.getdata()
+    center.getdata('simagenav')
   }
 })
 repls.defineCommand('/', {

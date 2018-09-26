@@ -13,18 +13,14 @@ const Rnav = require('../regular/rnav')
 let rnav = new Rnav()
 
 class analysis {
-  analy (cont, url, type) {
-    let imgdatabox = []
+  analy (cont, type) {
     let rulbox = rnav.rule()
     for (let i in rulbox) {
-      let tempobj = {}
-      tempobj['rule' + (i + 1)] = cont.match(rulbox[i])
-      imgdatabox.push(tempobj)
+      let tempobj = cont.match(rulbox[i])
+      const imgpath = './analysis/' + type + '/' + mytime.mydate('mins') + '/rule' + i + '.js'
+      writefile.writejs(imgpath, JSON.stringify(tempobj))
     }
-
-    const imgpath = './testimg/' + mytime.mydate('mins') + '/'
-    writefile.writejs(imgpath, imgdatabox)
-    return imgdatabox
+    console.log('Analysis file is create!'.red)
   }
 }
 

@@ -6,8 +6,8 @@ const Analysis = require('./analysis')
 let analysis = new Analysis()
 
 class ctrol {
-  getdata () {
-    let temparr = cache.readcache()
+  getdata (type) {
+    let temparr = cache.readcache(type)
     for (let i in temparr) {
       // let tmpurl = Object.values(temparr[i])
       let cachefile = Object.keys(temparr[i])
@@ -15,7 +15,7 @@ class ctrol {
       // tempdatearr = tempdatearr.split('-')
       // In current cache date, if url is exist
       let data = cache.cachestr(type, cachefile)
-      analysis.analy(data)
+      analysis.analy(data, type)
     }
   }
 }
