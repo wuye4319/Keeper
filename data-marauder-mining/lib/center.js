@@ -15,7 +15,7 @@ class ctrol {
       // tempdatearr = tempdatearr.split('-')
       // In current cache date, if url is exist
       let data = cache.cachestr(type, cachefile)
-      analysis.analy(data, type)
+      analysis.analy(data, type, cachefile)
     }
   }
 }

@@ -6,8 +6,9 @@
 class snav {
   rule (cont, url, type) {
     let regular = []
-    regular.push(/<img\s.*(file|src|zoomfile)="\S+(.jpg|.png)".+>/g)
-    regular.push(/\s(file|src|zoomfile)="(.+)"/)
+    regular.push(/<img\s.*(file|src|zoomfile)="http\S+(.jpg|.png)".+>/g)
+    regular.push(/<img\s.*(file|src|zoomfile)="http\S+?(.jpg|.png)".+?>{1}/g)
+    // regular.push(/\s(file|src|zoomfile)="(.+)"/)
 
     return regular
   }
