@@ -20,20 +20,33 @@ class staticFiles {
       }
 
       ctx.response.type = mime.getType(fp)
-      ctx.response.body = this.addinitdata(fp)
+      ctx.response.body = this.addinitdata(ctx, fp)
     } else {
       // Not found
       ctx.response.status = 404
     }
   }
 
-  addinitdata (fp) {
+  addinitdata (ctx, fp) {
     // add static data
     let ishtml = /.html/.test(fp)
     let htmlcont
     if (ishtml) {
       let tempstr = fs.readFileSync(fp)
-      htmlcont = tempstr.toString().replace(/<\/body>/, '<script>window.staticinitdata=123</script>\n</body>')
+
+      let user = (ctx.hostname === 'localhost' ? 'testuser' : ctx.hostname)
+      let pageindex = ctx.url.indexOf('page')
+      let param = ctx.url.split('/')
+      let page = (pageindex !== -1 ? param[2] : param[1])
+      let data = {}
+      let conf = JSON.parse(fs.readFileSync('./shop/' + user + '/themeconf.json').toString())
+      let pageconf = './shop/' + user + '/' + conf.currtheme + '/config.json'
+      let temp = JSON.parse(fs.readFileSync(pageconf).toString())
+      data.page = temp.pages[page]
+      data.layout = temp.layout
+      data.theme = temp.theme
+
+      htmlcont = tempstr.toString().replace(/<\/body>/, '<script>window.staticinitdata=' + JSON.stringify(data) + '</script>\n</body>')
     } else {
       htmlcont = fs.readFileSync(fp)
     }
