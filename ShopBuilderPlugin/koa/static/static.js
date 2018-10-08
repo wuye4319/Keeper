@@ -32,12 +32,18 @@ class staticFiles {
     let ishtml = /.html/.test(fp)
     let htmlcont
     if (ishtml) {
+      // let t = Date.now()
       let tempstr = fs.readFileSync(fp)
 
-      let user = (ctx.hostname === 'localhost' ? 'testuser' : ctx.hostname)
+      // builder.test.com use testuser
+      let testcom = (ctx.hostname === 'localhost' || ctx.hostname.indexOf('builder.test.com') !== -1)
+      let user = (testcom ? 'testuser' : ctx.hostname)
+
+      // get page name
       let pageindex = ctx.url.indexOf('page')
       let param = ctx.url.split('/')
       let page = (pageindex !== -1 ? param[2] : param[1])
+
       let data = {}
       let conf = JSON.parse(fs.readFileSync('./shop/' + user + '/themeconf.json').toString())
       let pageconf = './shop/' + user + '/' + conf.currtheme + '/config.json'
@@ -46,7 +52,10 @@ class staticFiles {
       data.layout = temp.layout
       data.theme = temp.theme
 
-      htmlcont = tempstr.toString().replace(/<\/body>/, '<script>window.staticinitdata=' + JSON.stringify(data) + '</script>\n</body>')
+      htmlcont = tempstr.toString().replace(/<\/head>/, '<script>window.staticinitdata=' + JSON.stringify(data) + '</script>\n</head>')
+      // t = Date.now() - t
+      // let Loadingtime = (t / 1000).toString() + ' s'
+      // console.log('Loading time : '.green + Loadingtime.red)
     } else {
       htmlcont = fs.readFileSync(fp)
     }

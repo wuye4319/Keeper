@@ -7,7 +7,7 @@ const Ctrl = require('./ctrl')
 let ctrl = new Ctrl()
 const StaticFiles = require('../static/static')
 let staticFiles = new StaticFiles()
-require('../../../../admin/router/rout')
+require('../../admin/router/rout')
 
 class rout {
   closeall () {

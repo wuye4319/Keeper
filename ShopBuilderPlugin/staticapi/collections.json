@@ -1,0 +1,63 @@
+{
+  "state": 0,
+  "msg": "Operation success",
+  "data": {
+    "current_page": 1,
+    "data": [
+      {
+        "title": "aaaaaaaaa",
+        "cover_images": "",
+        "collection_id": "9jLJO2"
+      },
+      {
+        "title": "Men's",
+        "cover_images": "\/\/gd2.alicdn.com\/imgextra\/i1\/0\/TB17KZjeHsTMeJjy1zbXXchlVXa_!!0-item_pic.jpg",
+        "collection_id": "ZXKeqm"
+      },
+      {
+        "title": "0906Product\u8be6\u60c5\u6dfb\u52a0\u7684collection 01",
+        "cover_images": "",
+        "collection_id": "28YGVq"
+      },
+      {
+        "title": "test1234",
+        "cover_images": "",
+        "collection_id": "XKpLr2"
+      },
+      {
+        "title": "huanqiu",
+        "cover_images": "",
+        "collection_id": "XbPd0q"
+      },
+      {
+        "title": "Collection_type = 0\uff1a\u8fd9\u662f\u4e2a\u624b\u52a8\u7684collection1",
+        "cover_images": "",
+        "collection_id": "XQa8kX"
+      },
+      {
+        "title": "\u5496     \u55613",
+        "cover_images": "",
+        "collection_id": "9WvZLq"
+      },
+      {
+        "title": "\u5496     \u5561",
+        "cover_images": "",
+        "collection_id": "qkLRr9"
+      },
+      {
+        "title": "\u5496 \u5561",
+        "cover_images": "",
+        "collection_id": "XBvRdX"
+      },
+      {
+        "title": "kk",
+        "cover_images": "",
+        "collection_id": "9jLJ72"
+      }
+    ],
+    "total": 68,
+    "per_pagesize": 10,
+    "total_page": 7
+  },
+  "server_time": 1537523763
+}

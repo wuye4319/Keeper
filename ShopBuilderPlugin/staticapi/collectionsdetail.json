@@ -1,0 +1,37 @@
+{
+  "state": 0,
+  "msg": "Operation success",
+  "data": {
+    "data": [
+      {
+        "product_id": "RXZxqO",
+        "product_name": "女童卫衣打底衫2018春装9中大童10小学生女孩12girls13儿童15岁潮",
+        "platform_name": "TB",
+        "spu_code": "558722864363",
+        "main_img": "//gd2.alicdn.com/imgextra/i1/0/TB17KZjeHsTMeJjy1zbXXchlVXa_!!0-item_pic.jpg",
+        "market_price": 31.46,
+        "sell_price": 5.53,
+        "currency": "USD",
+        "currency_symbol": "US $",
+        "source_url": "https://item.taobao.com/item.htm?id=558722864363"
+      },
+      {
+        "product_id": "o2ngqM",
+        "product_name": "ZADIG&VOLTAIRE1 Girls can do anything袁珊珊同款 字母印花T恤",
+        "platform_name": "TB",
+        "spu_code": "565427512156",
+        "main_img": "//gd4.alicdn.com/imgextra/i2/3838953247/TB2LHamcwaTBuNjSszfXXXgfpXa_!!3838953247.jpg",
+        "market_price": 135.97,
+        "sell_price": 107.51,
+        "currency": "USD",
+        "currency_symbol": "US $",
+        "source_url": "https://item.taobao.com/item.htm?id=565427512156"
+      }
+    ],
+    "total": 2,
+    "current_page": 1,
+    "per_pagesize": 10,
+    "total_page": 1
+  },
+  "server_time": 1524901161
+}
