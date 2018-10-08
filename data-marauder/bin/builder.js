@@ -24,6 +24,14 @@ repls.defineCommand('simgnav', {
     action.getimg(url, 'simagenav')
   }
 })
+const Base64 = require('../lib/writebase64')
+let base64 = new Base64()
+repls.defineCommand('base64', {
+  help: 'write base64 to file'.green,
+  action: function () {
+    base64.tofile()
+  }
+})
 repls.defineCommand('clear', {
   help: 'Clear all cache, confirm your opration carefully!'.green,
   action: function () {
