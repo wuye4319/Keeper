@@ -18,7 +18,7 @@ app.use(async (ctx, next) => {
   ctx.response.set('Access-Control-Allow-Origin', 'http://builder.test.com')
   ctx.response.set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, DELETE')
   ctx.response.set('Access-Control-Max-Age', '0')
-  ctx.response.set('Access-Control-Allow-Headers', 'X-Requested-With,X_Requested_With,Content-Type')
+  ctx.response.set('Access-Control-Allow-Headers', 'X-Requested-With,Content-Type,Access-Token,Origin-Host')
   ctx.response.set('Access-Control-Allow-Credentials', 'true')
   if (ctx.request.method === 'OPTIONS') {
     ctx.response.status = 200
