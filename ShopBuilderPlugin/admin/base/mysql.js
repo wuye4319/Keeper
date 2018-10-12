@@ -9,13 +9,13 @@ let config = {
   host: 'localhost',
   port: '3306',
   user: 'root',
-  password: '1234',
+  password: '4319',
   database: 'builder'
 }
 let pool = mysql.createPool(config)
 
-let basesql = {
-  myquery: (sql, param, fn) => {
+class basesql {
+  myquery (sql, param, fn) {
     pool.getConnection((err, connection) => {
       // Use the connection
       connection.query(sql, param, (error, results, fields) => {
@@ -24,8 +24,9 @@ let basesql = {
         fn(results)
       })
     })
-  },
-  endconn: () => {
+  }
+
+  endconn () {
     pool.end()
     console.log('mysql connection is cloes!'.red)
   }

@@ -8,14 +8,6 @@ let conf = new fsconf()
 const Createshop = require('../lib/ctrl/createshop')
 let createshop = new Createshop()
 
-let product = require('../admin/service/product')
-repls.defineCommand('mysql', {
-  help: 'setting config of config.js'.green,
-  action: function (param) {
-    product.getpro(123)
-    this.displayPrompt()
-  }
-})
 repls.defineCommand('conf', {
   help: 'setting config of config.js'.green,
   action: function (param) {

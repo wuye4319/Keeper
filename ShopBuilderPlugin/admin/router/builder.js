@@ -8,6 +8,7 @@ let writefile = new Writefile()
 const Builder = require('../service/builder')
 let builder = new Builder()
 
+let globparam = '/web/v1/'
 // init
 koa.addrouter('/', async (ctx) => {
   ctx.response.body = '<h1>welcome to nodejs</h1>'
@@ -28,34 +29,34 @@ koa.addrouter('/shopbuilder/userpageconfig/:type/:user', async (ctx) => {
   }
   ctx.response.body = result
 })
-koa.addrouter('/web/v1/collections', async (ctx) => {
+koa.addrouter(globparam + 'collections', async (ctx) => {
   let result
   result = builder.collections()
   ctx.response.body = result
 })
-koa.addrouter('/web/v1/collections/:id', async (ctx) => {
+koa.addrouter(globparam + 'collections/:id', async (ctx) => {
   let id = ctx.params.id
   let result
   result = builder.collectionsdetail(id)
   ctx.response.body = result
 })
-koa.addrouter('/web/v1/products', async (ctx) => {
+koa.addrouter(globparam + 'products', async (ctx) => {
   let result
   result = builder.products()
   ctx.response.body = result
 })
-koa.addrouter('/web/v1/products/:id', async (ctx) => {
+koa.addrouter(globparam + 'products/:id', async (ctx) => {
   let id = ctx.params.id
   let result
   result = builder.productsdetail(id)
   ctx.response.body = result
 })
-koa.addrouter('/web/v1/blog', async (ctx) => {
+koa.addrouter(globparam + 'blog', async (ctx) => {
   let result
   result = builder.blog()
   ctx.response.body = result
 })
-koa.addrouter('/web/v1/blog/:id', async (ctx) => {
+koa.addrouter(globparam + 'blog/:id', async (ctx) => {
   let id = ctx.params.id
   let result
   result = builder.blogdetail(id)

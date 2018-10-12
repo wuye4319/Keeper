@@ -4,10 +4,11 @@
  * plugin:init js
  */
 'use strict'
-let basemysql = require('../base/mysql')
+const Basemysql = require('../base/mysql')
+let basemysql = new Basemysql()
 
-let mysql = {
-  addpro: function (data) {
+class mysql {
+  addpro (data) {
     return new Promise((resolve) => {
       basemysql.myquery('insert into product set MainImg=?,ProName=?,ProHref=?,Price=?,ProKind=?,ThemeID=?,MySort=?',
         [data.MainImg, data.ProName, data.ProHref, data.Price, data.ProKind, data.ThemeID, data.MySort],
@@ -21,18 +22,20 @@ let mysql = {
           }
         })
     })
-  },
-  getpro: function (id) {
+  }
+
+  getpro (id) {
     return new Promise((resolve) => {
-      basemysql.myquery('select * from product where ID=? ', id, function (results) {
+      basemysql.myquery('select * from product where pro_id=? ', id, function (results) {
         resolve(results[0])
       })
     })
-  },
+  }
+
   /** @param id 主题id，page 页数，numb 每页数量
    * 使用mysort来排序，前5的为hot
    */
-  getProListByTheme: (id) => {
+  getProListByTheme (id) {
     return new Promise((resolve) => {
       // let tempid = ('ThemeID=' + id[0])
       // if (id.length > 1) {
