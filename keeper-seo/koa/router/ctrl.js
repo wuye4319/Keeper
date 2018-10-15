@@ -15,7 +15,7 @@ let internumb = 0
 let urlbox = []
 
 class ctrl {
-  async filter (myurl, rout) {
+  async filter (myurl, rout, type) {
     // filter
     logger.myconsole('process : '.red + internumb.toString().red)
     logger.myconsole(myurl)
@@ -54,7 +54,11 @@ class ctrl {
           logger.myconsole('this is cache file!')
           logger.myconsole('<p>this is cache file!</p>', 'web')
         } else {
-          result = await proxy.taobao(rout, myurl, internumb)
+          if (type === 'search') {
+            result = await proxy.search(rout, myurl, internumb)
+          } else {
+            result = await proxy.taobao(rout, myurl, internumb)
+          }
         }
 
         // rm url in box
@@ -94,9 +98,9 @@ class ctrl {
   }
 
   async filtersearch (ctx, rout, key) {
-    // let myurl = 'https://pub.alimama.com/promo/search/index.htm?q=' + key
-    let myurl = 'https://pub.alimama.com/items/search.json?' + key
-    let result = await this.filter(myurl, rout)
+    // let myurl = 'https://pub.alimama.com/items/search.json?' + key
+    let myurl = 'https://s.taobao.com/search?ajax=true&app=mainsrp&q=' + key
+    let result = await this.filter(myurl, rout, 'search')
     if (result) {
       ctx.response.body = result
     } else {

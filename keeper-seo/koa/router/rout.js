@@ -26,6 +26,12 @@ koa.addrouter(/^\/slidelock(?:\/|$)/, async (ctx) => {
   await ctrl.slidelock(ctx, 'slidelock')
 })
 
+// search
+koa.addrouter('/search/:key', async (ctx) => {
+  let key = ctx.params.key
+  await ctrl.filtersearch(ctx, 'search', key)
+})
+
 // static
 koa.addrouter(/^\/(\w+)(?:\/|$)/, async (ctx) => {
   await staticFiles.getfile(ctx, '/static/', './static')

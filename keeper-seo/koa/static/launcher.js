@@ -26,7 +26,7 @@ app.use(router.routes()).use(router.allowedMethods())
 // app.on('error', function (err, ctx) {
 //   console.log('server error', err, ctx)
 // })
-var lis = app.listen(80)
+var lis = app.listen(8080)
 console.log('Launcher is started!!!'.green)
 // console.log('http://localhost/')
 

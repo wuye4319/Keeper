@@ -12,9 +12,9 @@ const Fscache = require('keeper-core/cache/cache')
 const cache = new Fscache()
 // const SlideLock = require('./slidelock')
 // let slidelock = new SlideLock()
-const Tmall = require('./tmall')
+const Tmall = require('../work/tmall')
 let tmall = new Tmall()
-const Taobao = require('./taobao')
+const Taobao = require('../work/taobao')
 let taobao = new Taobao()
 
 // constructor
@@ -24,7 +24,6 @@ class InitJs {
       let cont = ''
       let isali = false // page from ali
       let istmall = false
-      let freepage = false
       // let cookiebox = []
       let mylogstr = {}
       let page = await browser.newPage()
@@ -38,9 +37,6 @@ class InitJs {
             cont = 'Failed'
             resolve(cont)
             logger.myconsole('Wait cont failed!'.red)
-            logger.myconsole('<p style="color: red">Wait cont failed!</p>', 'web')
-            if (freepage) page.close()
-            freepage = true
           }
 
           if (!cont) {
@@ -64,8 +60,6 @@ class InitJs {
             if (opencache && isdata) cache.writecache(cont, url, type)
             isdata ? mylogstr.apidata = 'success' : mylogstr.apidata = 'Failed'
             resolve(cont)
-            if (freepage) page.close()
-            freepage = true
           }
         }
 
@@ -83,9 +77,8 @@ class InitJs {
                 await waitcont(0)
               } catch (e) {
                 logger.myconsole(e + ' ' + process)
-                logger.myconsole(result.url())
+                logger.myconsole(result.url().yellow)
                 if (e.toString().indexOf('Protocol error') !== -1) {
-                  freepage = true
                   resolve('Analysis failed!')
                   logger.myconsole('Cont analysis failed!'.red)
                 }
@@ -98,17 +91,19 @@ class InitJs {
         // let cont = await page.content()
         // close page when analysis is done
         await page.close()
+        if (!isali) {
+          selfbrowser ? logger.myconsole('Self browser cont is missing! '.yellow + process) : logger.myconsole('Cont is missing! '.yellow +
+            process)
+          resolve('Cont is missing!')
+        }
         mylogstr.date = mytime.mytime()
         mylogstr.url = url
         // write date
         logger.mybuffer(mylogstr)
         logger.writelog('success', type)
-        if (freepage) page.close()
-        freepage = true
       } catch (e) {
         resolve(false)
         logger.myconsole('Cont page error! Or page timeout!'.red)
-        logger.myconsole('<p style="color: red">Cont page error! Or page timeout!</p>', 'web')
         await page.close()
       }
     })

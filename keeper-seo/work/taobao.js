@@ -21,15 +21,11 @@ class InitJs {
     return new Promise(async resolve => {
       let isjson = false
       if (cont === 'Failed') cont = false
-      let templine = '\n<script>\nvar apidata_tmall = '
+      let templine = '\n<script>\nvar apidata = '
       let endtempline = '\n</script>'
-      let str
-      try {
-        str = cont.match(/<script>var _DATA_Mdskip =  ([\s\S]+) <\/script>\s+<script src=/)[1]
-      } catch (e) {
-        logger.myconsole('String is error : '.red + e)
-      }
-      isjson = str ? this.isJson(str, browser) : false
+
+      // let str = cont.match(/<script>var _DATA_Mdskip =  ([\s\S]+) <\/script>\s+<script src=/)[1]
+      isjson = cont ? this.isJson(cont, browser) : false
       if (isjson && cont) {
         apidata = true
         // if previous api is success, reduce
@@ -39,17 +35,16 @@ class InitJs {
         if (befailed === 'changeip') { resolve('changeip') } else { resolve('Analysis failed!') }
       }
 
-      cont = templine + str + endtempline
+      cont = templine + cont + endtempline
       resolve(cont)
     })
   }
 
-  async tmall (browser, type, url, opencache, process, selfbrowser) {
+  async taobao (browser, type, url, opencache, process, selfbrowser) {
     return new Promise(async (resolve) => {
       let t = Date.now()
       let cont = ''
       let isali = false // page from ali
-      let freepage = false
       // let cookiebox = []
       let mylogstr = {}
       let page = await browser.newPage()
@@ -57,7 +52,6 @@ class InitJs {
       apidata = false
       let proid = url.substr(url.lastIndexOf('/'))
       logger.myconsole(mytime.mytime())
-      logger.myconsole('<p>' + mytime.mytime() + '</p>', 'web')
 
       try {
         let waitcont = async (index) => {
@@ -66,9 +60,6 @@ class InitJs {
             cont = 'Failed'
             resolve(cont)
             logger.myconsole('Wait cont failed!'.red)
-            logger.myconsole('<p style="color: red">Wait cont failed!</p>', 'web')
-            if (freepage) page.close()
-            freepage = true
           }
 
           if (!cont) {
@@ -78,17 +69,18 @@ class InitJs {
             }, 100)
           } else {
             isali = true
-            logger.myconsole('Web page opens normally '.green + process + (selfbrowser ? ', backup service!'.red : ''))
-            logger.myconsole('<p style="color: green">Web page opens normally ' + process +
-              (selfbrowser ? ', <span style="color: red">backup service!</span>' : '') + '</p>', 'web')
-            cont = await this.getcont(browser, cont, selfbrowser, url)
-            resolve(cont)
-            t = Date.now() - t
-            mylogstr.Loadingtime = (t / 1000).toString() + ' s'
-            logger.myconsole('Loading time : '.green + mylogstr.Loadingtime.red)
-            logger.myconsole('<p style="color: green">Loading time : <span style="color: red">' + mylogstr.Loadingtime + '</span></p>', 'web')
-            if (freepage) page.close()
-            freepage = true
+            if (cont.indexOf('h5.m.taobao.com/detailplugin/expired.html') !== -1) {
+              selfbrowser ? logger.myconsole('Self browser product is missing! '.yellow + process) : logger.myconsole('Product is missing! '.yellow +
+                process)
+              resolve('Product is missing!')
+            } else {
+              logger.myconsole('Web page opens normally '.green + process + (selfbrowser ? ', backup service!'.red : ''))
+              cont = await this.getcont(browser, cont, selfbrowser, url)
+              resolve(cont)
+              t = Date.now() - t
+              mylogstr.Loadingtime = (t / 1000).toString() + ' s'
+              logger.myconsole('Loading time : '.green + mylogstr.Loadingtime.red)
+            }
           }
         }
 
@@ -102,21 +94,11 @@ class InitJs {
                 await waitcont(0, cont)
               } catch (e) {
                 logger.myconsole(e + ' ' + process)
+                if (e.toString().indexOf('Response body is unavailable') !== -1) {
+                  resolve('Analysis failed!')
+                  logger.myconsole('Analysis failed!'.red)
+                }
               }
-            }
-
-            if (result.url().indexOf('mdetail.tmall.com/mobile/') !== -1) {
-              selfbrowser ? logger.myconsole('Self browser product is missing! '.yellow + process) : logger.myconsole('Product is missing! '.yellow +
-                process)
-              selfbrowser
-                ? logger.myconsole('<p style="color: yellow">Self browser product is missing! </p>' + process, 'web')
-                : logger.myconsole('<p style="color: yellow">Product is missing! </p>' + process, 'web')
-              resolve('Product is missing!')
-              page.close()
-            } else if (result.url().indexOf('sec.taobao.com/query.htm') !== -1) {
-              logger.myconsole('Verification Code!'.red)
-              resolve('Product is missing!')
-              page.close()
             }
           }
         })
@@ -125,17 +107,19 @@ class InitJs {
         // console.log(filterbox)
         // close page when analysis is done
         await page.close()
+        if (!isali) {
+          selfbrowser ? logger.myconsole('Self browser product is missing! '.yellow + process) : logger.myconsole('Product is missing! '.yellow +
+            process)
+          resolve('Product is missing!')
+        }
         mylogstr.date = mytime.mytime()
         mylogstr.url = url
         // write date
         logger.mybuffer(mylogstr)
         logger.writelog('success', type)
-        if (freepage) page.close()
-        freepage = true
       } catch (e) {
         resolve(false)
         logger.myconsole('System error! Or page timeout!'.red)
-        logger.myconsole('<p style="color: red">System error! Or page timeout!</p>', 'web')
         await page.close()
       }
     })
@@ -144,8 +128,6 @@ class InitJs {
   async befailed (cont, selfbrowser, url) {
     // check login count, if get api failed more than 2 times, change ip first
     selfbrowser ? logger.myconsole('Self browser analysis failed!'.red) : logger.myconsole('Analysis failed!'.red)
-    selfbrowser ? logger.myconsole('<p style="color: red">Self browser analysis failed!</p>', 'web') : logger.myconsole(
-      '<p style="color: red">Analysis failed!</p>', 'web')
     if (!selfbrowser) {
       if (logincount < 1) {
         logincount += 1
@@ -162,7 +144,15 @@ class InitJs {
     try {
       obj = JSON.parse(obj)
       let isjsonstr = typeof (obj) === 'object' && Object.prototype.toString.call(obj).toLowerCase() === '[object object]' && !obj.length
-      return isjsonstr
+      if (isjsonstr) {
+        let verifystrLogin = JSON.stringify(obj).indexOf('h5api.m.taobao.com:443//h5/mtop.taobao.detail.getdetail')
+        if (verifystrLogin !== -1) {
+          logger.myconsole('Slide verification code!'.red)
+          return false
+        } else {
+          return true
+        }
+      }
     } catch (e) {
       return false
     }

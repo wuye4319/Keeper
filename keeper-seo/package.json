@@ -1,6 +1,6 @@
 {
   "name": "keeper-seo",
-  "version": "1.2.83",
+  "version": "1.2.85",
   "description": "keeper-seo",
   "main": "index.js",
   "dependencies": {

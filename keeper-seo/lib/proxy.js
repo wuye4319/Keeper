@@ -10,6 +10,8 @@ const fs = require('fs')
 
 const Fastpost = require('./urldata')
 let fastpost = new Fastpost()
+const Search = require('../work/search')
+let search = new Search()
 const Getip = require('./getip')
 let getip = new Getip()
 const Getcodeimg = require('./getcodeimg')
@@ -212,6 +214,18 @@ class InitJs {
     let cache = systemconfig.cache
     let currbrow = proxyserver ? browser : selfbrowser[browserindex]
     let result = await fastpost.taobao(currbrow, type, url, cache, process)
+
+    if (proxyserver) {
+      result = this.servermatrix(type, url, process, result)
+    }
+    // result.url = url
+    return result === 'changeip' ? 'Analysis failed!' : result
+  }
+
+  async search (type, url, process) {
+    let cache = systemconfig.cache
+    let currbrow = proxyserver ? browser : selfbrowser[browserindex]
+    let result = await search.taobao(currbrow, type, url, cache, process)
 
     if (proxyserver) {
       result = this.servermatrix(type, url, process, result)
