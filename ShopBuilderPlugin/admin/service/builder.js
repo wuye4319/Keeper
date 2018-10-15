@@ -58,6 +58,16 @@ class builder {
     }
   }
 
+  collectionsmul (id) {
+    let pageconf = path.join(__dirname, '/../../staticapi/collectionsmultiple.json')
+    if (fs.existsSync(pageconf)) {
+      let data = JSON.parse(fs.readFileSync(pageconf).toString())
+      return data
+    } else {
+      return 'error!'
+    }
+  }
+
   products () {
     let pageconf = path.join(__dirname, '/../../staticapi/products.json')
     if (fs.existsSync(pageconf)) {

@@ -34,6 +34,11 @@ koa.addrouter(globparam + 'collections', async (ctx) => {
   result = builder.collections()
   ctx.response.body = result
 })
+koa.addrouter(globparam + 'collections/multiple', async (ctx) => {
+  let result
+  result = builder.collectionsmul()
+  ctx.response.body = result
+})
 koa.addrouter(globparam + 'collections/:id', async (ctx) => {
   let id = ctx.params.id
   let result
