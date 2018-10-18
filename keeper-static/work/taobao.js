@@ -94,6 +94,10 @@ class InitJs {
                 await waitcont(0, cont)
               } catch (e) {
                 logger.myconsole(e + ' ' + process)
+                if (e.toString().indexOf('Response body is unavailable') !== -1) {
+                  resolve('Analysis failed!')
+                  logger.myconsole('Analysis failed!'.red)
+                }
               }
             }
           }

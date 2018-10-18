@@ -45,7 +45,8 @@ class Cache {
           let istrue = (mycurrdate > ruletime ? 1 : 0)
           // In current cache date, if url is exist
           if (istrue) {
-            if (tmpurl[0] === url) {
+            let tempurl = encodeURIComponent(url)
+            if (tmpurl[0] === tempurl) {
               let mypath = path.join(__dirname, this.options.gpath + type + '/' + cachefile[0] + '.html')
               if (fs.existsSync(mypath)) {
                 result = fs.readFileSync(mypath).toString()
@@ -67,6 +68,7 @@ class Cache {
   writecache (html, url, type) {
     let date = mytime.getdate()
     let name = mytime.mydate('mins')
+    url = encodeURIComponent(url)
 
     let infor = path.join(__dirname, this.options.gpath + type + '/infor/' + name + '.txt')
     let maininfor = path.join(__dirname, this.options.gpath + type + this.options.cacheinfor)

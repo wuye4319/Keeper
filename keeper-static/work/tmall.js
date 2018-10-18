@@ -21,11 +21,15 @@ class InitJs {
     return new Promise(async resolve => {
       let isjson = false
       if (cont === 'Failed') cont = false
-      let templine = '\n<script>\nvar apidata = '
+      let templine = '\n<script>\nvar apidata_tmall = '
       let endtempline = '\n</script>'
-
-      // let str = cont.match(/<script>var _DATA_Mdskip =  ([\s\S]+) <\/script>\s+<script src=/)[1]
-      isjson = cont ? this.isJson(cont, browser) : false
+      let str
+      try {
+        str = cont.match(/<script>var _DATA_Mdskip =  ([\s\S]+) <\/script>\s+<script src=/)[1]
+      } catch (e) {
+        logger.myconsole('String is error : '.red + e)
+      }
+      isjson = str ? this.isJson(str, browser) : false
       if (isjson && cont) {
         apidata = true
         // if previous api is success, reduce
@@ -35,12 +39,12 @@ class InitJs {
         if (befailed === 'changeip') { resolve('changeip') } else { resolve('Analysis failed!') }
       }
 
-      cont = templine + cont + endtempline
+      cont = templine + str + endtempline
       resolve(cont)
     })
   }
 
-  async taobao (browser, type, url, opencache, process, selfbrowser) {
+  async tmall (browser, type, url, opencache, process, selfbrowser) {
     return new Promise(async (resolve) => {
       let t = Date.now()
       let cont = ''
@@ -69,18 +73,12 @@ class InitJs {
             }, 100)
           } else {
             isali = true
-            if (cont.indexOf('h5.m.taobao.com/detailplugin/expired.html') !== -1) {
-              selfbrowser ? logger.myconsole('Self browser product is missing! '.yellow + process) : logger.myconsole('Product is missing! '.yellow +
-                process)
-              resolve('Product is missing!')
-            } else {
-              logger.myconsole('Web page opens normally '.green + process + (selfbrowser ? ', backup service!'.red : ''))
-              cont = await this.getcont(browser, cont, selfbrowser, url)
-              resolve(cont)
-              t = Date.now() - t
-              mylogstr.Loadingtime = (t / 1000).toString() + ' s'
-              logger.myconsole('Loading time : '.green + mylogstr.Loadingtime.red)
-            }
+            logger.myconsole('Web page opens normally '.green + process + (selfbrowser ? ', backup service!'.red : ''))
+            cont = await this.getcont(browser, cont, selfbrowser, url)
+            resolve(cont)
+            t = Date.now() - t
+            mylogstr.Loadingtime = (t / 1000).toString() + ' s'
+            logger.myconsole('Loading time : '.green + mylogstr.Loadingtime.red)
           }
         }
 
@@ -95,6 +93,17 @@ class InitJs {
               } catch (e) {
                 logger.myconsole(e + ' ' + process)
               }
+            }
+
+            if (result.url().indexOf('mdetail.tmall.com/mobile/') !== -1) {
+              selfbrowser ? logger.myconsole('Self browser product is missing! '.yellow + process) : logger.myconsole('Product is missing! '.yellow +
+                process)
+              resolve('Product is missing!')
+              page.close()
+            } else if (result.url().indexOf('sec.taobao.com/query.htm') !== -1) {
+              logger.myconsole('Verification Code!'.red)
+              resolve('Product is missing!')
+              page.close()
             }
           }
         })
@@ -140,15 +149,7 @@ class InitJs {
     try {
       obj = JSON.parse(obj)
       let isjsonstr = typeof (obj) === 'object' && Object.prototype.toString.call(obj).toLowerCase() === '[object object]' && !obj.length
-      if (isjsonstr) {
-        let verifystrLogin = JSON.stringify(obj).indexOf('h5api.m.taobao.com:443//h5/mtop.taobao.detail.getdetail')
-        if (verifystrLogin !== -1) {
-          logger.myconsole('Slide verification code!'.red)
-          return false
-        } else {
-          return true
-        }
-      }
+      return isjsonstr
     } catch (e) {
       return false
     }

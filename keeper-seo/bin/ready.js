@@ -14,7 +14,7 @@ class ready {
       {name: 'request', ver: '2.83.0'},
       // {name: 'gm', ver: '1.23.1'},
       {name: 'mime', ver: '2.3.1'},
-      {name: 'puppeteer', ver: '0.12.0'}
+      {name: 'puppeteer', ver: '1.5.0'}
     ]
     mynpm.init(pluginlist, plugname)
   }

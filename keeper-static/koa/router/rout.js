@@ -4,23 +4,44 @@
 const koa = require('../index')
 const Ctrl = require('./ctrl')
 let ctrl = new Ctrl()
+const launcher = require('../static/launcher')
+const StaticFiles = require('../static/static')
+let staticFiles = new StaticFiles()
+require('./global')
 
 // buy
 koa.addrouter(/^\/buy(?:\/|$)/, async (ctx) => {
   await ctrl.filter(ctx, 'buy', true)
 })
-
-// subject
 koa.addrouter(/^\/subject(?:\/|$)/, async (ctx) => {
   await ctrl.filter(ctx, 'subject')
 })
-
-// subject
 koa.addrouter(/^\/subject_cn(?:\/|$)/, async (ctx) => {
   await ctrl.filter(ctx, 'subject_cn')
 })
-
-// subject
 koa.addrouter(/^\/taobao(?:\/|$)/, async (ctx) => {
   await ctrl.filtermall(ctx, 'taobao')
 })
+koa.addrouter(/^\/slidelock(?:\/|$)/, async (ctx) => {
+  await ctrl.slidelock(ctx, 'slidelock')
+})
+
+// search
+koa.addrouter('/search/:key', async (ctx) => {
+  let key = ctx.params.key
+  await ctrl.filtersearch(ctx, 'search', key)
+})
+
+// static
+launcher.addrouter(/^\/(\w+)(?:\/|$)/, async (ctx) => {
+  await staticFiles.getfile(ctx, '/static/', './static')
+})
+
+class rout {
+  close () {
+    koa.close()
+    launcher.close()
+  }
+}
+
+module.exports = rout

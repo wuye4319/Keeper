@@ -1,52 +1,34 @@
-const r = require('repl')
-repls = r.start({prompt: '> ', eval: myEval})
-
 let path = require('path')
 const Fsdel = require('keeper-core/lib/delete')
 let del = new Fsdel()
-const koa = require('../koa/index')
-require('../koa/router/rout')
+const Rout = require('../koa/router/rout')
+let rout = new Rout()
 
 // proxy taobao
 const Proxy = require('../lib/proxy')
 let proxy = new Proxy()
+const Ctrl = require('../koa/router/ctrl')
+let ctrl = new Ctrl()
 proxy.init()
-
-global.myvari = {anslist: [], answer: {}}
-
-// listener
-function myEval (cmd, context, filename, callback) {
-  let anslist = global.myvari.anslist
-  let indx = -1
-  let mycmd
-  for (let i in anslist) {
-    mycmd = cmd.trim().split(' ')
-    if (typeof (anslist[i]) === 'string') {
-      if (anslist[i] === mycmd[0]) indx = i
-    } else {
-      if (Object.keys(anslist[i])[0] === mycmd[0]) indx = i
-    }
-  }
-  if (indx === -1) {
-    console.log('Invalid keyword!!!'.red)
-  } else {
-    global.myvari.anslist = []
-    let args = mycmd.length > 1 ? mycmd[1] : ''
-    typeof (anslist[indx]) === 'string' ? eval('myvari.answer.' + anslist[indx] + '(' + args + ')') : eval('myvari.answer.' + Object.values(anslist[indx]) + '(' + args + ')')
-  }
-  this.displayPrompt()
-}
+proxy.initproxybrowser()
 
 repls.defineCommand('clear', {
-  help: 'clear'.green,
+  help: 'Clear all cache, conform your opration carefully!'.green,
   action: function () {
     // temp
     let mycache = path.join(__dirname, '../../../cache/')
     del.deleteSource(mycache, 'all')
   }
 })
+repls.defineCommand('clearprocess', {
+  help: 'Clear all cache, conform your opration carefully!'.green,
+  action: function () {
+    // temp
+    ctrl.clearinternumb()
+  }
+})
 repls.defineCommand('ipinterval', {
-  help: 'auto login for taobao'.green,
+  help: 'Set interval of change ip'.green,
   action: function (time) {
     // temp
     if (time) {
@@ -60,15 +42,23 @@ repls.defineCommand('auto-login', {
   help: 'auto login for taobao'.green,
   action: function (account) {
     // temp
-    let tempPro = 'https://detail.tmall.com/item.htm?id=554802892200'
-    let url = 'https://login.tmall.com/?from=sm&redirectURL='
-    proxy.login(url, tempPro, account)
+    let tempPro = 'https://www.tmall.com/'
+    // let tempPro = 'https://www.tmall.com/'
+    let url = 'https://login.taobao.com/member/login.jhtml?tpl_redirect_url='
+    // proxy.login(url, tempPro, account || 0)
+    proxy.logintest(url, tempPro)
   }
 })
-repls.defineCommand('proxy', {
-  help: 'end and exit'.red,
-  action: async function (index) {
-    await proxy.changeip(index)
+repls.defineCommand('manualchangeip', {
+  help: 'Close active change ip, and manual change ip by index'.red,
+  action: async function () {
+    await proxy.manualchangeip()
+  }
+})
+repls.defineCommand('autoproxy', {
+  help: 'Auto active change ip'.red,
+  action: async function () {
+    await proxy.autoproxy()
   }
 })
 repls.defineCommand('/', {
@@ -76,16 +66,8 @@ repls.defineCommand('/', {
   action: async function () {
     await proxy.close()
     // koa,do not merge to proxy!
-    koa.close()
+    rout.close()
     console.log('Thanks for using! Bye~~~'.rainbow)
     this.close()
-  }
-})
-const Getcode = require('../lib/gethttp')
-let getcode = new Getcode()
-repls.defineCommand('verify', {
-  help: 'end and exit'.red,
-  action: async function () {
-    getcode.getcode()
   }
 })

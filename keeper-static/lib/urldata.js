@@ -78,6 +78,10 @@ class InitJs {
               } catch (e) {
                 logger.myconsole(e + ' ' + process)
                 logger.myconsole(result.url().yellow)
+                if (e.toString().indexOf('Protocol error') !== -1) {
+                  resolve('Analysis failed!')
+                  logger.myconsole('Cont analysis failed!'.red)
+                }
               }
             }
           }

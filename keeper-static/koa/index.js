@@ -14,7 +14,7 @@ app.use(async (ctx, next) => {
   const ms = Date.now() - start
   let myurl = ctx.url.substr(0, ctx.url.indexOf('http'))
   logger.myconsole(`${ctx.method} ${myurl || ctx.url} - ${ms}ms`)
-  ctx.response.set('Access-Control-Allow-Origin', 'http://www.dev.com:8011')
+  ctx.response.set('Access-Control-Allow-Origin', 'http://machine.superbuy.com:8080')
   ctx.response.set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, DELETE')
   ctx.response.set('Access-Control-Max-Age', '0')
   ctx.response.set('Access-Control-Allow-Headers', 'X-Requested-With,X_Requested_With')
@@ -22,20 +22,18 @@ app.use(async (ctx, next) => {
 })
 
 app.use(router.routes()).use(router.allowedMethods())
+// app.use(staticFiles('/static/', __dirname + '/../static'))
 
 // error
 app.on('error', function (err, ctx) {
   console.log('server error', err, ctx)
 })
-var lis = app.listen(8080)
-console.log('the server is started!!!'.green)
+let lis = app.listen(8080)
+console.log('the server is started!!!')
 
-var server = {
+let server = {
   addrouter: (url, fn) => {
     router.get(url, fn).post(url, fn)
-  },
-  static: () => {
-    // app.use(staticFiles('/static/', __dirname + '/static'))
   },
   close: () => {
     lis.close()

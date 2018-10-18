@@ -4,28 +4,22 @@
  * plugin:init js
  */
 'use strict'
-const Fslog = require('keeper-core')
-let logger = new Fslog()
 const Fscache = require('keeper-core/cache/cache')
 const cache = new Fscache()
+const Fslog = require('keeper-core/logger/logger')
+let logger = new Fslog()
+
 const Mytime = require('keeper-core/lib/time')
 let mytime = new Mytime()
-// const SlideLock = require('./slidelock')
-// let slidelock = new SlideLock()
 let logincount = 0
 let apidata = false
 
 // constructor
 class InitJs {
-  async getcont (browser, cont, selfbrowser, url) {
+  async getcont (cont, selfbrowser, url) {
     return new Promise(async resolve => {
       let isjson = false
-      if (cont === 'Failed') cont = false
-      let templine = '\n<script>\nvar apidata = '
-      let endtempline = '\n</script>'
-
-      // let str = cont.match(/<script>var _DATA_Mdskip =  ([\s\S]+) <\/script>\s+<script src=/)[1]
-      isjson = cont ? this.isJson(cont, browser) : false
+      isjson = this.isJson(cont)
       if (isjson && cont) {
         apidata = true
         // if previous api is success, reduce
@@ -35,7 +29,7 @@ class InitJs {
         if (befailed === 'changeip') { resolve('changeip') } else { resolve('Analysis failed!') }
       }
 
-      cont = templine + cont + endtempline
+      // cont = cont + templine + filterbox + endtempline
       resolve(cont)
     })
   }
@@ -50,37 +44,33 @@ class InitJs {
       let page = await browser.newPage()
       await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36')
       apidata = false
-      let proid = url.substr(url.lastIndexOf('/'))
+      // let proid = url.substr(url.lastIndexOf('/'))
       logger.myconsole(mytime.mytime())
 
       try {
-        let waitcont = async (index) => {
+        let waitcont = async (index, cont) => {
           index += 1
           if (index > 60) {
             cont = 'Failed'
-            resolve(cont)
-            logger.myconsole('Wait cont failed!'.red)
+            logger.myconsole('Wait api data failed!'.red)
           }
 
           if (!cont) {
+            console.log(cont, index)
             setTimeout(function () {
               // logger.myconsole(index + ' p:' + process)
-              waitcont(index)
+              waitcont(index, cont)
             }, 100)
           } else {
-            isali = true
-            if (cont.indexOf('h5.m.taobao.com/detailplugin/expired.html') !== -1) {
-              selfbrowser ? logger.myconsole('Self browser product is missing! '.yellow + process) : logger.myconsole('Product is missing! '.yellow +
-                process)
-              resolve('Product is missing!')
-            } else {
-              logger.myconsole('Web page opens normally '.green + process + (selfbrowser ? ', backup service!'.red : ''))
-              cont = await this.getcont(browser, cont, selfbrowser, url)
-              resolve(cont)
-              t = Date.now() - t
-              mylogstr.Loadingtime = (t / 1000).toString() + ' s'
-              logger.myconsole('Loading time : '.green + mylogstr.Loadingtime.red)
-            }
+            logger.myconsole('Web page opens normally '.green + process + (selfbrowser ? ', backup service!'.red : ''))
+            cont = await this.getcont(cont, selfbrowser, url)
+            resolve(cont)
+            t = Date.now() - t
+            mylogstr.Loadingtime = (t / 1000).toString() + ' s'
+            logger.myconsole('Loading time : '.green + mylogstr.Loadingtime.red)
+
+            if (opencache && apidata && cont) cache.writecache(cont, url, type)
+            apidata && cont ? mylogstr.apidata = 'success' : mylogstr.apidata = 'Failed'
           }
         }
 
@@ -88,19 +78,22 @@ class InitJs {
         // page.on('request', intercep => { intercep.continue() })
         page.on('response', async (result) => {
           if (!isali) {
-            if (result.url().indexOf(proid) !== -1) {
+            let filter = result.url().indexOf('taobao.com/search?ajax=true') !== -1
+            if (filter) {
               try {
-                cont += await result.text()
-                await waitcont(0, cont)
+                cont = await result.text()
+                isali = true
+                waitcont(0, cont)
               } catch (e) {
-                logger.myconsole(e + ' ' + process)
+                resolve('Analysis failed!')
+                logger.myconsole('Get filter failed!'.red + process + e)
               }
             }
           }
         })
+
         await page.goto(url)
         // let cont = await page.content()
-        // console.log(filterbox)
         // close page when analysis is done
         await page.close()
         if (!isali) {
@@ -121,7 +114,7 @@ class InitJs {
     })
   }
 
-  async befailed (cont, selfbrowser, url) {
+  async befailed (filterbox, selfbrowser, url) {
     // check login count, if get api failed more than 2 times, change ip first
     selfbrowser ? logger.myconsole('Self browser analysis failed!'.red) : logger.myconsole('Analysis failed!'.red)
     if (!selfbrowser) {
@@ -132,19 +125,26 @@ class InitJs {
         return 'changeip'
       }
     }
-    cache.writecache(cont, url, 'error')
+    cache.writecache(filterbox, url, 'error')
+
     return false
   }
 
-  isJson (obj, browser) {
+  isJson (obj) {
     try {
       obj = JSON.parse(obj)
       let isjsonstr = typeof (obj) === 'object' && Object.prototype.toString.call(obj).toLowerCase() === '[object object]' && !obj.length
       if (isjsonstr) {
-        let verifystrLogin = JSON.stringify(obj).indexOf('h5api.m.taobao.com:443//h5/mtop.taobao.detail.getdetail')
+        let verifystrLogin = JSON.stringify(obj).indexOf('login.taobao.com/member/login.jhtml?')
+        // let verifystr2 = JSON.stringify(obj).indexOf('sec.taobao.com/query.htm?smApp')
+        // console.log(verifystr2, verifystr)
         if (verifystrLogin !== -1) {
-          logger.myconsole('Slide verification code!'.red)
+          logger.myconsole('Login redirect!'.red)
           return false
+          // } else if (verifystr !== -1 || verifystr2 !== -1) {
+          //   logger.myconsole('Verification Code!'.red)
+          //   logger.myconsole('<p style="color: red">Verification Code!</p>', 'web')
+          //   return false
         } else {
           return true
         }
@@ -152,12 +152,6 @@ class InitJs {
     } catch (e) {
       return false
     }
-  }
-
-  subresult (filterbox) {
-    filterbox = filterbox.substr(filterbox.indexOf('(') + 1)
-    filterbox = filterbox.substr(0, filterbox.lastIndexOf(')'))
-    return filterbox
   }
 }
 
