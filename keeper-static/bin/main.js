@@ -37,7 +37,7 @@ function myEval (cmd, context, filename, callback) {
   this.displayPrompt()
 }
 
-let plugname = 'keeper-seo'
+let plugname = 'keeper-static'
 
 // check program running environment.
 let sysconf = path.resolve('./node_modules/' + plugname + '/config/sysconf.js')
