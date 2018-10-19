@@ -10,15 +10,9 @@ const fs = require('fs')
 
 const Fastpost = require('./urldata')
 let fastpost = new Fastpost()
-const Search = require('../work/search')
-let search = new Search()
-const Getip = require('./getip')
-let getip = new Getip()
 const Getcodeimg = require('./getcodeimg')
 let getcodeimg = new Getcodeimg()
 
-const Myseo = require('./seo')
-let seo = new Myseo()
 let Delay = require('keeper-core/lib/delay')
 let delay = new Delay()
 const Render = require('keeper-core/lib/render')
@@ -29,14 +23,11 @@ const Mytime = require('keeper-core/lib/time')
 let mytime = new Mytime()
 const Logger = require('keeper-core')
 let logger = new Logger()
-const Logintest = require('../lib/auto-login')
-let logintest = new Logintest()
 
 let browser
 let selfbrowser = {}
 let ipdate = mytime.mydate('mins')
-logger.myconsole('Program start at : '.blue + ipdate)
-logger.myconsole('<p style="color: blue;">Program start at : ' + ipdate + '</p>', 'web')
+logger.myconsole('Program start at : ' + ipdate)
 const systemconfig = require('../config/system')
 let ipindex = 0
 let browserindex = 0
@@ -49,9 +40,6 @@ const iplist = require('../config/iplist')
 let changeiptime = systemconfig.changeiptime
 let processbox = []
 let proxyserver = systemconfig.proxyserver
-
-const SlideLock = require('./slidelock')
-let slidelock = new SlideLock()
 
 // constructor
 class InitJs {
@@ -99,7 +87,7 @@ class InitJs {
         // headless: false,
         args: ['--no-sandbox', '--disable-setuid-sandbox']
       })
-      logger.myconsole('self browser' + i + ' is start!'.green)
+      logger.myconsole('self browser' + i + ' is start!')
       // router
       resolve(tempbrowser)
     })
@@ -109,7 +97,6 @@ class InitJs {
     if (proxyserver) {
       let proxy = iplist[0].address + ':' + iplist[0].host
       await this.newbrowser(proxy)
-      await this.getip()
     }
   }
 
@@ -123,7 +110,7 @@ class InitJs {
         // headless: false,
         args: args
       })
-      logger.myconsole('browser is start!'.magenta)
+      logger.myconsole('browser is start!')
       await delay.delay(0)
 
       // router
@@ -150,17 +137,13 @@ class InitJs {
     // } else {
     //   await this.restart()
     // }
-    await this.getip()
     await getcodeimg.writeacc(false, 'curr')
   }
 
   async restart (proxy) {
     ipdate = mytime.mydate('mins')
     logger.myconsole(ipdate)
-    logger.myconsole('changeiptime : '.green + changeiptime)
-    // web log
-    logger.myconsole('<p>' + ipdate + '</p>', 'web')
-    logger.myconsole('<p style="color: green">changeiptime : </p>' + changeiptime, 'web')
+    logger.myconsole('changeiptime : ' + changeiptime)
     await this.newbrowser(proxy)
   }
 
@@ -222,63 +205,16 @@ class InitJs {
     return result === 'changeip' ? 'Analysis failed!' : result
   }
 
-  async search (type, url, process) {
-    let cache = systemconfig.cache
-    let currbrow = proxyserver ? browser : selfbrowser[browserindex]
-    let result = await search.taobao(currbrow, type, url, cache, process)
-
-    if (proxyserver) {
-      result = this.servermatrix(type, url, process, result)
-    }
-    // result.url = url
-    return result === 'changeip' ? 'Analysis failed!' : result
-  }
-
-  async getip () {
-    let data = await getip.getip(browser)
-    return data
-  }
-
-  async loginbycode (browsertype, index) {
+  async loginbycode (browsertype, index, ctx) {
     let data
     if (browsertype === 'self') {
-      data = await getcodeimg.getimg(selfbrowser[index || browserindex], browsertype + (index || browserindex))
+      data = await getcodeimg.getimg(selfbrowser[index || browserindex], browsertype + (index || browserindex), ctx)
     } else if (browsertype === 'curr' && proxyserver) {
       data = await getcodeimg.getimg(browser, browsertype)
     } else {
       data = false
     }
 
-    return data
-  }
-
-  async login (loginurl, url, account) {
-    const page = await selfbrowser[browserindex].newPage()
-
-    let file = path.join(__dirname, '/acc.js')
-    const tpl = fs.readFileSync(file).toString()
-    let param = {
-      acc: accbox[account].acc,
-      psw: accbox[account].psw
-    }
-    let mystr = render.renderdata(tpl, param)
-
-    const Login = eval(mystr)
-    let login = new Login()
-
-    let data = await login.login(page, loginurl, url)
-    return data
-  }
-
-  async logintest (loginurl, url) {
-    const page = await selfbrowser[browserindex].newPage()
-
-    let data = await logintest.login(page, loginurl, url)
-    return data
-  }
-
-  async seo (rout, myurl, search, title) {
-    let data = await seo.seo(browser, rout, myurl, search, title)
     return data
   }
 }

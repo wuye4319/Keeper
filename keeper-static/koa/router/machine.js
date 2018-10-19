@@ -49,12 +49,12 @@ class machine {
 
   async getdata () {
     let data = {proxy: [], proxyacc: false, browser: []}
-    let iplist = proxy.getproxylist()
-    for (let i in iplist) {
-      let temp = {}
-      temp.ip = iplist[i].address
-      data.proxy.push(temp)
-    }
+    // let iplist = proxy.getproxylist()
+    // for (let i in iplist) {
+    //   let temp = {}
+    //   temp.ip = iplist[i].address
+    //   data.proxy.push(temp)
+    // }
     let numb = systemconfig.browsernumb
 
     // version

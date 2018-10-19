@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-require('colors')
 let fs = require('fs')
 let path = require('path')
 const Ready = require('./ready')
@@ -45,7 +44,7 @@ let isready = fs.existsSync(sysconf)
 if (isready) {
   let tempver = fs.readFileSync(path.join(__dirname, '/../../' + plugname + '/package.json')).toString()
   let currversion = JSON.parse(tempver).version
-  console.log(plugname + ' : '.green + currversion.green)
+  console.log(plugname + ' : ' + currversion)
   let preversion = require(sysconf)
   if (preversion.check_env === currversion) {
     bootstrap()

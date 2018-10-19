@@ -4,7 +4,7 @@
  */
 
 const system = {
-  "check_env" : "1.2.85"
+  "check_env" : "1.0.8"
 }
 
 module.exports = system

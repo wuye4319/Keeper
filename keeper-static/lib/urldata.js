@@ -10,12 +10,6 @@ const Mytime = require('keeper-core/lib/time')
 let mytime = new Mytime()
 const Fscache = require('keeper-core/cache/cache')
 const cache = new Fscache()
-// const SlideLock = require('./slidelock')
-// let slidelock = new SlideLock()
-const Tmall = require('../work/tmall')
-let tmall = new Tmall()
-const Taobao = require('../work/taobao')
-let taobao = new Taobao()
 
 // constructor
 class InitJs {
@@ -36,7 +30,7 @@ class InitJs {
           if (index > 60) {
             cont = 'Failed'
             resolve(cont)
-            logger.myconsole('Wait cont failed!'.red)
+            logger.myconsole('Wait cont failed!')
           }
 
           if (!cont) {
@@ -47,14 +41,6 @@ class InitJs {
           } else {
             isali = true
             let data
-            if (istmall) {
-              let myurl = 'https://detail.m.tmall.com/item.htm?' + proid
-              data = await tmall.tmall(browser, type, myurl, true, process, selfbrowser)
-            } else {
-              let tempid = proid.substr(proid.indexOf('=') + 1)
-              let myurl = 'https://h5api.m.taobao.com/h5/mtop.taobao.detail.getdetail/6.0/?data=itemNumId%22%3A%22' + tempid + '%2C'
-              data = await taobao.taobao(browser, type, myurl, true, process, selfbrowser)
-            }
             cont += data
             let isdata = (data && data !== 'Analysis failed!' && data !== 'changeip' && data !== 'Product is missing!')
             if (opencache && isdata) cache.writecache(cont, url, type)
@@ -80,7 +66,7 @@ class InitJs {
                 logger.myconsole(result.url().yellow)
                 if (e.toString().indexOf('Protocol error') !== -1) {
                   resolve('Analysis failed!')
-                  logger.myconsole('Cont analysis failed!'.red)
+                  logger.myconsole('Cont analysis failed!')
                 }
               }
             }
@@ -92,7 +78,7 @@ class InitJs {
         // close page when analysis is done
         await page.close()
         if (!isali) {
-          selfbrowser ? logger.myconsole('Self browser cont is missing! '.yellow + process) : logger.myconsole('Cont is missing! '.yellow +
+          selfbrowser ? logger.myconsole('Self browser cont is missing! ' + process) : logger.myconsole('Cont is missing! ' +
             process)
           resolve('Cont is missing!')
         }
@@ -103,7 +89,7 @@ class InitJs {
         logger.writelog('success', type)
       } catch (e) {
         resolve(false)
-        logger.myconsole('Cont page error! Or page timeout!'.red)
+        logger.myconsole('Cont page error! Or page timeout!')
         await page.close()
       }
     })

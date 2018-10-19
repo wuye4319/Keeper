@@ -11,10 +11,11 @@ class ready {
       {name: 'koa', ver: '2.3.0'},
       {name: 'koa-cors', ver: '0.0.16'},
       {name: 'koa-router', ver: '7.2.1'},
+      {name: 'koa-body', ver: '4.0.4'},
       {name: 'request', ver: '2.83.0'},
       // {name: 'gm', ver: '1.23.1'},
       {name: 'mime', ver: '2.3.1'},
-      {name: 'puppeteer', ver: '0.12.0'}
+      {name: 'puppeteer', ver: '1.5.0'}
     ]
     mynpm.init(pluginlist, plugname)
   }

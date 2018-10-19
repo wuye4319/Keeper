@@ -9,7 +9,6 @@ let logger = new Logger()
 
 const Fscache = require('keeper-core/cache/cache')
 const cache = new Fscache()
-// const path = require('path')
 
 let internumb = 0
 let urlbox = []
@@ -17,11 +16,8 @@ let urlbox = []
 class ctrl {
   async filter (myurl, rout, type) {
     // filter
-    logger.myconsole('process : '.red + internumb.toString().red)
+    logger.myconsole('process : ' + internumb.toString())
     logger.myconsole(myurl)
-    // web log
-    logger.myconsole('<p style="color: red">process : ' + internumb + '</p>', 'web')
-    logger.myconsole('<p>' + myurl + '</p>', 'web')
     let result
 
     if (internumb > 15) {
@@ -37,28 +33,19 @@ class ctrl {
       internumb += 1
       let hasurl = this.eachurl(urlbox, myurl)
       if (hasurl) {
-        logger.myconsole('Repeat request!'.red)
-        logger.myconsole('<p style="color: red">Repeat request!</p>', 'web')
+        logger.myconsole('Repeat request!')
       } else {
         urlbox.push(myurl)
         // read cache file time
         let rct = Date.now()
         let hascache = await cache.readcache(myurl, rout)
         rct = Date.now() - rct
-        logger.myconsole('read cache time : '.green + rct.toString().red +
-          ' ms'.green)
-        logger.myconsole('<p style="color: green">read cache time : <span style="color: red">' + rct.toString() +
-          '</span> ms</p>', 'web')
+        logger.myconsole('read cache time : ' + rct.toString() + ' ms')
         if (hascache) {
           result = hascache
           logger.myconsole('this is cache file!')
-          logger.myconsole('<p>this is cache file!</p>', 'web')
         } else {
-          if (type === 'search') {
-            result = await proxy.search(rout, myurl, internumb)
-          } else {
-            result = await proxy.taobao(rout, myurl, internumb)
-          }
+          result = await proxy.taobao(rout, myurl, internumb)
         }
 
         // rm url in box
@@ -66,9 +53,6 @@ class ctrl {
         urlbox.length
           ? logger.myconsole(JSON.stringify(urlbox))
           : logger.myconsole('[]')
-        urlbox.length
-          ? logger.myconsole('<p>' + JSON.stringify(urlbox) + '</p>', 'web')
-          : logger.myconsole('<p>[]</p>', 'web')
       }
 
       internumb -= 1
@@ -90,17 +74,6 @@ class ctrl {
   async slidelock (ctx, rout) {
     let myurl = ctx.url.substr(rout.length + 2)
     let result = await proxy.autoslide(myurl)
-    if (result) {
-      ctx.response.body = result
-    } else {
-      ctx.response.body = 'Get data failed!'
-    }
-  }
-
-  async filtersearch (ctx, rout, key) {
-    // let myurl = 'https://pub.alimama.com/items/search.json?' + key
-    let myurl = 'https://s.taobao.com/search?ajax=true&app=mainsrp&q=' + key
-    let result = await this.filter(myurl, rout, 'search')
     if (result) {
       ctx.response.body = result
     } else {

@@ -9,31 +9,18 @@ const StaticFiles = require('../static/static')
 let staticFiles = new StaticFiles()
 require('./global')
 
-// buy
-koa.addrouter(/^\/buy(?:\/|$)/, async (ctx) => {
-  await ctrl.filter(ctx, 'buy', true)
-})
-koa.addrouter(/^\/subject(?:\/|$)/, async (ctx) => {
-  await ctrl.filter(ctx, 'subject')
-})
-koa.addrouter(/^\/subject_cn(?:\/|$)/, async (ctx) => {
-  await ctrl.filter(ctx, 'subject_cn')
-})
-koa.addrouter(/^\/taobao(?:\/|$)/, async (ctx) => {
-  await ctrl.filtermall(ctx, 'taobao')
+// order
+koa.addrouter(/order/, async (ctx) => {
+  let body = ctx.request.body
+  console.log(body)
+  await ctrl.filtermall(ctx, 'order')
 })
 koa.addrouter(/^\/slidelock(?:\/|$)/, async (ctx) => {
   await ctrl.slidelock(ctx, 'slidelock')
 })
 
-// search
-koa.addrouter('/search/:key', async (ctx) => {
-  let key = ctx.params.key
-  await ctrl.filtersearch(ctx, 'search', key)
-})
-
 // static
-launcher.addrouter(/^\/(\w+)(?:\/|$)/, async (ctx) => {
+launcher.addrouter(/^\/(\w+)(?:|$)/, async (ctx) => {
   await staticFiles.getfile(ctx, '/static/', './static')
 })
 

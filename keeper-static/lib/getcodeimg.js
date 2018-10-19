@@ -23,7 +23,7 @@ class InitJs {
   //   this.writeacc('suprend006', 'self2')
   // }
 
-  getimg (browser, type) {
+  getimg (browser, type, ctx) {
     return new Promise(async (resolve) => {
       const page = await browser.newPage()
 
@@ -31,7 +31,7 @@ class InitJs {
         await page.goto(
           'https://login.taobao.com/member/login.jhtml?tpl_redirect_url=https%3A%2F%2Fwww.tmall.com%2F&style=miniall&newMini2=true')
         await page.waitForSelector('#TPL_username_1').then(async () => {
-          logger.myconsole('Get login code img is working!'.red)
+          logger.myconsole('Get login code img is working!')
           const butHandle = await page.$('#J_Static2Quick')
           await page.evaluate(body => body.click(), butHandle)
         })
@@ -41,7 +41,7 @@ class InitJs {
         await page.screenshot({path: imgpath})
 
         let mygetout = setTimeout(function () {
-          logger.myconsole('Auto-login timeout! Page closed!'.magenta)
+          logger.myconsole('Auto-login timeout! Page closed!')
           page.close()
         }, 99000)
 
@@ -63,12 +63,12 @@ class InitJs {
           })
           this.writeacc(mypageinfor.loginacc, type)
 
-          logger.myconsole('Page login success!'.magenta)
+          logger.myconsole('Page login success!')
           await page.close()
         })
         resolve(true)
       } catch (e) {
-        logger.myconsole('Get code img error!'.red)
+        logger.myconsole('Get code img error!')
         resolve(false)
         await page.close()
       }

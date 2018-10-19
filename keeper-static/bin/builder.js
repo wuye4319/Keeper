@@ -13,7 +13,7 @@ proxy.init()
 proxy.initproxybrowser()
 
 repls.defineCommand('clear', {
-  help: 'Clear all cache, conform your opration carefully!'.green,
+  help: 'Clear all cache, conform your opration carefully!',
   action: function () {
     // temp
     let mycache = path.join(__dirname, '../../../cache/')
@@ -21,25 +21,25 @@ repls.defineCommand('clear', {
   }
 })
 repls.defineCommand('clearprocess', {
-  help: 'Clear all cache, conform your opration carefully!'.green,
+  help: 'Clear all cache, conform your opration carefully!',
   action: function () {
     // temp
     ctrl.clearinternumb()
   }
 })
 repls.defineCommand('ipinterval', {
-  help: 'Set interval of change ip'.green,
+  help: 'Set interval of change ip',
   action: function (time) {
     // temp
     if (time) {
       proxy.setipinterval(time)
     } else {
-      console.log('please enter time!'.red)
+      console.log('please enter time!')
     }
   }
 })
 repls.defineCommand('auto-login', {
-  help: 'auto login for taobao'.green,
+  help: 'auto login for taobao',
   action: function (account) {
     // temp
     let tempPro = 'https://www.tmall.com/'
@@ -50,24 +50,24 @@ repls.defineCommand('auto-login', {
   }
 })
 repls.defineCommand('manualchangeip', {
-  help: 'Close active change ip, and manual change ip by index'.red,
+  help: 'Close active change ip, and manual change ip by index',
   action: async function () {
     await proxy.manualchangeip()
   }
 })
 repls.defineCommand('autoproxy', {
-  help: 'Auto active change ip'.red,
+  help: 'Auto active change ip',
   action: async function () {
     await proxy.autoproxy()
   }
 })
 repls.defineCommand('/', {
-  help: 'end and exit'.red,
+  help: 'end and exit',
   action: async function () {
     await proxy.close()
     // koa,do not merge to proxy!
     rout.close()
-    console.log('Thanks for using! Bye~~~'.rainbow)
+    console.log('Thanks for using! Bye~~~')
     this.close()
   }
 })
