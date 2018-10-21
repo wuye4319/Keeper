@@ -26,7 +26,7 @@ class mysql {
 
   getpro (id) {
     return new Promise((resolve) => {
-      basemysql.myquery('select * from product where pro_id=? ', id, function (results) {
+      basemysql.myquery('select * from product where id=?', id, function (results) {
         resolve(results[0])
       })
     })
