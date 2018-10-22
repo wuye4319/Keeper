@@ -172,41 +172,6 @@ class ctrl {
     // })
     ctx.response.body = txt
   }
-
-  // async filter (ctx, rout, title) {
-  //   // filter
-  //   let myurl = ctx.url.substr(rout.length + 2)
-  //   let search = ctx.request.header['user-agent'] || ''
-  //   console.log('process : '.red +
-  //     internumb.toString().red, ' | search : '.green + search.yellow)
-  //   console.log(myurl)
-  //
-  //   let result
-  //   if (internumb > 5) {
-  //     console.log('Server is busy,please wait...')
-  //   } else {
-  //     // do not cache url
-  //     internumb += 1
-  //     // read cache file time
-  //     let rct = Date.now()
-  //     let hascache = await cache.readcache(myurl, search, rout)
-  //     rct = Date.now() - rct
-  //     console.log('read cache time : '.green + rct.toString().red + ' ms'.green)
-  //     if (hascache) {
-  //       result = hascache
-  //       console.log('this is cache file!')
-  //     } else {
-  //       result = await proxy.seo(rout, myurl, search, title)
-  //     }
-  //     internumb -= 1
-  //   }
-  //
-  //   if (!result) {
-  //     let errorfile = path.join(__dirname, '/../../tpl/error/error.html')
-  //     result = fs.readFileSync(errorfile).toString()
-  //   }
-  //   ctx.response.body = result
-  // }
 }
 
 module.exports = ctrl

@@ -10,7 +10,7 @@ let config = {
   port: '3306',
   user: 'root',
   password: '4319',
-  database: 'builder'
+  database: 'wssso'
 }
 let pool = mysql.createPool(config)
 

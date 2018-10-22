@@ -29,6 +29,8 @@ class ready {
       {name: 'koa-body', ver: '4.0.4'},
       {name: 'koa-router', ver: '7.2.1'},
       {name: 'mime', ver: '2.3.1'},
+      {name: 'mysql', ver: '2.13.0'},
+      {name: 'xlsx', ver: '0.11.13'},
       {name: 'request', ver: '2.83.0'}
     ]
     mynpm.init(pluginlist, plugname)

@@ -45,17 +45,18 @@ koa.addrouter(globparam + 'collections/:id', async (ctx) => {
   result = builder.collectionsdetail(id)
   ctx.response.body = result
 })
-koa.addrouter(globparam + 'products', async (ctx) => {
-  let result
-  result = builder.products()
-  ctx.response.body = result
-})
-koa.addrouter(globparam + 'products/:id', async (ctx) => {
-  let id = ctx.params.id
-  let result
-  result = builder.productsdetail(id)
-  ctx.response.body = result
-})
+
+// koa.addrouter(globparam + 'products', async (ctx) => {
+//   let result
+//   result = builder.products()
+//   ctx.response.body = result
+// })
+// koa.addrouter(globparam + 'products/:id', async (ctx) => {
+//   let id = ctx.params.id
+//   let result
+//   result = builder.productsdetail(id)
+//   ctx.response.body = result
+// })
 koa.addrouter(globparam + 'blog', async (ctx) => {
   let result
   result = builder.blog()

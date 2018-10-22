@@ -3,3 +3,4 @@
  */
 
 require('../router/builder')
+require('../router/product')
