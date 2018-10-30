@@ -7,29 +7,30 @@ const systemconfig = require('../../config/system')
 let fs = require('fs')
 const Proxy = require('../../lib/proxy')
 let proxy = new Proxy()
-const Writefile = require('keeper-core/lib/writefile')
+const Writefile = require('../../base/writefile')
 let writefile = new Writefile()
-const Del = require('keeper-core/lib/delete')
+const Del = require('../../base/delete')
 let del = new Del()
 
 class machine {
   async init () {
     // await this.clear()
     let imgbox = [
-      './static/source/img/warmachine/codeimg/.gitkeep',
-      './static/source/img/warmachine/loginacc/acc.txt'
+      '../../../../static/source/img/warmachine/codeimg/.gitkeep',
+      '../../../../static/source/img/warmachine/loginacc/acc.txt'
     ]
     let initimg = path.join(__dirname, '/../../tpl/img/.gitkeep')
     for (let i in imgbox) {
       // if (!fs.existsSync(imgbox[i])) {
       let str = fs.readFileSync(initimg).toString()
-      writefile.writejs(imgbox[i], str)
+      let initdir = path.join(__dirname, imgbox[i])
+      writefile.writejs(initdir, str)
       // }
     }
   }
 
   async clearimg () {
-    let myfilepath = './static/source/img/warmachine/loginacc/'
+    let myfilepath = path.join(__dirname, '../../../../static/source/img/warmachine/loginacc/')
     if (fs.existsSync(myfilepath)) {
       fs.readdir(myfilepath, function (err, paths) {
         if (err) throw err
@@ -62,7 +63,7 @@ class machine {
     data.vers = JSON.parse(tempver).version
 
     // acc
-    let file = './static/source/img/warmachine/loginacc/acc.txt'
+    let file = path.join(__dirname, '../../../../static/source/img/warmachine/loginacc/acc.txt')
     let acc = fs.readFileSync(file).toString()
     acc = JSON.parse(acc)
     if (acc['bcurr']) {

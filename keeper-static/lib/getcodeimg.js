@@ -3,45 +3,38 @@
  * version:v1.0
  * plugin:init js
  */
-'use strict'
 const path = require('path')
 const fs = require('fs')
-const Logger = require('keeper-core')
-let logger = new Logger()
-const Mytime = require('keeper-core/lib/time')
+const Mytime = require('../base/time')
 let mytime = new Mytime()
-let Delay = require('keeper-core/lib/delay')
+let Delay = require('../base/delay')
 let delay = new Delay()
 // let gm = require('gm')
-const Writefile = require('keeper-core/lib/writefile')
+const Writefile = require('../base/writefile')
 let writefile = new Writefile()
 
 // constructor
 class InitJs {
-  // constructor () {
-  //   this.writeacc('suprend005', 'self1')
-  //   this.writeacc('suprend006', 'self2')
-  // }
-
   getimg (browser, type, ctx) {
     return new Promise(async (resolve) => {
       const page = await browser.newPage()
+      await page.setViewport({width: 600, height: 380})
 
       try {
         await page.goto(
           'https://login.taobao.com/member/login.jhtml?tpl_redirect_url=https%3A%2F%2Fwww.tmall.com%2F&style=miniall&newMini2=true')
         await page.waitForSelector('#TPL_username_1').then(async () => {
-          logger.myconsole('Get login code img is working!')
+          console.log('Get login code img is working!')
           const butHandle = await page.$('#J_Static2Quick')
           await page.evaluate(body => body.click(), butHandle)
         })
 
         await delay.delay(1)
-        let imgpath = './static/source/img/warmachine/codeimg/codeimg' + (type || '') + '.png'
+        let imgpath = path.join(__dirname, '../../../static/source/img/warmachine/codeimg/codeimg' + (type || '') + '.png')
         await page.screenshot({path: imgpath})
 
         let mygetout = setTimeout(function () {
-          logger.myconsole('Auto-login timeout! Page closed!')
+          console.log('Auto-login timeout! Page closed!')
           page.close()
         }, 99000)
 
@@ -50,7 +43,7 @@ class InitJs {
           await delay.delay(2)
           let imgname = 'loginstatus' + (type || '') + '.png'
           // let imgpath = path.join(__dirname, '/../static/codeimg/codeimg.png')
-          let imgpath = './static/source/img/warmachine/codeimg/' + imgname
+          let imgpath = path.join(__dirname, '../../../static/source/img/warmachine/codeimg/' + imgname)
           await page.screenshot({path: imgpath})
           await delay.delay(1)
           // update login account status
@@ -63,12 +56,12 @@ class InitJs {
           })
           this.writeacc(mypageinfor.loginacc, type)
 
-          logger.myconsole('Page login success!')
+          console.log('Page login success!')
           await page.close()
         })
         resolve(true)
       } catch (e) {
-        logger.myconsole('Get code img error!')
+        console.log('Get code img error!')
         resolve(false)
         await page.close()
       }
@@ -76,7 +69,7 @@ class InitJs {
   }
 
   writeacc (acc, type) {
-    let file = './static/source/img/warmachine/loginacc/acc.txt'
+    let file = path.join(__dirname, '../../../static/source/img/warmachine/loginacc/acc.txt')
     let oldobj = fs.readFileSync(file).toString()
     let str = {}
     if (oldobj) str = JSON.parse(oldobj)
@@ -90,9 +83,9 @@ class InitJs {
     // let readStream = fs.createReadStream(imgurl)
     // gm(imgurl).crop(102, 32, 0, 0).write(newimg, function (err) {
     //   if (err) {
-    //     logger.myconsole(err)
+    //     console.log(err)
     //   } else {
-    //     logger.myconsole('crop img success'.green)
+    //     console.log('crop img success'.green)
     //   }
     // })
   }

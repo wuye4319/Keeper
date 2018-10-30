@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 let fs = require('fs')
 let path = require('path')
-const Ready = require('./ready')
-let ready = new Ready()
+const Fslog = require('../base/logger')
+let logger = new Fslog()
 
 const r = require('repl')
 global.repls = r.start({prompt: '> ', eval: myEval})
@@ -26,7 +26,7 @@ function myEval (cmd, context, filename, callback) {
       }
     }
     if (indx === -1) {
-      console.log('Invalid keyword!!!'.red)
+      logger.myconsole('Invalid keyword!!!')
     } else {
       myvar.anslist = []
       typeof (anslist[indx]) === 'string' ? myvar.answer[anslist[indx]]() : myvar.answer[Object.values(anslist[indx])]()
@@ -36,37 +36,4 @@ function myEval (cmd, context, filename, callback) {
   this.displayPrompt()
 }
 
-let plugname = 'keeper-static'
-
-// check program running environment.
-let sysconf = path.resolve('./node_modules/' + plugname + '/config/sysconf.js')
-let isready = fs.existsSync(sysconf)
-if (isready) {
-  let tempver = fs.readFileSync(path.join(__dirname, '/../../' + plugname + '/package.json')).toString()
-  let currversion = JSON.parse(tempver).version
-  console.log(plugname + ' : ' + currversion)
-  let preversion = require(sysconf)
-  if (preversion.check_env === currversion) {
-    bootstrap()
-  } else {
-    boot()
-  }
-} else {
-  boot()
-}
-
-function boot () {
-  console.log(
-    'This is a new Object (first time to running keeper) or Keeper is running at wrong Environment! Please comfirm! Enter [y]es or [n]o to continue.'.red)
-  global.myvari.anslist = [{y: 'yes'}, {n: 'no'}]
-  global.myvari.answer.yes = () => {
-    ready.boot(plugname)
-  }
-  global.myvari.answer.no = () => {
-    global.repls.close()
-  }
-}
-
-function bootstrap () {
-  require('./builder')
-}
+require('./builder')

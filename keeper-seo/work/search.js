@@ -56,7 +56,6 @@ class InitJs {
           }
 
           if (!cont) {
-            console.log(cont, index)
             setTimeout(function () {
               // logger.myconsole(index + ' p:' + process)
               waitcont(index, cont)

@@ -1,5 +1,5 @@
 let path = require('path')
-const Fsdel = require('keeper-core/lib/delete')
+const Fsdel = require('../base/delete')
 let del = new Fsdel()
 const Rout = require('../koa/router/rout')
 let rout = new Rout()

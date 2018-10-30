@@ -9,6 +9,7 @@ class staticFiles {
   async getfile (ctx, url, dir) {
     let rpath = ctx.request.path
     // file path
+    dir = path.join(__dirname, '../../../../' + dir)
     let fp = path.join(dir, rpath)
     if (fs.existsSync(fp)) {
       // console.log(rpath, fp)

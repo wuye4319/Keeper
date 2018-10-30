@@ -4,15 +4,14 @@
 const Koa = require('koa')
 const app = new Koa()
 const router = require('koa-router')()
-const Logger = require('keeper-core')
-let logger = new Logger()
+const Fslog = require('../../base/logger')
+let logger = new Fslog()
 
 app.use(async (ctx, next) => {
   const start = Date.now()
   await next()
   const ms = Date.now() - start
   let myurl = ctx.url.substr(0, ctx.url.indexOf('http'))
-  logger.myconsole(`${ctx.method} ${myurl || ctx.url} - ${ms}ms`)
   // ctx.response.set('Access-Control-Allow-Origin', 'http://www.dev.com:8011')
   // ctx.response.set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, DELETE')
   // ctx.response.set('Access-Control-Max-Age', '0')
@@ -24,11 +23,11 @@ app.use(router.routes()).use(router.allowedMethods())
 
 // error
 // app.on('error', function (err, ctx) {
-//   console.log('server error', err, ctx)
+//   logger.myconsole('server error', err, ctx)
 // })
 var lis = app.listen(80)
-console.log('Launcher is started!!!')
-// console.log('http://localhost/')
+logger.myconsole('Launcher 80 is started!!!')
+// logger.myconsole('http://localhost/')
 
 var server = {
   addrouter: (url, fn) => {

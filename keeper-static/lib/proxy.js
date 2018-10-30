@@ -3,26 +3,27 @@
  * version:v1.0
  * plugin:init js
  */
-'use strict'
 const puppeteer = require('puppeteer')
 const path = require('path')
 const fs = require('fs')
+const Fslog = require('../base/logger')
+let logger = new Fslog()
 
 const Fastpost = require('./urldata')
 let fastpost = new Fastpost()
+const Clearcart = require('./clearcart')
+let clearcart = new Clearcart()
 const Getcodeimg = require('./getcodeimg')
 let getcodeimg = new Getcodeimg()
 
-let Delay = require('keeper-core/lib/delay')
+let Delay = require('../base/delay')
 let delay = new Delay()
-const Render = require('keeper-core/lib/render')
+const Render = require('../base/render')
 let render = new Render()
 const accbox = require('../config/account')
 
-const Mytime = require('keeper-core/lib/time')
+const Mytime = require('../base/time')
 let mytime = new Mytime()
-const Logger = require('keeper-core')
-let logger = new Logger()
 
 let browser
 let selfbrowser = {}
@@ -43,11 +44,6 @@ let proxyserver = systemconfig.proxyserver
 
 // constructor
 class InitJs {
-  async autoslide (url) {
-    let res = await slidelock.autoslide(selfbrowser[browserindex], url)
-    return res
-  }
-
   // controll proxy
   closeproxy () {
     proxyserver = 0
@@ -61,7 +57,7 @@ class InitJs {
 
   setipinterval (time) {
     changeiptime = time
-    console.log('set ip interval : ' + changeiptime + ' mins')
+    logger.myconsole('set ip interval : ' + changeiptime + ' mins')
   }
 
   changebrowser () {
@@ -171,7 +167,7 @@ class InitJs {
 
   autoproxy () {
     changeipactive = true
-    console.log('Active change ip is start!'.green)
+    logger.myconsole('Active change ip is start!')
   }
 
   getproxylist () {
@@ -193,16 +189,23 @@ class InitJs {
     return result
   }
 
-  async taobao (type, url, process) {
+  async taobao (type, url, process, data, cart, islast) {
     let cache = systemconfig.cache
     let currbrow = proxyserver ? browser : selfbrowser[browserindex]
-    let result = await fastpost.taobao(currbrow, type, url, cache, process)
+    let result = await fastpost.taobao(currbrow, type, url, cache, process, data, cart, islast)
 
     if (proxyserver) {
       result = this.servermatrix(type, url, process, result)
     }
     // result.url = url
     return result === 'changeip' ? 'Analysis failed!' : result
+  }
+
+  async clearcart () {
+    let currbrow = proxyserver ? browser : selfbrowser[browserindex]
+    let result = await clearcart.clear(currbrow)
+    // result.url = url
+    return result
   }
 
   async loginbycode (browsertype, index, ctx) {

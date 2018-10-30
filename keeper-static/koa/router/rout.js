@@ -12,8 +12,7 @@ require('./global')
 // order
 koa.addrouter(/order/, async (ctx) => {
   let body = ctx.request.body
-  console.log(body)
-  await ctrl.filtermall(ctx, 'order')
+  await ctrl.filtermall(ctx, 'order', body)
 })
 koa.addrouter(/^\/slidelock(?:\/|$)/, async (ctx) => {
   await ctrl.slidelock(ctx, 'slidelock')
@@ -21,7 +20,7 @@ koa.addrouter(/^\/slidelock(?:\/|$)/, async (ctx) => {
 
 // static
 launcher.addrouter(/^\/(\w+)(?:|$)/, async (ctx) => {
-  await staticFiles.getfile(ctx, '/static/', './static')
+  await staticFiles.getfile(ctx, '/static/', 'static/')
 })
 
 class rout {

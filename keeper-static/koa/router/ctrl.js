@@ -4,24 +4,19 @@
 const fs = require('fs')
 const Proxy = require('../../lib/proxy')
 let proxy = new Proxy()
-const Logger = require('keeper-core')
-let logger = new Logger()
-
-const Fscache = require('keeper-core/cache/cache')
-const cache = new Fscache()
 
 let internumb = 0
 let urlbox = []
 
 class ctrl {
-  async filter (myurl, rout, type) {
+  async filter (myurl, rout, data, cart, islast) {
     // filter
-    logger.myconsole('process : ' + internumb.toString())
-    logger.myconsole(myurl)
+    console.log('process : ' + internumb.toString())
+    console.log(myurl)
     let result
 
     if (internumb > 15) {
-      logger.myconsole('Server is busy,please wait...')
+      console.log('Server is busy,please wait...')
       await proxy.close()
       await proxy.init()
       await proxy.initproxybrowser()
@@ -33,26 +28,20 @@ class ctrl {
       internumb += 1
       let hasurl = this.eachurl(urlbox, myurl)
       if (hasurl) {
-        logger.myconsole('Repeat request!')
+        console.log('Repeat request!')
       } else {
         urlbox.push(myurl)
         // read cache file time
         let rct = Date.now()
-        let hascache = await cache.readcache(myurl, rout)
         rct = Date.now() - rct
-        logger.myconsole('read cache time : ' + rct.toString() + ' ms')
-        if (hascache) {
-          result = hascache
-          logger.myconsole('this is cache file!')
-        } else {
-          result = await proxy.taobao(rout, myurl, internumb)
-        }
+        console.log('read cache time : ' + rct.toString() + ' ms')
+        result = await proxy.taobao(rout, myurl, internumb, data, cart, islast)
 
         // rm url in box
         urlbox.splice(hasurl - 1, 1)
         urlbox.length
-          ? logger.myconsole(JSON.stringify(urlbox))
-          : logger.myconsole('[]')
+          ? console.log(JSON.stringify(urlbox))
+          : console.log('[]')
       }
 
       internumb -= 1
@@ -61,13 +50,42 @@ class ctrl {
     return result
   }
 
-  async filtermall (ctx, rout) {
-    let myurl = ctx.url.substr(rout.length + 2)
-    let result = await this.filter(myurl, rout)
-    if (result) {
-      ctx.response.body = result
+  async filtermall (ctx, rout, body) {
+    let data = body.items
+    let datalist = {}
+    if (data.length === 1) {
+      let link = data[0].originalLink
+      let result = await this.filter(link, rout, data[0])
+      datalist.orderNo = body.orderNo
+      console.log('result : ' + JSON.stringify(result))
+      datalist.itemBarcode = data[0].itemBarcode
+      Object.assign(datalist, datalist, result)
+      ctx.response.body = datalist
+    } else if (data.length > 1) {
+      datalist.orderNo = body.orderNo
+      let emptycart = await proxy.clearcart()
+      if (emptycart) {
+        for (let i in data) {
+          let link = data[i].originalLink
+          let proindex = (parseInt(i) + 1)
+          if (parseInt(i) === data.length - 1) {
+            // buy
+            let result = await this.filter(link, rout, data[i], proindex, true)
+            Object.assign(datalist, datalist, result)
+          } else {
+            let result = await this.filter(link, rout, data[i], proindex)
+            console.log('result : ' + JSON.stringify(result))
+            if (!result) {
+              break
+            }
+          }
+        }
+        ctx.response.body = datalist
+      } else {
+        ctx.response.body = 'clear cart error'
+      }
     } else {
-      ctx.response.body = 'Get data failed!'
+      ctx.response.body = 'mission is empty!'
     }
   }
 
@@ -154,7 +172,7 @@ class ctrl {
   async loginstatus (ctx, browser) {
     let rand = Math.ceil(Math.random() * 1000000000)
     browser = browser || ''
-    let imgpath = './static/source/img/warmachine/codeimg/loginstatus' + browser + '.png'
+    let imgpath = path.join(__dirname, '../../../../static/source/img/warmachine/codeimg/loginstatus' + browser + '.png')
     let status = fs.statSync(imgpath)
     let labimg = '<img src="/source/img/warmachine/codeimg/loginstatus' + browser + '.png?' + rand + '" />'
     let labp = '<p>' + status.mtime + '</p>'
