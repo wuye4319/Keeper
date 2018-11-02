@@ -61,7 +61,6 @@ class compile {
     let webpackconf = []
     for (let i in lang) {
       let confdev = rules.dev(pub, lang[i])
-      console.log(confdev.input)
       if (fs.existsSync(confdev.input)) {
         let myplugins = this.defaultplugin(pub, lang[i], confdev)
         // webpack

@@ -1,6 +1,7 @@
 /*
- *启动方式：node bd,通过.help查看命令
- * 通过.xx执行命令
+ * author : nero
+ * 修改参数来使用
+ * 看参数注解说明
  */
 const config = {
   version: '1.2.2',
