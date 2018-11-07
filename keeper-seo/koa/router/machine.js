@@ -48,7 +48,7 @@ class machine {
   }
 
   async getdata () {
-    let data = {proxy: [], proxyacc: false, browser: []}
+    let data = {proxy: [], proxyacc: [], browser: []}
     let iplist = proxy.getproxylist()
     for (let i in iplist) {
       let temp = {}
@@ -56,6 +56,7 @@ class machine {
       data.proxy.push(temp)
     }
     let numb = systemconfig.browsernumb
+    let proxynumb = systemconfig.proxyserver
 
     // version
     let tempver = fs.readFileSync(path.join(__dirname, '/../../package.json')).toString()
@@ -65,9 +66,16 @@ class machine {
     let file = './static/source/img/warmachine/loginacc/acc.txt'
     let acc = fs.readFileSync(file).toString()
     acc = JSON.parse(acc)
-    if (acc['bcurr']) {
-      data.proxyacc = acc['bcurr']
+    for (let i = 0; i < proxynumb; i++) {
+      let tempobj = {}
+      if (acc['bcurr' + i]) {
+        tempobj.loginacc = acc['bcurr' + i]
+      } else {
+        tempobj.loginacc = false
+      }
+      data.proxyacc.push(tempobj)
     }
+
     for (let i = 0; i < numb; i++) {
       let tempobj = {}
       if (acc['bself' + i]) {

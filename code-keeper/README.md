@@ -38,6 +38,13 @@ keeper //进入keeper模式
 .pub //压缩编译
 ```
 
+### 编译wrapper
+```javascript
+keeper //进入keeper模式
+.wrap //编译
+.wrap pub //压缩编译
+```
+
 ### 清除垃圾
 ```javascript
 keeper //进入keeper模式

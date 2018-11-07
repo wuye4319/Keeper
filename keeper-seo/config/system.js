@@ -4,7 +4,7 @@
  */
 
 const system = {
-  proxyserver: 0,
+  proxyserver: 4,
   cache: 1,
   printsourceurl: 0,
   ignoreimg: 1,

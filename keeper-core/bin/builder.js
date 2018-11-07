@@ -39,7 +39,8 @@ repls.defineCommand('clear', {
     console.log('1.buy')
     console.log('2.error')
     console.log('3.taobao')
-    global.myvari.anslist = [{1: 'buy'}, {2: 'error'}, {3: 'taobao'}]
+    console.log('4.search')
+    global.myvari.anslist = [{1: 'buy'}, {2: 'error'}, {3: 'taobao'}, {4: 'search'}]
     global.myvari.answer.buy = () => {
       this.getday('buy')
     }
@@ -48,6 +49,9 @@ repls.defineCommand('clear', {
     }
     global.myvari.answer.taobao = () => {
       this.getday('taobao')
+    }
+    global.myvari.answer.search = () => {
+      this.getday('search')
     }
     this.getday = (type) => {
       console.log('how long do you wanna keep cache?enter : [m mins , like : m 20]')
