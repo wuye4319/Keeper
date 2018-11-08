@@ -16,6 +16,8 @@ const Getip = require('./getip')
 let getip = new Getip()
 const Getcodeimg = require('./getcodeimg')
 let getcodeimg = new Getcodeimg()
+const Getstate = require('./getstate')
+let getstate = new Getstate()
 
 // const Myseo = require('./seo')
 // let seo = new Myseo()
@@ -266,6 +268,17 @@ class InitJs {
       data = await getcodeimg.getimg(browser[index || proxyindex], browsertype + (index || proxyinde))
     } else {
       data = false
+    }
+
+    return data
+  }
+
+  async getstate (browsertype, index) {
+    let data = false
+    if (browsertype === 'self') {
+      data = await getstate.getstate(selfbrowser[index || browserindex], browsertype + (index || browserindex))
+    } else if (browsertype === 'curr' && proxyserver) {
+      data = await getstate.getstate(browser[index || proxyindex], browsertype + (index || proxyinde))
     }
 
     return data

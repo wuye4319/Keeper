@@ -26,6 +26,13 @@ koa.addrouter(/^\/slidelock(?:\/|$)/, async (ctx) => {
   await ctrl.slidelock(ctx, 'slidelock')
 })
 
+// change region
+koa.addrouter('/getstate/:type/:index', async (ctx) => {
+  let type = ctx.params.type
+  let index = ctx.params.index
+  await ctrl.getstate(ctx, 'state', type, index)
+})
+
 // search
 koa.addrouter('/search/:key', async (ctx) => {
   let key = ctx.params.key

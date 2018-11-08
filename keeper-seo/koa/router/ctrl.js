@@ -15,7 +15,7 @@ let internumb = 0
 let urlbox = []
 
 class ctrl {
-  async filter (myurl, rout, type) {
+  async filter (myurl, rout) {
     // filter
     logger.myconsole('process : '.red + internumb.toString().red)
     logger.myconsole(myurl)
@@ -54,7 +54,7 @@ class ctrl {
           logger.myconsole('this is cache file!')
           logger.myconsole('<p>this is cache file!</p>', 'web')
         } else {
-          if (type === 'search') {
+          if (rout === 'search') {
             result = await proxy.search(rout, myurl, internumb)
           } else {
             result = await proxy.taobao(rout, myurl, internumb)
@@ -100,7 +100,16 @@ class ctrl {
   async filtersearch (ctx, rout, key) {
     // let myurl = 'https://pub.alimama.com/items/search.json?' + key
     let myurl = 'https://s.taobao.com/search?ajax=true&app=mainsrp&q=' + key
-    let result = await this.filter(myurl, rout, 'search')
+    let result = await this.filter(myurl, rout)
+    if (result) {
+      ctx.response.body = result
+    } else {
+      ctx.response.body = 'Get data failed!'
+    }
+  }
+
+  async getstate (ctx, rout, type, key) {
+    let result = await proxy.getstate(type, key)
     if (result) {
       ctx.response.body = result
     } else {
