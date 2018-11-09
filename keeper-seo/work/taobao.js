@@ -139,6 +139,9 @@ class InitJs {
   isJson (obj, browser) {
     try {
       obj = JSON.parse(obj)
+      if (!JSON.parse(obj.data.apiStack[0].value).delivery.postage) {
+        logger.myconsole('Postage is missing'.red)
+      }
       let isjsonstr = typeof (obj) === 'object' && Object.prototype.toString.call(obj).toLowerCase() === '[object object]' && !obj.length
       if (isjsonstr) {
         let verifystrLogin = JSON.stringify(obj).indexOf('h5api.m.taobao.com:443//h5/mtop.taobao.detail.getdetail')

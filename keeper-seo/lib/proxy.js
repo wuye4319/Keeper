@@ -47,7 +47,7 @@ let proxyindex = 0
 // change ip active
 let changeipactive = systemconfig.changeipactive
 // ip proxy list
-const iplist = require('../config/iplist2')
+const iplist = require('../config/iplist')
 // change ip interval time, [mins]
 let changeiptime = systemconfig.changeiptime
 // let processbox = []

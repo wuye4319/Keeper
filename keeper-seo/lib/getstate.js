@@ -47,16 +47,20 @@ class InitJs {
             }
           })
 
+          logger.myconsole(mypageinfor.region)
           if (mypageinfor.region !== '中国大陆') {
-            await page.mouse.move(30, 15)
+            await page.mouse.move(30, 95)
+            // , {button: 'right'}
+            await page.mouse.click(30, 95)
             const butHandle = await page.$('.site-nav-region-item:nth-child(2)')
             await page.evaluate(body => body.click(), butHandle)
+            await delay.delay(2)
+            logger.myconsole('Get state success!'.magenta)
           }
           if (mypageinfor.loginacc) {
             this.writeacc(mypageinfor.loginacc, type)
           }
 
-          logger.myconsole('Get state success!'.magenta)
           await page.close()
           resolve(mypageinfor)
         })
