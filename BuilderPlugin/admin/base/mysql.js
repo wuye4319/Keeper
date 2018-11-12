@@ -30,6 +30,19 @@ class basesql {
     pool.end()
     console.log('mysql connection is cloes!'.red)
   }
+
+  getarrt (data, out, obj) {
+    let temparr = []
+    // get arrt you need
+    for (let i in data) {
+      let tempobj = {}
+      for (let j in out) {
+        tempobj[out[j]] = data[i][out[j]]
+      }
+      temparr.push(tempobj)
+    }
+    return obj ? temparr[0] : temparr
+  }
 }
 
 module.exports = basesql

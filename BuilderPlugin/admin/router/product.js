@@ -1,7 +1,7 @@
 /**
  * Created by nero on 2017/6/2.
  */
-const koa = require('shop-builder/koa/index')
+const koa = require('../../koa/index')
 const fs = require('fs')
 const Writefile = require('keeper-core/lib/writefile')
 let writefile = new Writefile()
@@ -20,12 +20,24 @@ let globparam = '/web/v1/'
 //   result = builder.collectionsmul()
 //   ctx.response.body = result
 // })
-// koa.addrouter(globparam + 'collections/:id', async (ctx) => {
-//   let id = ctx.params.id
-//   let result
-//   result = builder.collectionsdetail(id)
-//   ctx.response.body = result
-// })
+koa.addrouter(globparam + 'collections/:id/:pagesize/:page/', async (ctx) => {
+  let id = ctx.params.id
+  let page = ctx.params.page
+  let size = ctx.params.pagesize
+  let tempPro = await product.getProByTopic(id)
+  let temptopic = await product.getTopicById(id)
+  let result = {
+    state: 0, msg: 'success', data: {collection: {}, product_list: {}}, 'total': 2, // 总条数
+    'current_page': 1,
+    'pagesize': 10,
+    'total_page': 1 // 总页数
+  }
+  if (temptopic && tempPro) {
+    result.data.collection = temptopic
+    result.data.product_list = tempPro
+  }
+  ctx.response.body = result
+})
 
 // next
 koa.addrouter(globparam + 'products', async (ctx) => {
@@ -36,8 +48,7 @@ koa.addrouter(globparam + 'products', async (ctx) => {
 // http://builder.test.com:8080/web/v1/products/30/
 koa.addrouter(globparam + 'products/:id', async (ctx) => {
   let id = ctx.params.id
-  let result
-  result = await product.getpro(id)
+  let result = await product.getpro(id)
   ctx.response.body = result
 })
 // koa.addrouter(globparam + 'blog', async (ctx) => {

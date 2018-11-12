@@ -8,7 +8,7 @@ const Basemysql = require('../base/mysql')
 let basemysql = new Basemysql()
 
 class mysql {
-  addpro (data) {
+  addPro (data) {
     return new Promise((resolve) => {
       basemysql.myquery('insert into product set MainImg=?,ProName=?,ProHref=?,Price=?,ProKind=?,ThemeID=?,MySort=?',
         [data.MainImg, data.ProName, data.ProHref, data.Price, data.ProKind, data.ThemeID, data.MySort],
@@ -24,9 +24,43 @@ class mysql {
     })
   }
 
-  getpro (id) {
+  getPro (id) {
+    // 获取商品信息
     return new Promise((resolve) => {
       basemysql.myquery('select * from product where id=?', id, function (results) {
+        resolve(results[0])
+      })
+    })
+  }
+
+  getProByTopic (id) {
+    // 获取专题的商品
+    return new Promise((resolve) => {
+      basemysql.myquery('SELECT * FROM product WHERE topic_id=? AND is_pub=1 ORDER BY edit_date', id, function (results) {
+        let data = basemysql.getarrt(results, [
+          'main_img', 'name', 'href', 'sell_price', 'currency'
+        ])
+        resolve(data)
+      })
+    })
+  }
+
+  getTopicById (id) {
+    // 获取专题信息
+    return new Promise((resolve) => {
+      basemysql.myquery('SELECT * FROM topics WHERE id=?', id, function (results) {
+        let data = basemysql.getarrt(results, [
+          'title', 'cover_img', 'main_img', 'description'
+        ], 1)
+        resolve(data)
+      })
+    })
+  }
+
+  getTopicByKind () {
+    // 获取分类下的专题信息
+    return new Promise((resolve) => {
+      basemysql.myquery('SELECT * FROM topics WHERE kind_id=?', id, function (results) {
         resolve(results[0])
       })
     })
