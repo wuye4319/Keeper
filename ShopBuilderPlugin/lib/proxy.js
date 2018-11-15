@@ -6,6 +6,8 @@
 'use strict'
 const Fscompile = require('../lib/compile')
 let compile = new Fscompile()
+const Createshop = require('../lib/ctrl/createshop')
+let createshop = new Createshop()
 
 // constructor
 class InitJs {
@@ -18,6 +20,10 @@ class InitJs {
 
   async wrap () {
     await compile.wrap('pub')
+  }
+
+  async createshop (user) {
+    return await createshop.init(user)
   }
 }
 

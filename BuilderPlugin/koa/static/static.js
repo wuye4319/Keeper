@@ -36,8 +36,8 @@ class staticFiles {
       let tempstr = fs.readFileSync(fp)
 
       // builder.test.com use testuser
-      let testcom = (ctx.hostname === 'localhost' || ctx.hostname.indexOf('builder.test.com') !== -1)
-      let user = (testcom ? 'testuser' : ctx.hostname)
+      let testcom = (ctx.hostname === 'localhost' || ctx.hostname.indexOf('test.com') !== -1)
+      let user = (testcom ? 'default' : ctx.hostname)
 
       // get page name
       let pageindex = ctx.url.indexOf('page')

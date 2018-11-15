@@ -13,9 +13,9 @@ let internumb = 0
 let urlbox = []
 
 class ctrl {
-  async filter (ctx, rout) {
+  async filter (ctx, rout, user) {
     // filter
-    let myurl = ctx.url.substr(rout.length + 2)
+    let myurl = user
     logger.myconsole('process : '.red + internumb.toString().red)
     logger.myconsole(myurl)
     let result
@@ -32,7 +32,11 @@ class ctrl {
       if (hasurl) {
         logger.myconsole('Repeat request!'.red)
       } else {
-        result = await proxy.builder(rout, myurl)
+        if (rout === 'createshop') {
+          result = await proxy.createshop(user)
+        } else {
+          result = await proxy.builder(rout, myurl)
+        }
 
         // rm url in box
         urlbox.splice(hasurl - 1, 1)

@@ -5,20 +5,11 @@ let compile = new Fscompile()
 
 const fsconf = require('../lib/ctrl/readconf')
 let conf = new fsconf()
-const Createshop = require('../lib/ctrl/createshop')
-let createshop = new Createshop()
 
 repls.defineCommand('conf', {
   help: 'setting config of config.js'.green,
   action: function (param) {
     conf.conf(param)
-    this.displayPrompt()
-  }
-})
-repls.defineCommand('newshop', {
-  help: 'reload all setting of config.js'.green,
-  action: function (param) {
-    createshop.init()
     this.displayPrompt()
   }
 })

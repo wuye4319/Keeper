@@ -17,8 +17,8 @@ repls.defineCommand('conf', {
 })
 repls.defineCommand('newshop', {
   help: 'reload all setting of config.js'.green,
-  action: function (param) {
-    createshop.init()
+  action: async function (param) {
+    await createshop.init(param)
     this.displayPrompt()
   }
 })

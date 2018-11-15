@@ -26,8 +26,9 @@ koa.addrouter(/^\/builder(?:\/|$)/, async (ctx) => {
 koa.addrouter('/wrapper/', async (ctx) => {
   await ctrl.wrap()
 })
-koa.addrouter('/create/shop/', async (ctx) => {
-  await ctrl.createshop()
+koa.addrouter('/createshop/:user', async (ctx) => {
+  let user = ctx.params.user
+  await ctrl.filter(ctx, 'createshop', user)
 })
 
 // static

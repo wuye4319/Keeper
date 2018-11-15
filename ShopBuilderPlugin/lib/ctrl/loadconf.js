@@ -23,10 +23,6 @@ class loadconf {
     return rules.wrap(lang, user)
   }
 
-  createshop (lang, user) {
-    return rules.createshop(lang, user)
-  }
-
   transfile (lang) {
     return rules.transfile(lang)
   }

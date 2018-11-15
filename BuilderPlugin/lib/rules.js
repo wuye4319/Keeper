@@ -194,21 +194,6 @@ class rules {
 
     return data
   }
-
-  createshop (lang, user) {
-    let mypathlist = this.mypath(lang, user)
-    let data = {}
-    // data.fromstatic = './' + theme + '/' + sysconf.staticdir + sysconf.source
-    // data.tostatic = sysconf.root + mypathlist.usertheme + '/' + sysconf.staticdir + lang + sysconf.source
-    // data.fromfront = './' + theme + '/' + sysconf.frontdir + sysconf.source
-    // data.tofront = sysconf.root + mypathlist.user + '/' + sysconf.frontdir + lang + sysconf.source
-
-    // let from = './front/theme/source/tpl/config.json'
-    // let to = './shop/testuser/theme/config.json'
-    data.fromconfig = './' + sysconf.frontdir + mypathlist.theme + sysconf.source + 'tpl/.config.json'
-    data.toconfig = sysconf.root + mypathlist.usertheme + 'config.json'
-    return data
-  }
 }
 
 module.exports = rules
