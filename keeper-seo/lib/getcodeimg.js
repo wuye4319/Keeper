@@ -1,1 +1,41 @@
-'use strict';var _createClass=function(){function a(b,c){for(var f,d=0;d<c.length;d++)f=c[d],f.enumerable=f.enumerable||!1,f.configurable=!0,'value'in f&&(f.writable=!0),Object.defineProperty(b,f.key,f)}return function(b,c,d){return c&&a(b.prototype,c),d&&a(b,d),b}}();function _asyncToGenerator(a){return function(){var b=a.apply(this,arguments);return new Promise(function(c,d){function f(g,h){try{var j=b[g](h),k=j.value}catch(l){return void d(l)}return j.done?void c(k):Promise.resolve(k).then(function(l){f('next',l)},function(l){f('throw',l)})}return f('next')})}}function _classCallCheck(a,b){if(!(a instanceof b))throw new TypeError('Cannot call a class as a function')}var path=require('path'),fs=require('fs'),Logger=require('keeper-core'),logger=new Logger,Mytime=require('keeper-core/lib/time'),mytime=new Mytime,Delay=require('keeper-core/lib/delay'),delay=new Delay,Writefile=require('keeper-core/lib/writefile'),writefile=new Writefile,InitJs=function(){function a(){_classCallCheck(this,a)}return _createClass(a,[{key:'getimg',value:function getimg(b,c){var d=this;return new Promise(function(){var f=_asyncToGenerator(regeneratorRuntime.mark(function g(h){var j,k,l;return regeneratorRuntime.wrap(function(n){for(;;)switch(n.prev=n.next){case 0:return n.next=2,b.newPage();case 2:return j=n.sent,n.prev=3,n.next=6,j.goto('https://login.taobao.com/member/login.jhtml?tpl_redirect_url=https%3A%2F%2Fwww.tmall.com%2F&style=miniall&newMini2=true');case 6:return n.next=8,j.waitForSelector('#TPL_username_1').then(_asyncToGenerator(regeneratorRuntime.mark(function o(){var p;return regeneratorRuntime.wrap(function(r){for(;;)switch(r.prev=r.next){case 0:return logger.myconsole('Get login code img is working!'.red),r.next=3,j.$('#J_Static2Quick');case 3:return p=r.sent,r.next=6,j.evaluate(function(s){return s.click()},p);case 6:case'end':return r.stop();}},o,d)})));case 8:return n.next=10,delay.delay(1);case 10:return k='./static/source/img/warmachine/codeimg/codeimg'+(c||'')+'.png',n.next=13,j.screenshot({path:k});case 13:l=setTimeout(function(){logger.myconsole('Auto-login timeout! Page closed!'.magenta),j.close()},99000),j.on('load',_asyncToGenerator(regeneratorRuntime.mark(function o(){var p,q,r;return regeneratorRuntime.wrap(function(t){for(;;)switch(t.prev=t.next){case 0:return clearTimeout(l),t.next=3,delay.delay(2);case 3:return p='loginstatus'+(c||'')+'.png',q='./static/source/img/warmachine/codeimg/'+p,t.next=7,j.screenshot({path:q});case 7:return t.next=9,delay.delay(1);case 9:return t.next=11,j.evaluate(function(){return{title:document.title||'',loginacc:document.getElementsByClassName('j_Username')[0].innerHTML||''}});case 11:return r=t.sent,d.writeacc(r.loginacc,c),logger.myconsole('Page login success!'.magenta),t.next=16,j.close();case 16:case'end':return t.stop();}},o,d)}))),h(!0),n.next=24;break;case 18:return n.prev=18,n.t0=n['catch'](3),logger.myconsole('Get code img error!'.red),h(!1),n.next=24,j.close();case 24:case'end':return n.stop();}},g,d,[[3,18]])}));return function(){return f.apply(this,arguments)}}())}},{key:'writeacc',value:function writeacc(b,c){var d='./static/source/img/warmachine/loginacc/acc.txt',f=fs.readFileSync(d).toString(),g={};f&&(g=JSON.parse(f)),g['b'+c]=b,writefile.writejs(d,JSON.stringify(g))}},{key:'getcurracc',value:function(){var c=_asyncToGenerator(regeneratorRuntime.mark(function d(){return regeneratorRuntime.wrap(function(h){for(;;)switch(h.prev=h.next){case 0:case'end':return h.stop();}},d,this)}));return function b(){return c.apply(this,arguments)}}()}]),a}();module.exports=InitJs;
+const path = require('path'), fs = require('fs'), Logger = require('keeper-core')
+let logger = new Logger
+const Mytime = require('keeper-core/lib/time')
+let mytime = new Mytime, Delay = require('keeper-core/lib/delay'), delay = new Delay
+const Writefile = require('keeper-core/lib/writefile')
+let writefile = new Writefile
+
+class InitJs {
+  getimg (a, b) {
+    return new Promise(async c => {
+      const d = await a.newPage()
+      try {
+        await d.goto(
+          'https://login.taobao.com/member/login.jhtml?tpl_redirect_url=https%3A%2F%2Fwww.tmall.com%2F&style=miniall&newMini2=true'), await d.waitForSelector(
+          '#TPL_username_1').then(async () => {
+          logger.myconsole('Get login code img is working!'.red)
+          const h = await d.$('#J_Static2Quick')
+          await d.evaluate(i => i.click(), h)
+        }), await delay.delay(1)
+        await d.screenshot({path: './static/source/img/warmachine/codeimg/codeimg' + (b || '') + '.png'})
+        let g = setTimeout(function () {logger.myconsole('Auto-login timeout! Page closed!'.magenta), d.close()}, 99000)
+        d.on('load', async () => {
+          clearTimeout(g), await delay.delay(2)
+          await d.screenshot({path: './static/source/img/warmachine/codeimg/' + ('loginstatus' + (b || '') + '.png')}), await delay.delay(1)
+          let j = await d.evaluate(
+            () => {return {title: document.title || '', loginacc: document.getElementsByClassName('j_Username')[0].innerHTML || ''}})
+          this.writeacc(j.loginacc, b), logger.myconsole('Page login success!'.magenta), await d.close()
+        }), c(!0)
+      } catch (f) {logger.myconsole('Get code img error!'.red), c(!1), await d.close()}
+    })
+  }
+
+  writeacc (a, b) {
+    let c = './static/source/img/warmachine/loginacc/acc.txt', d = fs.readFileSync(c).toString(), f = {}
+    d && (f = JSON.parse(d)), f['b' + b] = a, writefile.writejs(c, JSON.stringify(f))
+  }
+
+  async getcurracc () {}
+}
+
+module.exports = InitJs

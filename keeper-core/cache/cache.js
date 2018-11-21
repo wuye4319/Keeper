@@ -1,153 +1,100 @@
 /**
- * Created by nero on 2017/9/7.
+ * author:nero
  */
 let path = require('path')
-const fs = require('fs')
-
-const Fswritefile = require('../lib/writefile')
-let writefile = new Fswritefile()
+const fs = require('fs'), Fswritefile = require('../lib/writefile')
+let writefile = new Fswritefile
 const Fsdel = require('../lib/delete')
-let del = new Fsdel()
+let del = new Fsdel
 const Fslog = require('keeper-core')
-let log = new Fslog()
+let log = new Fslog
 const Mytime = require('keeper-core/lib/time')
-let mytime = new Mytime()
+let mytime = new Mytime
 
 class Cache {
-  constructor () {
-    this.options = {
-      errfile: '../logfile/error.txt',
-      gpath: '../../../cache/',
-      cacheinfor: '/infor.txt',
-      cachemins: 30 // minutes
-    }
-  }
+  constructor () {this.options = {errfile: '../logfile/error.txt', gpath: '../../../cache/', cacheinfor: '/infor.txt', cachemins: 30}}
 
-  // auto clear cache
-  readcache (url, type) {
-    return new Promise((resolve) => {
-      let result = false
-      let infor = path.join(__dirname, this.options.gpath + type + this.options.cacheinfor)
-
-      if (fs.existsSync(infor)) {
-        let mycacheinfor = fs.readFileSync(infor).toString()
-        let temparr = JSON.parse('[' + mycacheinfor + ']')
-        // console.log(temparr)
-        temparr.reverse()
-        let ruletime = mytime.getdate()
-        ruletime.setMinutes(ruletime.getMinutes() - this.options.cachemins)
-        ruletime = ruletime.getTime()
-        for (let i in temparr) {
-          let tmpurl = Object.values(temparr[i])
-          let cachefile = Object.keys(temparr[i])
-          let mycurrdate = cachefile[0].substr(cachefile[0].indexOf('/') + 1)
-          // tempdatearr = tempdatearr.split('-')
-          let istrue = (mycurrdate > ruletime ? 1 : 0)
-          // In current cache date, if url is exist
-          if (istrue) {
-            let tempurl = encodeURIComponent(url)
-            if (tmpurl[0] === tempurl) {
-              let mypath = path.join(__dirname, this.options.gpath + type + '/' + cachefile[0] + '.html')
-              if (fs.existsSync(mypath)) {
-                result = fs.readFileSync(mypath).toString()
-              }
-              log.mybuffer({'Read': cachefile + '.html', 'date': mytime.mytime(), 'url': url})
-              log.writelog('success', type)
+  readcache (a, b) {
+    return new Promise(c => {
+      let d = !1, e = path.join(__dirname, this.options.gpath + b + this.options.cacheinfor)
+      if (fs.existsSync(e)) {
+        let f = fs.readFileSync(e).toString(), g = JSON.parse('[' + f + ']')
+        g.reverse()
+        let h = mytime.getdate()
+        for (let j in h.setMinutes(h.getMinutes() - this.options.cachemins), h = h.getTime(), g) {
+          let k = Object.values(g[j]), l = Object.keys(g[j]), m = l[0].substr(l[0].indexOf('/') + 1), n = m > h ? 1 : 0
+          if (n) {
+            let o = encodeURIComponent(a)
+            if (k[0] === o) {
+              let p = path.join(__dirname, this.options.gpath + b + '/' + l[0] + '.html')
+              fs.existsSync(p) && (d = fs.readFileSync(p).toString()), log.mybuffer({Read: l + '.html', date: mytime.mytime(), url: a}), log.writelog(
+                'success', b)
             }
-          } else {
-            break
-          }
+          } else break
         }
       }
-
-      resolve(result)
+      c(d)
     })
   }
 
-  // write
-  writecache (html, url, type) {
-    let date = mytime.getdate()
-    let name = mytime.mydate('mins')
-    url = encodeURIComponent(url)
-
-    let infor = path.join(__dirname, this.options.gpath + type + '/infor/' + name + '.txt')
-    let maininfor = path.join(__dirname, this.options.gpath + type + this.options.cacheinfor)
-    this.appendfile(infor, date, url, name)
-    this.appendfile(maininfor, date, url, name)
-
-    let file = path.join(__dirname, this.options.gpath + type + '/' + name + '/' + date.getTime() + '.html')
-    writefile.writejs(file, html)
-    type === 'error' ? log.myconsole('Create error cache file!'.red) : log.myconsole('Create cache file!'.blue)
-    log.mybuffer({'Cache': name + '/' + date.getTime() + '.html'})
+  writecache (a, b, c) {
+    let d = mytime.getdate(), e = mytime.mydate('mins')
+    b = encodeURIComponent(b)
+    let f = path.join(__dirname, this.options.gpath + c + '/infor/' + e + '.txt'),
+      g = path.join(__dirname, this.options.gpath + c + this.options.cacheinfor)
+    this.appendfile(f, d, b, e), this.appendfile(g, d, b, e)
+    let h = path.join(__dirname, this.options.gpath + c + '/' + e + '/' + d.getTime() + '.html')
+    writefile.writejs(h, a), 'error' === c ? log.myconsole('Create error cache file!'.red) : log.myconsole('Create cache file!'.blue), log.mybuffer(
+      {Cache: e + '/' + d.getTime() + '.html'})
   }
 
-  appendfile (infor, date, url, name) {
-    let hasinfor = fs.existsSync(infor)
-    let str = (hasinfor ? ',\n{"' : '{"') + name + '/' + date.getTime() + '":"' + url + '"}'
-    writefile.append(infor, str)
+  appendfile (a, b, c, d) {
+    let e = fs.existsSync(a), f = (e ? ',\n{"' : '{"') + d + '/' + b.getTime() + '":"' + c + '"}'
+    writefile.append(a, f)
   }
 
-  // clear
-  delcache (type, keepdate) {
-    let that = this
-    let myfilepath = path.join(__dirname, this.options.gpath + type + '/')
-    if (fs.existsSync(myfilepath)) {
-      fs.readdir(myfilepath, function (err, paths) {
-        if (err) throw err
-        paths.forEach(function (dirname, index) {
-          let _myfilepath = myfilepath + dirname
-          fs.stat(_myfilepath, function (err, file) {
-            if (err) throw err
-            if (file.isDirectory()) {
-              let datearr = dirname.split('-')
-              if (datearr.length > 2) {
-                let ispass = mytime.dateispass(datearr, keepdate)
-                if (ispass) {
-                  let mycache = path.join(__dirname, that.options.gpath + type + '/' + dirname + '/')
-                  del.deleteSource(mycache, 'all')
-                  let myinfor = path.join(__dirname, that.options.gpath + type + '/infor/' + dirname + '.txt')
-                  if (fs.existsSync(myinfor)) del.deleteSource(myinfor)
-                }
+  delcache (a, b) {
+    let c = this, d = path.join(__dirname, this.options.gpath + a + '/')
+    fs.existsSync(d) ? fs.readdir(d, function (e, f) {
+      if (e) throw e
+      f.forEach(function (g, h) {
+        fs.stat(d + g, function (k, l) {
+          if (k) throw k
+          if (l.isDirectory()) {
+            let m = g.split('-')
+            if (2 < m.length) {
+              let n = mytime.dateispass(m, b)
+              if (n) {
+                let o = path.join(__dirname, c.options.gpath + a + '/' + g + '/')
+                del.deleteSource(o, 'all')
+                let p = path.join(__dirname, c.options.gpath + a + '/infor/' + g + '.txt')
+                fs.existsSync(p) && del.deleteSource(p)
               }
             }
-            if (index === paths.length - 1) {
-              that.updatecacheinfor(type)
-            }
-          })
+          }
+          h === f.length - 1 && c.updatecacheinfor(a)
         })
       })
-    } else {
-      console.log('dir is not exist!'.red)
-    }
+    }) : console.log('dir is not exist!'.red)
   }
 
-  updatecacheinfor (type) {
-    let that = this
-    if (!type) type = 'buy'
-    let myfilepath = path.join(__dirname, this.options.gpath + type + '/infor/')
-    let tempstr = ''
-    if (fs.existsSync(myfilepath)) {
-      fs.readdir(myfilepath, function (err, paths) {
-        if (err) throw err
-        paths.forEach(function (dirname, index) {
-          let _myfilepath = myfilepath + dirname
-          fs.stat(_myfilepath, function (err, file) {
-            if (err) throw err
-            if (file.isFile()) {
-              tempstr = (tempstr ? tempstr + ',\n' : '') + fs.readFileSync(_myfilepath)
-              if (index === paths.length - 1) {
-                // console.log(tempstr)
-                let file = path.join(__dirname, that.options.gpath + type + that.options.cacheinfor)
-                writefile.writejs(file, tempstr)
-                console.log(file.yellow + ' is update!'.green)
-              }
-            }
-          })
+  updatecacheinfor (a) {
+    let b = this
+    a || (a = 'buy')
+    let c = path.join(__dirname, this.options.gpath + a + '/infor/'), d = ''
+    fs.existsSync(c) ? fs.readdir(c, function (e, f) {
+      if (e) throw e
+      f.forEach(function (g, h) {
+        let j = c + g
+        fs.stat(j, function (k, l) {
+          if (k) throw k
+          if (l.isFile() && (d = (d ? d + ',\n' : '') + fs.readFileSync(j), h === f.length - 1)) {
+            let m = path.join(__dirname, b.options.gpath + a + b.options.cacheinfor)
+            writefile.writejs(m, d), console.log(m.yellow + ' is update!'.green)
+          }
         })
       })
-    } else {
-      console.log('dir is empty!'.red)
-    }
+    }) : console.log('dir is empty!'.red)
   }
 }
 

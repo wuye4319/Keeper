@@ -16,8 +16,8 @@ const Getip = require('./getip')
 let getip = new Getip()
 const Getcodeimg = require('./getcodeimg')
 let getcodeimg = new Getcodeimg()
-const Getstate = require('./getstate')
-let getstate = new Getstate()
+// const Getstate = require('./getstate')
+// let getstate = new Getstate()
 
 // const Myseo = require('./seo')
 // let seo = new Myseo()
@@ -31,8 +31,8 @@ const Mytime = require('keeper-core/lib/time')
 let mytime = new Mytime()
 const Logger = require('keeper-core')
 let logger = new Logger()
-const Logintest = require('../lib/auto-login')
-let logintest = new Logintest()
+// const Logintest = require('../lib/auto-login')
+// let logintest = new Logintest()
 
 let browser = []
 let selfbrowser = {}
@@ -53,15 +53,15 @@ let changeiptime = systemconfig.changeiptime
 // let processbox = []
 let proxyserver = systemconfig.proxyserver
 
-const SlideLock = require('./slidelock')
-let slidelock = new SlideLock()
+// const SlideLock = require('./slidelock')
+// let slidelock = new SlideLock()
 
 // constructor
 class InitJs {
-  async autoslide (url) {
-    let res = await slidelock.autoslide(selfbrowser[browserindex], url)
-    return res
-  }
+  // async autoslide (url) {
+  //   let res = await slidelock.autoslide(selfbrowser[browserindex], url)
+  //   return res
+  // }
 
   // controll proxy
   closeproxy () {

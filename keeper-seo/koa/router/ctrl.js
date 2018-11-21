@@ -1,1 +1,100 @@
-'use strict';var _createClass=function(){function a(b,c){for(var e,d=0;d<c.length;d++)e=c[d],e.enumerable=e.enumerable||!1,e.configurable=!0,'value'in e&&(e.writable=!0),Object.defineProperty(b,e.key,e)}return function(b,c,d){return c&&a(b.prototype,c),d&&a(b,d),b}}();function _asyncToGenerator(a){return function(){var b=a.apply(this,arguments);return new Promise(function(c,d){function e(f,g){try{var h=b[f](g),j=h.value}catch(k){return void d(k)}return h.done?void c(j):Promise.resolve(j).then(function(k){e('next',k)},function(k){e('throw',k)})}return e('next')})}}function _classCallCheck(a,b){if(!(a instanceof b))throw new TypeError('Cannot call a class as a function')}var fs=require('fs'),Proxy=require('../../lib/proxy'),proxy=new Proxy,Logger=require('keeper-core'),logger=new Logger,Fscache=require('keeper-core/cache/cache'),cache=new Fscache,internumb=0,urlbox=[],ctrl=function(){function a(){_classCallCheck(this,a)}return _createClass(a,[{key:'filter',value:function(){var c=_asyncToGenerator(regeneratorRuntime.mark(function d(e,f){var g,h,j,k;return regeneratorRuntime.wrap(function(m){for(;;)switch(m.prev=m.next){case 0:if(logger.myconsole('process : '.red+internumb.toString().red),logger.myconsole(e),logger.myconsole('<p style="color: red">process : '+internumb+'</p>','web'),logger.myconsole('<p>'+e+'</p>','web'),g=void 0,!(15<internumb)){m.next=16;break}return logger.myconsole('Server is busy,please wait...'),m.next=9,proxy.close();case 9:return m.next=11,proxy.init();case 11:return m.next=13,proxy.initproxybrowser();case 13:this.clearinternumb(),m.next=50;break;case 16:if(internumb+=1,h=this.eachurl(urlbox,e),!h){m.next=23;break}logger.myconsole('Repeat request!'.red),logger.myconsole('<p style="color: red">Repeat request!</p>','web'),m.next=49;break;case 23:return urlbox.push(e),j=Date.now(),m.next=27,cache.readcache(e,f);case 27:if(k=m.sent,j=Date.now()-j,logger.myconsole('read cache time : '.green+j.toString().red+' ms'.green),logger.myconsole('<p style="color: green">read cache time : <span style="color: red">'+j.toString()+'</span> ms</p>','web'),!k){m.next=37;break}g=k,logger.myconsole('this is cache file!'),logger.myconsole('<p>this is cache file!</p>','web'),m.next=46;break;case 37:if('search'!==f){m.next=43;break}return m.next=40,proxy.search(f,e,internumb);case 40:g=m.sent,m.next=46;break;case 43:return m.next=45,proxy.taobao(f,e,internumb);case 45:g=m.sent;case 46:urlbox.splice(h-1,1),urlbox.length?logger.myconsole(JSON.stringify(urlbox)):logger.myconsole('[]'),urlbox.length?logger.myconsole('<p>'+JSON.stringify(urlbox)+'</p>','web'):logger.myconsole('<p>[]</p>','web');case 49:internumb-=1;case 50:return m.abrupt('return',g);case 51:case'end':return m.stop();}},d,this)}));return function b(){return c.apply(this,arguments)}}()},{key:'filtermall',value:function(){var c=_asyncToGenerator(regeneratorRuntime.mark(function d(e,f){var g,h;return regeneratorRuntime.wrap(function(k){for(;;)switch(k.prev=k.next){case 0:return g=e.url.substr(f.length+2),k.next=3,this.filter(g,f);case 3:h=k.sent,e.response.body=h?h:'Get data failed!';case 5:case'end':return k.stop();}},d,this)}));return function b(){return c.apply(this,arguments)}}()},{key:'slidelock',value:function(){var c=_asyncToGenerator(regeneratorRuntime.mark(function d(e,f){var g,h;return regeneratorRuntime.wrap(function(k){for(;;)switch(k.prev=k.next){case 0:return g=e.url.substr(f.length+2),k.next=3,proxy.autoslide(g);case 3:h=k.sent,e.response.body=h?h:'Get data failed!';case 5:case'end':return k.stop();}},d,this)}));return function b(){return c.apply(this,arguments)}}()},{key:'filtersearch',value:function(){var c=_asyncToGenerator(regeneratorRuntime.mark(function d(e,f,g){var h,j;return regeneratorRuntime.wrap(function(l){for(;;)switch(l.prev=l.next){case 0:return h='https://s.taobao.com/search?ajax=true&app=mainsrp&q='+g,l.next=3,this.filter(h,f);case 3:j=l.sent,e.response.body=j?j:'Get data failed!';case 5:case'end':return l.stop();}},d,this)}));return function b(){return c.apply(this,arguments)}}()},{key:'getstate',value:function(){var c=_asyncToGenerator(regeneratorRuntime.mark(function d(e,f,g,h){var j;return regeneratorRuntime.wrap(function(l){for(;;)switch(l.prev=l.next){case 0:return l.next=2,proxy.getstate(g,h);case 2:j=l.sent,e.response.body=j?j:'Get data failed!';case 4:case'end':return l.stop();}},d,this)}));return function b(){return c.apply(this,arguments)}}()},{key:'eachurl',value:function eachurl(b,c){var d=!1;for(var e in b)b[e]===c&&(d=e+1);return d}},{key:'clearinternumb',value:function clearinternumb(){internumb=0,urlbox=[]}},{key:'ctrlproxy',value:function(){var c=_asyncToGenerator(regeneratorRuntime.mark(function d(e,f){return regeneratorRuntime.wrap(function(h){for(;;)switch(h.prev=h.next){case 0:h.t0=f,h.next='0'===h.t0?3:'1'===h.t0?5:'2'===h.t0?7:10;break;case 3:return proxy.closeproxy(),h.abrupt('break',10);case 5:return proxy.openproxy(),h.abrupt('break',10);case 7:return h.next=9,proxy.manualchangeip();case 9:return h.abrupt('break',10);case 10:e.response.body='success';case 11:case'end':return h.stop();}},d,this)}));return function b(){return c.apply(this,arguments)}}()},{key:'autoproxy',value:function(){var c=_asyncToGenerator(regeneratorRuntime.mark(function d(e,f){return regeneratorRuntime.wrap(function(h){for(;;)switch(h.prev=h.next){case 0:h.t0=f,h.next='0'===h.t0?3:'1'===h.t0?5:7;break;case 3:return proxy.manualchangeip(),h.abrupt('break',7);case 5:return proxy.autoproxy(),h.abrupt('break',7);case 7:e.response.body='success';case 8:case'end':return h.stop();}},d,this)}));return function b(){return c.apply(this,arguments)}}()},{key:'nextbrowser',value:function nextbrowser(b){proxy.changebrowser(),b.response.body='success'}},{key:'loginbycode',value:function(){var c=_asyncToGenerator(regeneratorRuntime.mark(function d(e,f,g){var h,j;return regeneratorRuntime.wrap(function(l){for(;;)switch(l.prev=l.next){case 0:if(!f){l.next=8;break}return l.next=3,proxy.loginbycode(f,g);case 3:h=l.sent,j=Math.ceil(1e9*Math.random()),e.response.body=h?'<img src="/source/img/warmachine/codeimg/codeimg'+f+(g||'')+'.png?'+j+'" /><p><a href="/loginstatus/'+f+(g||'')+'/">click to check login status</a></p>':'error',l.next=9;break;case 8:e.response.body='Please choose browser, use key [self] or [curr]';case 9:case'end':return l.stop();}},d,this)}));return function b(){return c.apply(this,arguments)}}()},{key:'loginstatus',value:function(){var c=_asyncToGenerator(regeneratorRuntime.mark(function d(e,f){var g,h,j,k,l;return regeneratorRuntime.wrap(function(n){for(;;)switch(n.prev=n.next){case 0:g=Math.ceil(1e9*Math.random()),f=f||'',h='./static/source/img/warmachine/codeimg/loginstatus'+f+'.png',j=fs.statSync(h),k='<img src="/source/img/warmachine/codeimg/loginstatus'+f+'.png?'+g+'" />',l='<p>'+j.mtime+'</p>',e.response.body=k+l;case 7:case'end':return n.stop();}},d,this)}));return function b(){return c.apply(this,arguments)}}()},{key:'weblogger',value:function(){var c=_asyncToGenerator(regeneratorRuntime.mark(function d(e){var f,g,h;return regeneratorRuntime.wrap(function(k){for(;;)switch(k.prev=k.next){case 0:f=logger.getweblog(),g='./weblog/'+f+'.txt',h=fs.readFileSync(g).toString(),e.response.body=h;case 4:case'end':return k.stop();}},d,this)}));return function b(){return c.apply(this,arguments)}}()}]),a}();module.exports=ctrl;
+const fs = require('fs'), Proxy = require('../../lib/proxy')
+let proxy = new Proxy
+const Logger = require('keeper-core')
+let logger = new Logger
+const Fscache = require('keeper-core/cache/cache'), cache = new Fscache
+let internumb = 0, urlbox = []
+
+class ctrl {
+  async filter (a, b) {
+    logger.myconsole('process : '.red + internumb.toString().red), logger.myconsole(a), logger.myconsole('<p style="color: red">process : ' +
+      internumb + '</p>', 'web'), logger.myconsole('<p>' + a + '</p>', 'web')
+    let c
+    if (15 < internumb) {
+      logger.myconsole(
+        'Server is busy,please wait...'), await proxy.close(), await proxy.init(), await proxy.initproxybrowser(), this.clearinternumb()
+    } else {
+      internumb += 1
+      let d = this.eachurl(urlbox, a)
+      if (d) {logger.myconsole('Repeat request!'.red), logger.myconsole('<p style="color: red">Repeat request!</p>', 'web')} else {
+        urlbox.push(a)
+        let e = Date.now(), f = await cache.readcache(a, b)
+        e = Date.now() - e, logger.myconsole('read cache time : '.green + e.toString().red +
+          ' ms'.green), logger.myconsole('<p style="color: green">read cache time : <span style="color: red">' + e.toString() + '</span> ms</p>',
+          'web'), f
+          ? (c = f, logger.myconsole('this is cache file!'), logger.myconsole('<p>this is cache file!</p>', 'web'))
+          : 'search' === b
+            ? c = await proxy.search(b, a, internumb)
+            : c = await proxy.taobao(b, a, internumb), urlbox.splice(d - 1, 1), urlbox.length
+          ? logger.myconsole(JSON.stringify(urlbox))
+          : logger.myconsole('[]'), urlbox.length ? logger.myconsole('<p>' + JSON.stringify(urlbox) + '</p>', 'web') : logger.myconsole('<p>[]</p>',
+          'web')
+      }
+      internumb -= 1
+    }
+    return c
+  }
+
+  async filtermall (a, b) {
+    let c = a.url.substr(b.length + 2), d = await this.filter(c, b)
+    a.response.body = d ? d : 'Get data failed!'
+  }
+
+  async slidelock (a, b) {
+    let c = a.url.substr(b.length + 2), d = await proxy.autoslide(c)
+    a.response.body = d ? d : 'Get data failed!'
+  }
+
+  async filtersearch (a, b, c) {
+    let e = await this.filter('https://s.taobao.com/search?ajax=true&app=mainsrp&q=' + c, b)
+    a.response.body = e ? e : 'Get data failed!'
+  }
+
+  async getstate (a, b, c, d) {
+    let e = await proxy.getstate(c, d)
+    a.response.body = e ? e : 'Get data failed!'
+  }
+
+  eachurl (a, b) {
+    let c = !1
+    for (let d in a) a[d] === b && (c = d + 1)
+    return c
+  }
+
+  clearinternumb () {internumb = 0, urlbox = []}
+
+  async ctrlproxy (a, b) {
+    '0' === b ? proxy.closeproxy() : '1' === b ? proxy.openproxy() : '2' === b ? await proxy.manualchangeip() : void 0
+    a.response.body = 'success'
+  }
+
+  async autoproxy (a, b) {
+    '0' === b ? proxy.manualchangeip() : '1' === b ? proxy.autoproxy() : void 0
+    a.response.body = 'success'
+  }
+
+  nextbrowser (a) {proxy.changebrowser(), a.response.body = 'success'}
+
+  async loginbycode (a, b, c) {
+    if (b) {
+      let d = await proxy.loginbycode(b, c), e = Math.ceil(1e9 * Math.random())
+      a.response.body = d ? '<img src="/source/img/warmachine/codeimg/codeimg' + b + (c || '') + '.png?' + e + '" /><p><a href="/loginstatus/' + b +
+        (c || '') + '/">click to check login status</a></p>' : 'error'
+    } else a.response.body = 'Please choose browser, use key [self] or [curr]'
+  }
+
+  async loginstatus (a, b) {
+    let c = Math.ceil(1e9 * Math.random())
+    b = b || ''
+    let d = './static/source/img/warmachine/codeimg/loginstatus' + b + '.png', e = fs.statSync(d),
+      f = '<img src="/source/img/warmachine/codeimg/loginstatus' + b + '.png?' + c + '" />', g = '<p>' + e.mtime + '</p>'
+    a.response.body = f + g
+  }
+
+  async weblogger (a) {
+    let b = logger.getweblog(), d = fs.readFileSync('./weblog/' + b + '.txt').toString()
+    a.response.body = d
+  }
+}
+
+module.exports = ctrl
