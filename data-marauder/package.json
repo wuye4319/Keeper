@@ -4,7 +4,7 @@
   "description": "data-marauder",
   "main": "index.js",
   "dependencies": {
-    "keeper-core": "^1.0.68",
+    "keeper-core": "^1.1.0",
     "keeper-proxy": "^0.0.4"
   },
   "devDependencies": {},

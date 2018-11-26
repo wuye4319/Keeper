@@ -7,15 +7,12 @@ const Ctrl = require('./ctrl')
 let ctrl = new Ctrl()
 const StaticFiles = require('../static/static')
 let staticFiles = new StaticFiles()
-const Basemysql = require('../../admin/base/mysql')
-let basemysql = new Basemysql()
 require('../../admin/base/rout')
 
 class rout {
   closeall () {
     koa.close()
     launcher.close()
-    basemysql.endconn()
   }
 }
 

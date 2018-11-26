@@ -4,8 +4,6 @@
  * plugin:init js
  */
 'use strict'
-const Fscompile = require('../lib/compile')
-let compile = new Fscompile()
 const Createshop = require('../lib/ctrl/createshop')
 let createshop = new Createshop()
 

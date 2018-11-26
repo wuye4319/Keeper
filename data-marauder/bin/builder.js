@@ -15,6 +15,16 @@ proxy.initproxybrowser()
 
 const Action = require('../router/service/action')
 let action = new Action()
+const Robot = require('../lib/myrob/robot')
+let robot = new Robot()
+
+repls.defineCommand('rob', {
+  help: 'a robot to do sth for you'.green,
+  action: function (param) {
+    robot.robot()
+    this.displayPrompt()
+  }
+})
 repls.defineCommand('simgnav', {
   help: 'Get image!'.green,
   action: function () {

@@ -23,7 +23,6 @@ class ready {
       {name: 'babel-plugin-import', ver: '1.2.1'},
       {name: 'uglifyjs-webpack-plugin', ver: '1.2.2'},
       {name: 'i18n-webpack-plugin', ver: '1.0.0'},
-      {name: 'keeper-core', ver: '1.0.60'},
       {name: 'koa', ver: '2.3.0'},
       {name: 'koa-cors', ver: '0.0.16'},
       {name: 'koa-body', ver: '4.0.4'},
