@@ -3,23 +3,14 @@
  * version:v1.0
  * plugin:init js
  */
-'use strict'
-
 class arrdir {
-  // search all dir from dir path
-  arrdir (longdir) {
-    let arrdir = [longdir]
-    while (longdir) {
-      if (longdir === './' || longdir.length < 5) {
-        longdir = false
-        break
-      } else {
-        longdir = longdir.substring(0, longdir.lastIndexOf('/'))
-        longdir = longdir.substring(0, longdir.lastIndexOf('/') + 1)
-        longdir === './' || arrdir.push(longdir)
-      }
-    }
-    return arrdir
+  arrdir (a) {
+    let b = [a]
+    for (; a;) if ('./' === a || 5 > a.length) {
+      a = !1
+      break
+    } else a = a.substring(0, a.lastIndexOf('/')), a = a.substring(0, a.lastIndexOf('/') + 1), './' == a || b.push(a)
+    return b
   }
 }
 

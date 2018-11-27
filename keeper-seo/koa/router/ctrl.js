@@ -19,8 +19,7 @@ class ctrl {
       if (d) {logger.myconsole('Repeat request!'.red), logger.myconsole('<p style="color: red">Repeat request!</p>', 'web')} else {
         urlbox.push(a)
         let e = Date.now(), f = await cache.readcache(a, b)
-        e = Date.now() - e, logger.myconsole('read cache time : '.green + e.toString().red +
-          ' ms'.green), logger.myconsole('<p style="color: green">read cache time : <span style="color: red">' + e.toString() + '</span> ms</p>',
+        e = Date.now() - e, logger.myconsole('<p style="color: green">read cache time : <span style="color: red">' + e.toString() + '</span> ms</p>',
           'web'), f
           ? (c = f, logger.myconsole('this is cache file!'), logger.myconsole('<p>this is cache file!</p>', 'web'))
           : 'search' === b

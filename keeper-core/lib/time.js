@@ -5,69 +5,36 @@
 const os = require('os')
 
 class time {
-  constructor () {
-    this.options = {
-      adjust: false
-    }
-  }
+  constructor () {this.options = {adjust: !1}}
 
   getdate () {
-    let date = new Date()
-    if (os.platform() === 'linux' && this.options.adjust) {
-      date.setHours(date.getHours() + 13)
-    }
-    return date
+    let a = new Date
+    return 'linux' === os.platform() && this.options.adjust && a.setHours(a.getHours() + 13), a
   }
 
-  dateispass (datearr, keepdate) {
-    let ruletime = this.getdate()
-    ruletime.setMinutes(ruletime.getMinutes() - keepdate)
-    ruletime = ruletime.getTime()
-
-    let date = this.getdate()
-    date.setYear(datearr[0])
-    date.setMonth(datearr[1] - 1)
-    date.setDate(datearr[2])
-    date.setHours(datearr[3])
-    date.setMinutes(datearr[4])
-    date.setSeconds(0)
-    date = date.getTime()
-
-    return date < ruletime ? 1 : 0
+  dateispass (a, b) {
+    let c = this.getdate()
+    c.setMinutes(c.getMinutes() - b), c = c.getTime()
+    let d = this.getdate()
+    return d.setYear(a[0]), d.setMonth(a[1] - 1), d.setDate(a[2]), d.setHours(a[3]), d.setMinutes(a[4]), d.setSeconds(0), d = d.getTime(), d < c
+      ? 1
+      : 0
   }
 
   mytime () {
-    let date = this.getdate()
-
-    let myseconds = ':' + this.bezero(date.getSeconds())
-    let myhours = ' ' + this.bezero(date.getHours())
-    let myminutes = ':' + this.bezero(date.getMinutes())
-    let datestr = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + myhours + myminutes + myseconds
-
-    return datestr
+    let a = this.getdate(), b = ':' + this.bezero(a.getSeconds()), c = ' ' + this.bezero(a.getHours()), d = ':' + this.bezero(a.getMinutes()),
+      e = a.getFullYear() + '-' + (a.getMonth() + 1) + '-' + a.getDate() + c + d + b
+    return e
   }
 
-  mydate (unit) {
-    let date = this.getdate()
-    let datestr
-    if (unit === 'mins') {
-      datestr = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + '-' + date.getHours() + '-' + date.getMinutes()
-    } else {
-      datestr = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate()
-    }
-
-    return datestr
+  mydate (a) {
+    let c, b = this.getdate()
+    return c = 'mins' === a
+      ? b.getFullYear() + '-' + (b.getMonth() + 1) + '-' + b.getDate() + '-' + b.getHours() + '-' + b.getMinutes()
+      : b.getFullYear() + '-' + (b.getMonth() + 1) + '-' + b.getDate(), c
   }
 
-  bezero (time) {
-    if (time === 0) {
-      return '00'
-    } else if (time < 10) {
-      return '0' + time
-    } else {
-      return time
-    }
-  }
+  bezero (a) {return 0 === a ? '00' : 10 > a ? '0' + a : a}
 }
 
 module.exports = time
