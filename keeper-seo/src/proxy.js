@@ -265,7 +265,7 @@ class InitJs {
     if (browsertype === 'self') {
       data = await getcodeimg.getimg(selfbrowser[index || browserindex], browsertype + (index || browserindex))
     } else if (browsertype === 'curr' && proxyserver) {
-      data = await getcodeimg.getimg(browser[index || proxyindex], browsertype + (index || proxyinde))
+      data = await getcodeimg.getimg(browser[index || proxyindex], browsertype + (index || proxyindex))
     } else {
       data = false
     }
@@ -278,7 +278,7 @@ class InitJs {
     if (browsertype === 'self') {
       data = await getstate.getstate(selfbrowser[index || browserindex], browsertype + (index || browserindex))
     } else if (browsertype === 'curr' && proxyserver) {
-      data = await getstate.getstate(browser[index || proxyindex], browsertype + (index || proxyinde))
+      data = await getstate.getstate(browser[index || proxyindex], browsertype + (index || proxyindex))
     }
 
     return data

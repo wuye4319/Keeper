@@ -15,6 +15,8 @@ const Getip = require('./getip')
 let getip = new Getip()
 let Delay = require('keeper-core/lib/delay')
 let delay = new Delay()
+// const Getstate = require('./getstate')
+// let getstate = new Getstate()
 
 const Mytime = require('keeper-core/lib/time')
 let mytime = new Mytime()
@@ -24,12 +26,13 @@ const systemconfig = require('../config/system')
 const Getcodeimg = require('./codeimg')
 let getcodeimg = new Getcodeimg()
 
-let browser
+let browser = []
 let selfbrowser = {}
 let ipdate = mytime.mydate('mins')
 logger.myconsole('Program start at : '.blue + ipdate)
 let ipindex = 0
 let browserindex = 0
+let proxyindex = 0
 
 // change ip active
 let changeipactive = systemconfig.changeipactive
@@ -37,18 +40,22 @@ let changeipactive = systemconfig.changeipactive
 const iplist = require('../config/iplist')
 // change ip interval time, [mins]
 let changeiptime = systemconfig.changeiptime
-let processbox = []
+// let processbox = []
 let proxyserver = systemconfig.proxyserver
+// const SlideLock = require('./slidelock')
+// let slidelock = new SlideLock()
 
 // constructor
 class InitJs {
   // controll proxy
   closeproxy () {
     proxyserver = 0
+    browser.close()
   }
 
   openproxy () {
     proxyserver = 1
+    this.initproxybrowser()
   }
 
   changebrowser () {
@@ -62,6 +69,15 @@ class InitJs {
   setipinterval (time) {
     changeiptime = time
     console.log('set ip interval : ' + changeiptime + ' mins')
+  }
+
+  changeproxy () {
+    proxyindex += 1
+    logger.myconsole('proxy : '.green + proxyindex)
+    // if (index) {
+    if (proxyindex >= systemconfig.proxyserver) {
+      proxyindex = 0
+    }
   }
 
   async init () {
@@ -86,19 +102,20 @@ class InitJs {
 
   async initproxybrowser () {
     if (proxyserver) {
-      let proxy = iplist[0].address + ':' + iplist[0].host
-      await this.newbrowser(proxy)
-      await this.getip()
+      for (let i = 0; i < proxyserver; i++) {
+        let proxy = iplist[i].address + ':' + iplist[i].host
+        browser[i] = await this.newbrowser(proxy)
+        await this.getip(browser[i])
+      }
     }
   }
 
   async newbrowser (tempip) {
     return new Promise(async (resolve) => {
-      if (browser) processbox.push(browser)
       let args = ['--no-sandbox', '--disable-setuid-sandbox']
       if (tempip) args.push('--proxy-server=' + tempip)
-      browser = await puppeteer.launch({
-        ignoreHTTPSErrors: true,
+      let tempbrowser = await puppeteer.launch({
+        ignoreDefaultArgs: true,
         // headless: false,
         args: args
       })
@@ -106,15 +123,15 @@ class InitJs {
       await delay.delay(0)
 
       // router
-      resolve(true)
+      resolve(tempbrowser)
 
-      setTimeout(function () {
-        if (processbox.length) {
-          for (let i in processbox) {
-            processbox[i].close()
-          }
-        }
-      }, 8000)
+      // setTimeout(function () {
+      //   if (processbox.length) {
+      //     for (let i in processbox) {
+      //       processbox[i].close()
+      //     }
+      //   }
+      // }, 8000)
     })
   }
 
@@ -154,7 +171,11 @@ class InitJs {
     for (let i in selfbrowser) {
       await selfbrowser[i].close()
     }
-    if (proxyserver) await browser.close()
+    if (browser.length) {
+      for (let i in browser) {
+        await browser[i].close()
+      }
+    }
   }
 
   async manualchangeip () {
@@ -180,22 +201,24 @@ class InitJs {
   }
 
   async servermatrix (type, url, process, result) {
+    let cache = systemconfig.cache
     // when the first one is done, it will stop the second
     // check ip date
-    let ispass = mytime.dateispass(ipdate.split('-'), changeiptime)
-    if (changeipactive && (ispass || result === 'changeip')) {
-      this.changeip()
-    }
+    // let ispass = mytime.dateispass(ipdate.split('-'), changeiptime)
+    // if (changeipactive && (ispass || result === 'changeip')) {
+    //   this.changeip()
+    // }
 
     if (result === 'changeip' || result === 'Analysis failed!' || result === 'Product is missing!') {
-      result = await pipedata.getdata(selfbrowser[browserindex], type, url, process, true)
+      result = await fastpost.taobao(selfbrowser[browserindex], type, url, cache, process, true)
     }
     return result
   }
 
   async pipedata (type, url, process) {
+    !proxyserver || this.changeproxy()
     let cache = systemconfig.cache
-    let currbrow = proxyserver ? browser : selfbrowser[browserindex]
+    let currbrow = proxyserver ? browser[proxyindex] : selfbrowser[browserindex]
     // let rules = ['initItemDetail.htm', 'sib.htm']
     let rules = false
     let result = await pipedata.getdata(currbrow, type, url, rules, process)
@@ -214,8 +237,8 @@ class InitJs {
     return result
   }
 
-  async getip () {
-    let data = await getip.getip(browser)
+  async getip (myproxy) {
+    let data = await getip.getip(myproxy)
     return data
   }
 
@@ -224,7 +247,7 @@ class InitJs {
     if (browsertype === 'self') {
       data = await getcodeimg.getimg(selfbrowser[index || browserindex], browsertype + (index || browserindex))
     } else if (browsertype === 'curr' && proxyserver) {
-      data = await getcodeimg.getimg(browser, browsertype)
+      data = await getcodeimg.getimg(browser[index || proxyindex], browsertype + (index || proxyinde))
     } else {
       data = false
     }
@@ -232,8 +255,19 @@ class InitJs {
     return data
   }
 
+  async getstate (browsertype, index) {
+    let data = false
+    if (browsertype === 'self') {
+      data = await getstate.getstate(selfbrowser[index || browserindex], browsertype + (index || browserindex))
+    } else if (browsertype === 'curr' && proxyserver) {
+      data = await getstate.getstate(browser[index || proxyindex], browsertype + (index || proxyindex))
+    }
+
+    return data
+  }
+
   async login (loginurl, url, account) {
-    const page = await browser.newPage()
+    const page = await selfbrowser[browserindex].newPage()
 
     let file = path.join(__dirname, '/acc.js')
     const tpl = fs.readFileSync(file).toString()
