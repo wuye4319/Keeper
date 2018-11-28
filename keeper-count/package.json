@@ -1,6 +1,6 @@
 {
   "name": "keeper-count",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "keeper-count",
   "main": "index.js",
   "dependencies": {},
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wuye4319/Keeper.git"
+    "url": "git+https://github.com/"
   },
   "keywords": [
     "keeper-count"
@@ -21,7 +21,7 @@
   "author": "nero",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/wuye4319/Keeper/issues"
+    "url": "https://github.com/"
   },
-  "homepage": "https://github.com/wuye4319/Keeper"
+  "homepage": "https://github.com/"
 }
