@@ -1,0 +1,35 @@
+{
+  "name": "code-keeper2",
+  "version": "0.0.5",
+  "description": "code-keeper2",
+  "main": "index.js",
+  "dependencies": {
+    "keeper-core": "^1.1.5",
+    "uglifyjs-webpack-plugin": "^1.2.2",
+    "i18n-webpack-plugin": "^1.0.0",
+    "inquirer": "^6.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/"
+  },
+  "keywords": [
+    "code-keeper2"
+  ],
+  "standard": {
+    "parser": "babel-eslint"
+  },
+  "bin": {
+    "keeper": "./bin/main.js"
+  },
+  "author": "nero",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/"
+  },
+  "homepage": "https://github.com/"
+}

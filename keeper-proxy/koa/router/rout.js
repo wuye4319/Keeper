@@ -7,7 +7,7 @@ const StaticFiles = require('../static/static')
 let staticFiles = new StaticFiles()
 
 // static
-launcher.addrouter(/^\/(\w+)(?:\/|$)/, async (ctx) => {
+launcher.addrouter(/^\/(\w*)(?:\/|$)/, async (ctx) => {
   await staticFiles.getfile(ctx, '/static/', './static')
 })
 

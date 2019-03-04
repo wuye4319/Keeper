@@ -1,6 +1,6 @@
 {
   "name": "keeper-seo",
-  "version": "1.3.7",
+  "version": "1.3.9",
   "description": "keeper-seo",
   "main": "./koa/router/rout.js",
   "dependencies": {

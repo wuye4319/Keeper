@@ -6,7 +6,6 @@ const path = require('path')
 const fs = require('fs')
 const Writefile = require('./writefile')
 let writefile = new Writefile()
-// const exec = require('child_process').exec
 const Del = require('./delete')
 let del = new Del()
 let npm = require('npm')
@@ -15,23 +14,23 @@ let delay = new Delay()
 const Render = require('./render')
 let render = new Render()
 let lowplugin, heightplugin, lostplugin
-const {exec} = require('child_process')
+const { spawn } = require('child_process')
 const Progress = require('./progress')
 let progress = new Progress()
 
 class initnpm {
-  constructor () {
+  constructor() {
     this.pluginlist = []
     this.currplugin = ''
   }
 
-  init (parm, plugin) {
+  init(parm, plugin) {
     this.pluginlist = parm
     this.currplugin = plugin
     this.boot()
   }
 
-  async boot () {
+  async boot() {
     console.log('This is the first time to start keeper!'.green)
     this.checkplugin()// keeper will auto install plugin for you,please wait...
     if (lowplugin.length) {
@@ -52,7 +51,7 @@ class initnpm {
     }
   }
 
-  async updateall () {
+  async updateall() {
     let packagelock = './package-lock.json'
     if (fs.existsSync(packagelock)) del.deleteSource(packagelock)
     // lowplugin = lowplugin.concat(heightplugin)
@@ -64,7 +63,7 @@ class initnpm {
     }
   }
 
-  async installall () {
+  async installall() {
     for (let i in lostplugin) {
       console.log('keeper installing plugin : ' + lostplugin[i])
       await this.installplugin(lostplugin[i])
@@ -73,7 +72,7 @@ class initnpm {
     }
   }
 
-  checkplugin () {
+  checkplugin() {
     let pluginlist = this.pluginlist
     lowplugin = []
     heightplugin = []
@@ -117,7 +116,7 @@ class initnpm {
       }
 
       let tpl = fs.readFileSync(inconf).toString()
-      let data = {timer: JSON.parse(plugver).version}
+      let data = { timer: JSON.parse(plugver).version }
       let mystr = render.renderdata(tpl, data)
       writefile.writejs(outconf, mystr)
 
@@ -125,26 +124,26 @@ class initnpm {
     }
   }
 
-  installplugin (plugin, type) {
+  installplugin(plugin, type) {
     return new Promise((resolve) => {
       npm.load(function (err) {
         if (err) return console.log(err)
-        // if (type === 'un') {
-        //   npm.commands.uninstall([plugin], function (er, data) {
-        //     if (er) console.log(er)
-        //     resolve()
-        //   })
-        // } else {
         if (plugin.indexOf('-g') !== -1) {
-          progress.probytime(20)
-          exec('npm install ' + plugin, {env: process.env, maxBuffer: 20 * 1024 * 1024}, function (error, stdout, stderr) {
-            progress.toend()
-            console.log(stdout)
+          // progress.probytime(20)
+          // let ls = exec('npm install ' + plugin, { env: process.env, maxBuffer: 20 * 1024 * 1024 }, function (error, stdout, stderr) {
+          //   // progress.toend()
+          //   console.log(stdout)
+          //   resolve()
+          //   if (stderr) console.log('stderr: ' + stderr)
+          //   if (error !== null) {
+          //     console.log('exec error: ' + error)
+          //   }
+          // })
+          npm.config.set('global', true)
+          npm.commands.install(['webpack@3.10.0'], function (er, data) {
+            if (er) console.log(er)
             resolve()
-            if (stderr) console.log('stderr: ' + stderr)
-            if (error !== null) {
-              console.log('exec error: ' + error)
-            }
+            npm.config.set('global', false)
           })
         } else {
           npm.commands.install([plugin], function (er, data) {
@@ -152,21 +151,20 @@ class initnpm {
             resolve()
           })
         }
-        // }
       })
     })
   }
 
-  clearline () {
+  clearline() {
+    let self = this
     return new Promise((resolve) => {
-      process.stdout.clearLine(0)
-      process.stdout.cursorTo(0)
-      console.log('Finished!'.green)
+      repls.displayPrompt()
+      console.log('Install Finished!'.green)
       resolve()
     })
   }
 
-  checkver (myver, cver) {
+  checkver(myver, cver) {
     let result = false
     let myvers = myver.split('.')
     let cvers = cver.split('.')
@@ -183,7 +181,7 @@ class initnpm {
     return result
   }
 
-  bootstrap () {
+  bootstrap() {
     require(this.currplugin + '/bin/builder')
   }
 }

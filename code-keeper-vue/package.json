@@ -1,0 +1,33 @@
+{
+  "name": "code-keeper-vue",
+  "version": "0.0.1",
+  "description": "code-keeper-vue",
+  "main": "index.js",
+  "dependencies": {
+    "keeper-core": "^1.1.5",
+    "inquirer": "^6.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/"
+  },
+  "keywords": [
+    "code-keeper-vue"
+  ],
+  "standard": {
+    "parser": "babel-eslint"
+  },
+  "bin": {
+    "keeper": "./bin/main.js"
+  },
+  "author": "nero",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/"
+  },
+  "homepage": "https://github.com/"
+}
