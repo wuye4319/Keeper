@@ -26,7 +26,7 @@ class rules {
   }
 
   loadconfig () {
-    config = eval(fs.readFileSync('./config.js').toString())
+    config = eval(fs.readFileSync('./keeper-config.js').toString())
 
     myModule = config.pagename
     myModuleDir = config.pagename.toLocaleLowerCase()

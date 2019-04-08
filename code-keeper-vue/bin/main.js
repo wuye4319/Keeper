@@ -9,8 +9,12 @@ const Infor = require('keeper-core/lib/infor')
 let infor = new Infor()
 const readyconfig = require('./ready')
 
-let plugname = 'code-keeper2'
+const path = require('path')
+let pwd = path.dirname(__dirname)
+let plugname=path.basename(pwd)
+// let plugname = pwd.substr(pwd.lastIndexOf('/') + 1)
 
 infor.boot(plugname, readyconfig, () => {
-  require('./loader')
+  const program = require('./loader')
+  if (program.force) infor.bootstrap(plugname, readyconfig)
 })

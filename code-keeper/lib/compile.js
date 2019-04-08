@@ -11,9 +11,11 @@ let rules = new Fsrules()
 // test webpack
 const webpack = require('webpack')
 let keeper = require('../index')
+const resolve = require('keeper-core/lib/resolve')
+
 // test i18n
-let I18nPlugin = require('i18n-webpack-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+let I18nPlugin = resolve.require('i18n-webpack-plugin')
+const UglifyJsPlugin = resolve.require('uglifyjs-webpack-plugin')
 // config
 let myinfor = rules.infor()
 let watcher, compiler
@@ -21,7 +23,7 @@ let lang = myinfor.lang
 
 // constructor
 class compile {
-  constructor () {
+  constructor() {
     this.confobj = {
       output: {
         path: path.resolve('./static/'),
@@ -40,7 +42,7 @@ class compile {
     }
   }
 
-  checktrans (lang) {
+  checktrans(lang) {
     let transfile
     let firstlang = myinfor.config.firstlang + '/'
     if (lang !== firstlang) {
@@ -49,14 +51,14 @@ class compile {
     return transfile
   }
 
-  reload () {
+  reload() {
     rules.loadconfig()
     myinfor = rules.infor()
     lang = myinfor.lang
     console.log('config is reload!'.green)
   }
 
-  comsource (pub) {
+  comsource(pub) {
     let myconfig = myinfor.config
     let webpackconf = []
     for (let i in lang) {
@@ -67,12 +69,12 @@ class compile {
         let tempobj = {
           plugins: myplugins,
           // entry: {[basepath + lang[i] + 'source/js/' + dev]: ['./front/' + lang[i] + 'source/js/' + dev + '.js']},
-          entry: {[confdev.output]: [confdev.input]},
-          output: {filename: pub ? '[name].min.js' : '[name].js'}
+          entry: { [confdev.output]: [confdev.input] },
+          output: { filename: pub ? '[name].min.js' : '[name].js' }
         }
         if (myconfig.webpack.devtool) tempobj.devtool = (pub ? myconfig.webpack.devtool[1] : myconfig.webpack.devtool[0])
         Object.assign(tempobj.output, this.confobj.output)
-        webpackconf.push({...this.confobj, ...tempobj})
+        webpackconf.push({ ...this.confobj, ...tempobj })
       } else {
         console.log(confdev.input + '\n', confdev.output)
         console.log('Input is error!'.red)
@@ -82,7 +84,7 @@ class compile {
     compiler = webpack(webpackconf)
   }
 
-  defaultplugin (pub, lang, confdev, wrap) {
+  defaultplugin(pub, lang, confdev, wrap) {
     let transfile = this.checktrans(lang)
     let pubconf = [
       new webpack.DefinePlugin({
@@ -111,7 +113,7 @@ class compile {
 
     let myplug
     myplug = [
-      new I18nPlugin(wrap || transfile, {functionName: '_'})
+      new I18nPlugin(wrap || transfile, { functionName: '_' })
     ]
     wrap || myplug.push(new keeper(confdev.webdev))
 
@@ -119,7 +121,7 @@ class compile {
     return myinfor.config.webpack.plugins.concat(myplug)
   }
 
-  dev (param) {
+  dev(param) {
     this.comsource(false)
     console.log('program is ready to compile,please wait...'.green)
     let config = myinfor.config.webpack.config
@@ -133,14 +135,14 @@ class compile {
     })
   }
 
-  outdev () {
+  outdev() {
     if (watcher) {
       console.log('exit development model...you can still use other command...'.blue)
       watcher.close()
     }
   }
 
-  pub (param) {
+  pub(param) {
     this.comsource(true)
     console.log('program is ready to compile,please wait...'.green)
     let config = myinfor.config.webpack.config
@@ -151,7 +153,7 @@ class compile {
     })
   }
 
-  wrapconfig (pub) {
+  wrapconfig(pub) {
     let webpackconf = []
     let mytrans
     let myconfig = myinfor.config
@@ -170,14 +172,14 @@ class compile {
       if (fs.existsSync(wrap.input)) {
         let tempobj = {
           plugins: myplugins,
-          entry: {[wrap.output]: [wrap.input]},
+          entry: { [wrap.output]: [wrap.input] },
           // entry: {[basepath + lang[i] + wranojs]: ['./front/' + lang[i] + myconfig.wrapper]},
-          output: {filename: pub ? '[name].min.js' : '[name].js'}
+          output: { filename: pub ? '[name].min.js' : '[name].js' }
         }
         if (myconfig.webpack.devtool) tempobj.devtool = (pub ? myconfig.webpack.devtool[1] : myconfig.webpack.devtool[0])
         Object.assign(tempobj.output, this.confobj.output)
         // Object.assign(this.confobj, tempobj)
-        webpackconf.push({...this.confobj, ...tempobj})
+        webpackconf.push({ ...this.confobj, ...tempobj })
       } else {
         console.log('Input is error!'.red)
         return false
@@ -186,7 +188,7 @@ class compile {
     compiler = webpack(webpackconf)
   }
 
-  wrap (param) {
+  wrap(param) {
     param === 'pub' ? this.wrapconfig(param) : this.wrapconfig()
     console.log('program is ready to compile,please wait...'.green)
     let config = myinfor.config.webpack.config

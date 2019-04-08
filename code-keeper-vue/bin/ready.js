@@ -1,29 +1,86 @@
 /**
  * Created by nero on 2017/6/29.
  * ready
- */
-const ready = {
-  pluginlist: [
-    { name: 'babel-core', ver: '6.25.0' },
-    { name: 'babel-preset-env', ver: '1.5.2' },
-    { name: 'babel-preset-react', ver: '6.24.1' },
-    { name: 'babel-preset-stage-0', ver: '6.24.1' },
-    { name: 'css-loader', ver: '0.28.4' },
     { name: 'less', ver: '2.7.2' },
     { name: 'less-loader', ver: '4.0.4' },
-    { name: 'style-loader', ver: '0.18.2' },
-    { name: 'url-loader', ver: '0.5.9' },
-    { name: 'babel-loader', ver: '7.1.1' },
-    { name: 'antd', ver: '2.12.2' },
-    { name: 'webpack', ver: '3.10.0 -g' },
-    { name: 'react-router', ver: '3.0.0' }, // 4.1.2
     { name: 'babel-plugin-import', ver: '1.2.1' },
-    { name: 'commander', ver: '2.13.0' }
-  ],
+ * 
+ */
+module.exports = {
+  pluginlist: {
+    "vue-router": "3.0.1",
+    "vue": "2.5.2",
+    "autoprefixer": "7.1.2",
+    "babel-core": "6.25.0",
+    "babel-eslint": "8.2.1",
+    "babel-helper-vue-jsx-merge-props": "2.0.3",
+    "babel-jest": "21.0.2",
+    "babel-loader": "^7.1.1",
+    "babel-plugin-dynamic-import-node": "1.2.0",
+    "babel-plugin-syntax-jsx": "6.18.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "6.26.0",
+    "babel-plugin-transform-runtime": "6.22.0",
+    "babel-plugin-transform-vue-jsx": "3.5.0",
+    "babel-preset-env": "1.5.2",
+    "babel-preset-stage-2": "6.22.0",
+    "babel-register": "6.22.0",
+    "chalk": "2.0.1",
+    "chromedriver": "2.27.2",
+    "copy-webpack-plugin": "4.0.1",
+    "cross-spawn": "5.0.1",
+    "css-loader": "0.28.0",
+    "eslint": "4.15.0",
+    "eslint-config-standard": "10.2.1",
+    "eslint-friendly-formatter": "3.0.0",
+    "eslint-loader": "1.7.1",
+    "eslint-plugin-import": "2.7.0",
+    "eslint-plugin-node": "5.2.0",
+    "eslint-plugin-promise": "3.4.0",
+    "eslint-plugin-standard": "3.0.1",
+    "eslint-plugin-vue": "4.0.0",
+    "extract-text-webpack-plugin": "3.0.0",
+    "file-loader": "1.1.4",
+    "friendly-errors-webpack-plugin": "1.6.1",
+    "html-webpack-plugin": "2.30.1",
+    "jest": "22.0.4",
+    "jest-serializer-vue": "0.3.0",
+    "nightwatch": "0.9.12",
+    "node-notifier": "^5.1.2",
+    "optimize-css-assets-webpack-plugin": "3.2.0",
+    "ora": "1.2.0",
+    "portfinder": "1.0.13",
+    "postcss-import": "11.0.0",
+    "postcss-loader": "2.0.8",
+    "postcss-url": "7.2.1",
+    "rimraf": "2.6.0",
+    "selenium-server": "3.0.1",
+    "semver": "5.3.0",
+    "shelljs": "0.7.6",
+    "uglifyjs-webpack-plugin": "1.1.1",
+    "url-loader": "0.5.8",
+    "vue-jest": "1.0.2",
+    "vue-loader": "13.3.0",
+    "vue-style-loader": "3.0.1",
+    "vue-template-compiler": "2.5.2",
+    "webpack": "3.6.0",
+    "webpack-bundle-analyzer": "2.9.0",
+    "webpack-dev-server": "2.11.3",
+    "webpack-merge": "4.1.0"
+  },
+  cliservicelist: {
+    "vue": "^2.6.6",
+    "vue-router": "3.0.1",
+    "@vue/cli-plugin-babel": "^3.5.0",
+    "@vue/cli-plugin-eslint": "^3.5.0",
+    "@vue/cli-service": "^3.5.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.8.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "vue-template-compiler": "^2.5.21"
+  },
   initfile: [
-    { in: './config.js', out: 'config-front.js' },
-    { in: './seoinfor.json', out: 'seoinfor.json' }
+    { in: './keeper-config.js', out: 'system/config-front.js' },
+    { in: './seoinfor.json', out: 'system/seoinfor.json' },
+    { in: './index.html', out: 'init/index.html', force: true },
   ]
 }
-
-module.exports = ready

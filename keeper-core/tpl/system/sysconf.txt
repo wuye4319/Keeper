@@ -4,7 +4,8 @@
  */
 
 const system = {
-  "check_env" : "<%= timer %>"
+  "check_env": "<%= timer %>",
+  "plugintype": "<%= type %>"
 }
 
 module.exports = system

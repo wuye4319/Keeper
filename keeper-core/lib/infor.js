@@ -12,16 +12,21 @@ let writefile = new Writefile()
 
 class infor {
   checkplugin(plugin, readyconfig) {
-    this.initpro(readyconfig)
-    mynpm.init(readyconfig.pluginlist, plugin)
+    let tempver = fs.readFileSync(path.resolve('./package.json')).toString()
+    let scripts = JSON.parse(tempver).scripts
+    if (JSON.stringify(scripts).indexOf('vue-cli-service') !== -1) {
+      // this.initpro(readyconfig)
+      mynpm.init(readyconfig.cliservicelist, plugin, 'vue-cli-service')
+    } else {
+      this.initpro(readyconfig.initfile)
+      mynpm.init(readyconfig.pluginlist, plugin, 'vue-webpack')
+    }
   }
 
-  initpro(readyconfig) {
-    let initfile = readyconfig.initfile
-
+  initpro(initfile) {
     for (let i in initfile) {
-      if (!fs.existsSync(initfile[i].in)) {
-        let inconf = path.join(__dirname, '/../tpl/system/' + initfile[i].out)
+      if (initfile[i].force || !fs.existsSync(initfile[i].in)) {
+        let inconf = path.join(__dirname, '/../../../tpl/' + initfile[i].out)
         let outconf = initfile[i].in
         writefile.copy(inconf, outconf)
       }
@@ -50,9 +55,9 @@ class infor {
     let sysconf = path.resolve('./node_modules/' + plugname + '/config/sysconf.js')
     let isready = fs.existsSync(sysconf)
     if (isready) {
-      let tempver = fs.readFileSync(path.resolve('./node_modules/' + plugname + '/package.json')).toString()
+      let tempver = fs.readFileSync(path.join(__dirname, '/../../../package.json')).toString()
       let currversion = JSON.parse(tempver).version
-      // console.log(plugname + ' : '.green + currversion.green)
+      console.log(plugname + ' : '.green + currversion.green)
       let preversion = require(sysconf)
       if (preversion.check_env === currversion) {
         fn()

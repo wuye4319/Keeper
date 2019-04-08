@@ -1,54 +1,28 @@
 const Fscompile = require('../lib/compile')
 let compile = new Fscompile()
-// const Ctrlinit = require('../lib/ctrl/init')
-// let ctrlinit = new Ctrlinit()
-// the bin/bdrelease.js used;
-// const Fsclear = require('../lib/ctrl/clear')
-// let clear = new Fsclear() 
-// let fsstatic = require('../lib/ctrl/static')
-// let static = new fsstatic()
-// let fsconf = require('../lib/ctrl/readconf')
-// let conf = new fsconf()
-// require('./rob')
-const path = require('path')
-let pwd = path.dirname(__dirname)
-let plugname = path.basename(pwd)
-let outconf = path.resolve('./node_modules/' + plugname + '/config/sysconf.js')
-let tpl = require(outconf)
-const npmrun = require('../lib/run')
-let run = new npmrun()
-
-run.config()
+const Ctrlinit = require('../lib/ctrl/init')
+let ctrlinit = new Ctrlinit()
+const Fsclear = require('../lib/ctrl/clear')
+let clear = new Fsclear()
+let fsconf = require('../lib/ctrl/readconf')
+let conf = new fsconf()
 
 let cmdlist = [
   {
     name: 'dev', desc: '开发编译',
     action: function () {
-      if (tpl.plugintype === 'vue-webpack') {
-        compile.dev()
-      } else if (tpl.plugintype === 'vue-cli-service') {
-        run.run('serve')
-      }
+      compile.dev()
     }
   }, {
     name: 'pub', desc: '发布编译',
     action: function () {
-      if (tpl.plugintype === 'vue-webpack') {
-        compile.pub()
-      } else if (tpl.plugintype === 'vue-cli-service') {
-        run.run('build')
-      }
+      compile.pub()
     }
   }, {
     name: 'wrap', desc: '编译wrapper',
     option: [{ cmd: '-p, --public', desc: 'build wrapper for public envs' }],
     action: function (cmd) {
       compile.wrap(cmd.public)
-    }
-  }, {
-    name: 'inspect', desc: '检查webpack的配置', alias: 'ins',
-    action: function () {
-      run.run('inspect')
     }
   }, {
     name: 'conf', desc: '查看配置',
