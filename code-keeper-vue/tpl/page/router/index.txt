@@ -1,0 +1,13 @@
+export default [<% for(var i in routlist){
+  var name=routlist[i].name
+  var title=routlist[i].title
+  var comp=routlist[i].comp
+  var action=routlist[i].action
+   %>{
+  path: '/<%= name %>',
+  name: '<%= name %>',
+  meta: {
+    title: '<%= title %>'
+  },
+  component: () => import('@/<%= action %>/pages/<%= comp %>.vue')
+}, <% } %>];

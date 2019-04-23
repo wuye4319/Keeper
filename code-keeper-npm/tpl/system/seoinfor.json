@@ -1,0 +1,16 @@
+{
+  "default": {
+    "construct": [
+      {
+        "title": "site 标题",
+        "keyword": "site 关键字",
+        "description": "site 描述"
+      },
+      {
+        "title": "site title",
+        "keyword": "site keyword",
+        "description": "site description"
+      }
+    ]
+  }
+}

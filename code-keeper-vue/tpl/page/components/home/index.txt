@@ -1,0 +1,5 @@
+<% for(var i in complist){ 
+var name=complist[i]
+%>import <%= name %> from './<%= name %>.vue';
+<% } %>
+export { <%= complist.join(', ') %> };

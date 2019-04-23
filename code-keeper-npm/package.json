@@ -1,0 +1,35 @@
+{
+  "name": "code-keeper-vue",
+  "version": "0.0.5",
+  "description": "code-keeper-vue",
+  "main": "index.js",
+  "dependencies": {
+    "commander": "^2.13.0",
+    "inquirer": "^6.2.1",
+    "inquirer-select-line": "^1.1.1",
+    "keeper-core": "^1.1.8"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/"
+  },
+  "keywords": [
+    "code-keeper-vue"
+  ],
+  "standard": {
+    "parser": "babel-eslint"
+  },
+  "bin": {
+    "vkeeper": "./bin/main.js"
+  },
+  "author": "nero",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/"
+  },
+  "homepage": "https://github.com/"
+}

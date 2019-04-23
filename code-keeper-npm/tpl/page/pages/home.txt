@@ -1,0 +1,28 @@
+<template>
+  <div>
+    <<%= name %> :key="key"></<%= name %>>
+  </div>
+</template>
+
+<script lang="ts">
+import { Component, Prop, Vue } from "vue-property-decorator";
+import { <%= name %> } from "@/<%= action %>/components/<%= name %>";
+import { api } from "../service";
+
+@Component({
+  name: "<%= name %>-module",
+  components: {
+    <%= name %>
+  }
+})
+export default class <%= name %>Module extends Vue {
+  created() {
+    const data = api("123");
+    console.log(data);
+  }
+}
+</script>
+<style lang='less' scoped>
+@import '../../common/styles/class.less';
+
+</style>

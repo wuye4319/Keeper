@@ -1,0 +1,190 @@
+import Router from 'react-router/lib/Router';
+import Link from 'react-router/lib/Link';
+import browserHistory from 'react-router/lib/browserHistory';
+import '../../less/prolibrary/prolibrary.less';
+import eventProxy from '../../../plugin/reactcommon/myreflux';
+import { Layout, Menu, Breadcrumb, Icon } from 'antd';
+const { Header, Content, Footer, Sider } = Layout;
+const SubMenu = Menu.SubMenu;
+
+var domain = "//www."+window.supervar.domain;
+var apiUrl="//www."+window.supervar.domain+"/product-admin/";
+let moduleName = ['prolibrary','promotion','shop'];
+/* your logic code */
+class MyContent extends React.Component{
+    constructor(props){
+        super(props);
+        var childlist=[];
+        this.state={
+            childlist:childlist,
+            index:0,
+            userName:'',
+            collapsed: false,
+            mode: 'inline',
+            target:''
+        }
+    }
+    componentWillMount(){
+        let target = '';
+        for(let m=0;m<moduleName.length;m++){
+            if(target = window.location.href.split('/').indexOf(moduleName[m])!=-1){
+                target=moduleName[m];
+                break;
+            }
+        }
+        //fetch menu
+        fetch(`${apiUrl}admin/sys/menu/fetch/`,{
+            credentials: "include",
+            // mode: "no-cors",
+        }).then(res => res.json()).then(data=>{
+            if(data.state==0){
+                eventProxy.trigger('getUserInfo',{userName:data.username});
+                for(let i=0;i<data.data.length;i++){
+                    //target为当前模块名字
+                    if(data.data[i].target==target){
+                        this.setState({
+                            index:i,
+                            target:target,
+                            childlist:data.data,
+                            userName:data.username || ''
+                        });
+                        break;
+                    }
+                }
+            }else if(data.state=='-100'){
+                const ref=encodeURIComponent(location.href);
+                window.location.href=`${domain}/newadmin/login/?ref=${ref}`;
+            }else{
+                alert(data.msg)
+            }
+        }).catch(ex=> console.log("menu is loading failed",ex));
+    }
+    onCollapse = (collapsed) => {
+        this.setState({
+            collapsed,
+            mode: collapsed ? 'vertical' : 'inline',
+        });
+    }
+    logoutHandle(){
+        fetch(`${apiUrl}pub/auth/logout`,{
+            method:'GET',
+            credentials: "include",
+        }).then(res=> {return res.json();}).then(data=> {
+            if(data.state==0){
+                window.location.href=`${domain}/newadmin/login/`;
+                //alert('登录成功')
+            }else{
+                alert('退出失败：'+data.msg);
+            }
+        })
+    }
+    render(){
+        var self=this;
+        return(
+            <Layout>
+                <Header>
+                    <div className="logo">Superbuy商品管理系统</div>
+                    <ul className="nav-top" theme="dark" mode="horizontal" defaultSelectedKeys={['2']} style={{ lineHeight: '64px' }} >
+                        {this.state.childlist.map((a,b)=>{
+                            return(
+                                <li name={b} key={a.id?a.id:b}><a href={`${domain}${a.href}`}>{a.name?a.name:''}</a></li>
+                            )
+                        })}
+                    </ul>
+                    <div onClick={this.logoutHandle.bind(this)} style={{float: 'right',color: '#fff',cursor: 'pointer',padding: '0 3px'}}>退出</div>
+                </Header>
+                <Layout>
+                    <Sider collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse} >
+                        <Menu theme="dark" mode={this.state.mode} defaultSelectedKeys={['6']}>
+                            {!this.state.childlist.length || this.state.childlist[Number(this.state.index)].childs.map(function (data,index) {
+                                return(
+                                    data.childs&&data.childs.length>0?
+                                        <SubMenu key={"sub"+index} title={<span><i className={'icons icon-'+self.state.target+'-'+(index+1)}></i><span className="nav-text">{data.name}</span></span>} >
+                                            {data.childs.map(function (data2,index2) {
+                                                return (<Menu.Item key={"sub"+index+index2}><Link to={data2.href}>{data2.name}</Link></Menu.Item>);
+                                            })}
+                                        </SubMenu>:
+                                        <Menu.Item key="6">
+                                            <span><i className={'icons icon'+(index+1)}></i><span className="nav-text"><Link to={data.href}>{data.name}</Link></span></span>
+                                        </Menu.Item>
+                                )
+                            })}
+                        </Menu>
+                    </Sider>
+                    <Layout>
+                        <Content style={{ margin: '0 16px',minWidth:1200 }}>
+                            <Breadcrumb style={{ margin: '12px 0' }}>
+                                <Breadcrumb.Item>欢迎：{this.state.userName}</Breadcrumb.Item>
+                            </Breadcrumb>
+                            <div style={{ padding: 24, background: '#fff', minHeight: 660 }}>
+                                {this.props.children}
+                            </div>
+                        </Content>
+                        <Footer style={{ textAlign: 'center' }}>
+                            Superbuy Design @2017. Powered By Ant. Created by CodeLai Derek NeroZhang Rex Roy Selina Simon WillLi.
+                        </Footer>
+                    </Layout>
+                </Layout>
+            </Layout>
+        )
+    }
+}
+
+var routes = {
+    path: '/newadmin/<%= myrouter %>/',
+    component: MyContent,
+    childRoutes: [
+        <% for(var i=0;i<childlist.length;i++){
+            var child=childlist[i].child;
+            var link,req,file;
+            if(child){
+                for(var j=0;j<child.length;j++){
+                    var mychild=JSON.parse(child[j]);
+                    link=mychild.link;
+                    req=mychild.req;
+                    file=mychild.file;
+                    if(req){
+        %>{
+            path: "<%= link %>",
+            getComponent: (nextState, cb) => {
+                require.ensure([], (require) => {
+                    cb(null, require("<%= req %>"));
+                },"<%= file %>")
+            }
+        },<%
+                    }
+                }
+            }else{
+                link=childlist[i].link;
+                req=childlist[i].req;
+                file=childlist[i].file;
+                if(req){
+        %>{
+            path: "<%= link %>",
+            getComponent: (nextState, cb) => {
+                require.ensure([], (require) => {
+                    cb(null, require("<%= req %>"));
+                },"<%= file %>")
+            }
+        },<%
+                }
+            }
+        }%>
+    ]
+}
+
+class Myrouter extends React.Component{
+    componentWillMount(){
+        document.getElementById("container").style.opacity=1;
+    }
+    render(){
+        return(
+            <Router history={browserHistory} routes={routes} />
+        )
+    }
+}
+
+ReactDOM.render(
+    <Myrouter />,
+    document.getElementById("container")
+);

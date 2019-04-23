@@ -1,0 +1,42 @@
+/*icon*/
+
+/* public path */
+@webpath: '/source/img/';
+@webpath_cn: '/cn/source/img/';
+@webpath_en: '/en/source/img/';
+
+/* page width */
+@pageWidth: 1190px;
+
+/* css3.0 */
+
+/* 阴影 */
+.shadow(@x:0, @y:0, @blur:5px, @color:#000) { -moz-box-shadow: @arguments; -webkit-box-shadow: @arguments; box-shadow: @arguments; }
+
+/* 文字阴影 */
+.text-shadow(@x:0, @y:0, @blur:10px, @color:#fff) { -moz-text-shadow: @arguments; -webkit-text-shadow: @arguments; text-shadow: @arguments; }
+
+/* 旋转 */
+.rotate(@deg:90deg) { transform: rotate(@deg); -ms-transform: rotate(@deg); -moz-transform: rotate(@deg); -webkit-transform: rotate(@deg); -o-transform: rotate(@deg); transform-origin: 50% 50%; -moz-transform-origin: 50% 50%; -webkit-transform-origin: 50% 50%; -o-transform-origin: 50% 50%; }
+
+/* 平移 */
+.translate(@x:-10px, @y:-10px) { -moz-transform: translate(@x, @y); -webkiwt-transform: translate(@x, @y); -o-transform: translate(@x, @y); transform: translate(@x, @y); }
+
+/* 缩放 */
+.scale(@x:0.8, @y:0.8) { -ms-transform: scale(@x, @y); -moz-transform: scale(@x, @y); -webkit-transform: scale(@x, @y); -o-transform: scale(@x, @y); transform: scale(@x, @y); }
+
+/* 扭曲 */
+.skew(@deg1:45deg, @deg2:15deg) { -moz-transform: skew(@deg1, @deg2); -webkit-transform: skew(@deg1, @deg2); -o-transform: skew(@deg1, @deg2); transform: skew(@deg1, @deg2); }
+
+/* transform */
+.transform(@rotate:0, @translate:0, @scale:1, @skew:0) { -moz-transform: rotate(@rotate) translate(@translate) scale(@scale) skew(@skew); -webkit-transform: rotate(@rotate) translate(@translate) scale(@scale) skew(@skew); -o-transform: rotate(@rotate) translate(@translate) scale(@scale) skew(@skew); transform: rotate(@rotate) translate(@translate) scale(@scale) skew(@skew); }
+
+.transform-origin() { transform-origin: 100% 100%; -moz-transform-origin: 100% 100%; -webkit-transform-origin: 100% 100%; -o-transform-origin: 100% 100%; }
+
+/* 渐变 */
+.gradient(@start:top, @fromcolor:#00aeff, @tocolor:#03a4eb) { background: -webkit-linear-gradient(@start, @fromcolor, @tocolor); -webkit-background-origin: padding; -webkit-background-clip: content; }
+
+/* 三角形 */
+.triangle(@len1:5px, @len2:1px, @color1:#fff, @color2:#0091e4, @mgtop:7px) { border-width: @len1 @len1 @len2 @len1; border-color: @color1 @color2 @color2 @color2; border-style: solid; margin-top: @mgtop; display: inline-block; vertical-align: top; *overflow: hidden; *height: 0; }
+
+.inblock() { display: inline-block; vertical-align: top; }
