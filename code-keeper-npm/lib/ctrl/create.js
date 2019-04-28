@@ -7,15 +7,12 @@ const Render = require('keeper-core/lib/render')
 let render = new Render()
 const Fsinit = require('./routinfor')
 let initrouter = new Fsinit()
-const Del = require('keeper-core/lib/delete')
-let del = new Del()
 
 const Fseachdir = require('./eachdir')
 let eachdir = new Fseachdir()
 const Writefile = require('keeper-core/lib/writefile')
 let writefile = new Writefile()
 const inquirer = require('inquirer');
-const { spawnSync } = require('child_process');
 const pathconfig = require('./pathconfig')
 
 module.exports = class {
@@ -32,60 +29,24 @@ module.exports = class {
     }
   }
 
-  createAction() {
-    const promptList = [{
-      type: 'input',
-      message: '请填写功能模块的名称(英文):',
-      name: 'acname'
-    }, {
-      type: 'input',
-      message: '请填写功能模块的标题(中文):',
-      name: 'title'
-    }];
-
-    inquirer.prompt(promptList).then(a => {
-      if (a.acname && a.title) {
-        let action = this.option.action
-        let from = path.join(__dirname, action.from)
-        let to = path.resolve(action.to + a.acname)
-        writefile.copydir(from, to)
-        this.writepage(a.acname, 'index', a.title)
-      } else {
-        console.log('请填写模块信息')
-      }
-    })
-  }
-
   async createComponent() {
     // compo.createComp()
-    const root = path.join(this.option.root)
-    const except = this.option.pages.Except
-    let dirlist = await eachdir.dirlist(root, except)
-    let self = this
+    let tempath = path.join(this.option.root, this.option.pages.filelist[1].filename)
+    let filelist = await eachdir.dirlist(tempath, '', 'file')
 
     inquirer.prompt([{
       type: 'list',
-      message: '请选择组件碎片生成的位置:',
-      name: 'action',
-      choices: dirlist
-    }]).then(async ac => {
-      let tempath = path.join(self.option.root, ac.action + self.option.pages.filelist[1].filename)
-      let filelist = await eachdir.dirlist(tempath, '', 'file')
-
-      inquirer.prompt([{
-        type: 'list',
-        message: '请选择组件碎片关联页面:',
-        name: 'page',
-        choices: filelist
-      }, {
-        type: 'input',
-        message: '请填写组件碎片的名称(英文):',
-        name: 'compname'
-      }]).then(d => {
-        let action = path.join(this.option.root, ac.action)
-        let filelist = this.option.pages.filelist
-        this.writecomp(action, d.page.split('.')[0], filelist, d.compname)
-      })
+      message: '请选择组件碎片关联页面:',
+      name: 'page',
+      choices: filelist
+    }, {
+      type: 'input',
+      message: '请填写组件碎片的名称(英文):',
+      name: 'compname'
+    }]).then(d => {
+      let action = path.join(this.option.root)
+      let filelist = this.option.pages.filelist
+      this.writecomp(action, d.page.split('.')[0], filelist, d.compname)
     })
   }
 
@@ -114,16 +75,7 @@ module.exports = class {
   }
 
   async createPage() {
-    const root = path.join(this.option.root)
-    const except = this.option.pages.Except
-    let dirlist = await eachdir.dirlist(root, except)
-
     const promptList = [{
-      type: 'list',
-      message: '请选择生成位置:',
-      name: 'action',
-      choices: dirlist
-    }, {
       type: 'input',
       message: '请填写页面名称(英文):',
       name: 'pagename'
@@ -134,8 +86,8 @@ module.exports = class {
     }];
 
     inquirer.prompt(promptList).then(d => {
-      if (d.action && d.pagename && d.pagetitle) { // 去重，大小写统一
-        this.writepage(d.action, d.pagename, d.pagetitle)
+      if (d.pagename && d.pagetitle) { // 去重，大小写统一
+        this.writepage('', d.pagename, d.pagetitle)
       } else {
         console.log('参数错误，请重新填写！'.red)
       }
@@ -165,28 +117,24 @@ module.exports = class {
   }
 
   createObj() {
-    const promptList = [{
-      type: 'input',
-      message: '请填写新项目的名称(英文):',
-      name: 'objname'
-    }];
+    let tpl = this.option.obj
+    // 初始化
+    let from = path.join(__dirname, tpl.from)
+    let to = path.resolve(tpl.to + '/src/')
+    writefile.copydir(from, to)
 
-    inquirer.prompt(promptList).then(a => {
-      if (a.objname) {
-        spawnSync('vue', ['create', a.objname], { stdio: 'inherit' });
-        let tpl = this.option.obj
+    // config
+    let config = this.option.config
+    let from2 = path.join(__dirname, config.from)
+    let to2 = path.resolve(tpl.to)
+    writefile.copydir(from2, to2)
 
-        // clear src
-        let tempath = path.join(tpl.to + a.objname, this.option.root)
-        del.deleteSource(tempath, 'all')
-        // 初始化
-        let from = path.join(__dirname, tpl.from)
-        let to = path.resolve(tpl.to + a.objname + '/src/')
-        writefile.copydir(from, to)
-      } else {
-        console.log('请填写新项目名称')
-      }
-    })
+    // empty action
+    let action = this.option.action
+    let from1 = path.join(__dirname, action.from)
+    let to1 = path.resolve(tpl.to + '/src/')
+    writefile.copydir(from1, to1)
+    this.writepage('', 'index', '首页')
   }
 
   // rewrite file router.ts

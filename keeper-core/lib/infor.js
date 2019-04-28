@@ -15,10 +15,8 @@ class infor {
     let tempver = fs.readFileSync(path.resolve('./package.json')).toString()
     let scripts = JSON.parse(tempver).scripts
     if (JSON.stringify(scripts).indexOf('vue-cli-service') !== -1) {
-      // this.initpro(readyconfig)
-      mynpm.init(readyconfig.cliservicelist, plugin, 'vue-cli-service')
+      mynpm.init(readyconfig.cliservicelist, plugin, 'vue-cli-service', 1)
     } else {
-      this.initpro(readyconfig.initfile)
       mynpm.init(readyconfig.pluginlist, plugin, 'vue-webpack')
     }
   }
@@ -51,6 +49,8 @@ class infor {
   }
 
   boot(plugname, readyconfig, fn) {
+    this.initpro(readyconfig.initfile)
+
     // check program running environment.
     let sysconf = path.resolve('./node_modules/' + plugname + '/config/sysconf.js')
     let isready = fs.existsSync(sysconf)

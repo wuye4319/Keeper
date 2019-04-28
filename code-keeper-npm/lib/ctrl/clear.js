@@ -24,44 +24,33 @@ class clear {
   }
 
   async clearComponent() {
-    const root = path.join(this.option.root)
-    const except = this.option.pages.Except
-    let dirlist = await eachdir.dirlist(root, except)
     let self = this
+    const except = this.option.pages.Except
+    let tempath = path.join(self.option.root, self.option.pages.filelist[2].filename)
+    let filelist = await eachdir.dirlist(tempath, except)
 
-    // select action
+    // select page
     inquirer.prompt([{
       type: 'list',
-      message: '请选择要清理的组件碎片位置:',
-      name: 'action',
-      choices: dirlist
-    }]).then(async ac => {
-      let tempath = path.join(self.option.root, ac.action + self.option.pages.filelist[2].filename)
-      let filelist = await eachdir.dirlist(tempath, except)
+      message: '请选择要清理的组件碎片所在页面:',
+      name: 'page',
+      choices: filelist
+    }]).then(async d => {
+      let tempath = path.join(self.option.root, self.option.pages.filelist[2].filename + d.page)
+      let filepartlist = await eachdir.dirlist(tempath, 'index.ts', 'file')
 
-      // select page
+      // select component
       inquirer.prompt([{
         type: 'list',
-        message: '请选择要清理的组件碎片所在页面:',
-        name: 'page',
-        choices: filelist
-      }]).then(async d => {
-        let tempath = path.join(self.option.root, ac.action, self.option.pages.filelist[2].filename + d.page)
-        let filepartlist = await eachdir.dirlist(tempath, 'index.ts', 'file')
+        message: '请选择需要清理的组件碎片:',
+        name: 'part',
+        choices: filepartlist
+      }]).then(pa => {
+        let delfile = path.join(tempath, pa.part)
+        del.deleteSource(delfile)
 
-        // select component
-        inquirer.prompt([{
-          type: 'list',
-          message: '请选择需要清理的组件碎片:',
-          name: 'part',
-          choices: filepartlist
-        }]).then(pa => {
-          let delfile = path.join(tempath, pa.part)
-          del.deleteSource(delfile)
-
-          let action = path.join(self.option.root, ac.action)
-          this.updateindex(action, d.page, self.option.pages.filelist)
-        })
+        let action = path.join(self.option.root)
+        this.updateindex(action, d.page, self.option.pages.filelist)
       })
     })
   }
@@ -93,69 +82,24 @@ class clear {
   }
 
   async clearPage() {
-    const root = path.join(this.option.root)
     const except = this.option.pages.Except
-    let dirlist = await eachdir.dirlist(root, except)
     let self = this
+    let tempath = path.join(self.option.root, self.option.pages.filelist[2].filename)
+    let filelist = await eachdir.dirlist(tempath, except)
 
-    // select action
+    // select page
     inquirer.prompt([{
       type: 'list',
-      message: '请选择需要清理的页面位置:',
-      name: 'action',
-      choices: dirlist
-    }]).then(async ac => {
-      let tempath = path.join(self.option.root, ac.action + self.option.pages.filelist[2].filename)
-      let filelist = await eachdir.dirlist(tempath, except)
-
-      // select page
-      inquirer.prompt([{
-        type: 'list',
-        message: '请选择需要清理的页面:',
-        name: 'page',
-        choices: filelist
-      }]).then(async d => {
-        let tempath = path.join(self.option.root, ac.action, self.option.pages.filelist[2].filename, d.page + '/')
-        let delfile = path.join(self.option.root, ac.action, self.option.pages.filelist[1].filename, d.page + '.vue')
-        del.deleteSource(tempath, 'all')
-        del.deleteSource(delfile)
-
-        this.updaterout(ac.action, d.page)
-      })
-    })
-  }
-
-  async clearAction() {
-    const root = path.join(this.option.root)
-    const except = this.option.pages.Except
-    let dirlist = await eachdir.dirlist(root, except)
-    let self = this
-
-    // select action
-    inquirer.prompt([{
-      type: 'list',
-      message: '请选择组件碎片生成的位置:',
-      name: 'action',
-      choices: dirlist
-    }]).then(async ac => {
-      let tempath = path.join(self.option.root, ac.action + '/')
+      message: '请选择需要清理的页面:',
+      name: 'page',
+      choices: filelist
+    }]).then(async d => {
+      let tempath = path.join(self.option.root, self.option.pages.filelist[2].filename, d.page + '/')
+      let delfile = path.join(self.option.root, self.option.pages.filelist[1].filename, d.page + '.vue')
       del.deleteSource(tempath, 'all')
-    })
-  }
+      del.deleteSource(delfile)
 
-  async clearObj() {
-    const root = path.join('./')
-    let dirlist = await eachdir.getobj(root)
-
-    // select action
-    inquirer.prompt([{
-      type: 'list',
-      message: '请选择要删除的项目:',
-      name: 'obj',
-      choices: dirlist
-    }]).then(async ac => {
-      let tempath = path.join(root, ac.obj + '/')
-      del.deleteSource(tempath, 'all')
+      this.updaterout('', d.page)
     })
   }
 }

@@ -6,12 +6,8 @@ const Fscompile = require('../lib/compile')
 let compile = new Fscompile()
 const Create = require('../lib/ctrl/create')
 let create = new Create()
-// the bin/bdrelease.js used;
 const Fsclear = require('../lib/ctrl/clear')
 let clear = new Fsclear()
-// let fsconf = require('../lib/ctrl/readconf')
-// let conf = new fsconf()
-// require('./rob')
 const path = require('path')
 let pwd = path.dirname(__dirname)
 let plugname = path.basename(pwd)
@@ -19,6 +15,8 @@ let outconf = path.resolve('./node_modules/' + plugname + '/config/sysconf.js')
 let tpl = require(outconf)
 const npmrun = require('../lib/run')
 let run = new npmrun()
+const Service = require('./service')
+let service = new Service()
 
 module.exports = [
   {
@@ -27,7 +25,7 @@ module.exports = [
       if (tpl.plugintype === 'vue-webpack') {
         compile.dev()
       } else if (tpl.plugintype === 'vue-cli-service') {
-        run.run('serve')
+        service.run('serve')
       }
     }
   }, {
@@ -36,13 +34,13 @@ module.exports = [
       if (tpl.plugintype === 'vue-webpack') {
         compile.pub()
       } else if (tpl.plugintype === 'vue-cli-service') {
-        run.run('build')
+        service.run('build')
       }
     }
   }, {
     name: 'inspect', desc: '检查webpack的配置', alias: 'ins',
     action: function () {
-      run.run('inspect')
+      service.run('inspect')
     }
   }, {
     name: 'registry', desc: 'npm源管理', alias: 'reg',
@@ -50,44 +48,37 @@ module.exports = [
       run.choosereg()
     }
   }, {
-    name: 'create', desc: 'create', alias: 'crt',
+    name: 'init', desc: 'init object',
+    action: function () {
+      create.createObj()
+    }
+  }, {
+    name: 'create', desc: '自动化生成文件', alias: 'crt',
     option: [
       { cmd: '-c, --component', desc: 'create component' },
-      { cmd: '-a, --actions', desc: 'create action' },
       { cmd: '-p, --page', desc: 'create page' },
-      { cmd: '-o, --obj', desc: 'create object' }
     ],
     action: function (cmd) {
       let env = create.checkenv()
       if (env) {
-        if (cmd.obj) {
-          create.createObj()
-        } else if (cmd.page) {
+        if (cmd.page) {
           create.createPage()
-        } else if (cmd.actions) {
-          create.createAction()
         } else if (cmd.component) {
           create.createComponent()
         }
       }
     }
   }, {
-    name: 'clear', desc: '文件清理', alias: 'clr',
+    name: 'clear', desc: '自动化清理文件', alias: 'clr',
     option: [
       { cmd: '-c, --component', desc: 'clear component' },
-      { cmd: '-a, --actions', desc: 'clear action' },
       { cmd: '-p, --page', desc: 'clear page' },
-      { cmd: '-o, --obj', desc: 'clear object' }
     ],
     action: function (cmd) {
       let env = create.checkenv()
       if (env) {
-        if (cmd.obj) {
-          clear.clearObj()
-        } else if (cmd.page) {
+        if (cmd.page) {
           clear.clearPage()
-        } else if (cmd.actions) {
-          clear.clearAction()
         } else if (cmd.component) {
           clear.clearComponent()
         }

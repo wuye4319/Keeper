@@ -7,7 +7,8 @@
 module.exports = {
   root: './src/',
   package: './package.json',
-  action: { from: '../../tpl/action', to: './src/' },
+  action: { from: '../../tpl/action' },
+  config: { from: '../../tpl/config' },
   obj: { from: '../../tpl/obj', to: './' },
   pages: {
     Except: ['common', 'wrapper'],

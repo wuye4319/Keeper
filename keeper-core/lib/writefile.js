@@ -45,9 +45,8 @@ class Writefile {
   writejs(file, content) {
     this.mymkdirs(file)
     // write file
-    let res = fs.writeFileSync(file, content)
-    // return
-    return res || true
+    fs.writeFileSync(file, content)
+    console.log('Successful creation of '.green + file.yellow)
   }
 
   append(file, content) {
@@ -86,7 +85,7 @@ class Writefile {
     if (fs.existsSync(myfilepath)) {
       this.readdir(myfilepath, to)
     } else {
-      console.log('tpl is error')
+      console.log('Tpl error')
     }
   }
 

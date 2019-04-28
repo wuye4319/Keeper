@@ -9,5 +9,5 @@ export default [<% for(var i in routlist){
   meta: {
     title: '<%= title %>'
   },
-  component: () => import('@/<%= action %>/pages/<%= comp %>.vue')
+  component: () => import('@/<%= action?action+'/':'' %>pages/<%= comp %>.vue')
 }, <% } %>];

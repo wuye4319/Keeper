@@ -1,12 +1,11 @@
 {
-  "name": "code-keeper-vue",
-  "version": "0.0.5",
-  "description": "code-keeper-vue",
+  "name": "code-keeper-npm",
+  "version": "0.0.1",
+  "description": "code-keeper-npm",
   "main": "index.js",
   "dependencies": {
     "commander": "^2.13.0",
     "inquirer": "^6.2.1",
-    "inquirer-select-line": "^1.1.1",
     "keeper-core": "^1.1.8"
   },
   "devDependencies": {},
@@ -18,13 +17,13 @@
     "url": "git+https://github.com/"
   },
   "keywords": [
-    "code-keeper-vue"
+    "code-keeper-npm"
   ],
   "standard": {
     "parser": "babel-eslint"
   },
   "bin": {
-    "vkeeper": "./bin/main.js"
+    "nkeeper": "./bin/main.js"
   },
   "author": "nero",
   "license": "MIT",

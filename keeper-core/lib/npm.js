@@ -12,6 +12,7 @@ let npm = require('npm')
 const Render = require('./render')
 let render = new Render()
 let lowplugin, heightplugin, lostplugin
+const { spawnSync } = require('child_process');
 
 class initnpm {
   constructor() {
@@ -51,13 +52,14 @@ class initnpm {
   async installall(part, lostplugin) {
     if (part) {
       for (let i in lostplugin) {
-        console.log('keeper installing plugin : ' + lostplugin[i])
+        console.log('keeper installing part plugin : ' + lostplugin[i])
         await this.installplugin(lostplugin[i])
       }
     } else {
+      // merge plugin
       let allplugin = lostplugin.join(' ')
-      console.log('keeper installing plugin : ' + allplugin)
-      await this.installplugin(allplugin)
+      console.log('keeper installing all plugin : ' + allplugin)
+      await this.installpluginonce(allplugin)
     }
     console.log('Install Finished!'.green)
   }
@@ -124,16 +126,6 @@ class initnpm {
       npm.load(function (err) {
         if (err) return console.log(err)
         if (plugin.indexOf('-g') !== -1) {
-          // progress.probytime(20)
-          // let ls = exec('npm install ' + plugin, { env: process.env, maxBuffer: 20 * 1024 * 1024 }, function (error, stdout, stderr) {
-          //   // progress.toend()
-          //   console.log(stdout)
-          //   resolve()
-          //   if (stderr) console.log('stderr: ' + stderr)
-          //   if (error !== null) {
-          //     console.log('exec error: ' + error)
-          //   }
-          // })
           npm.config.set('global', true)
         }
         npm.commands.install([plugin], function (er, data) {
@@ -144,6 +136,13 @@ class initnpm {
           }
         })
       })
+    })
+  }
+
+  installpluginonce(plugin) {
+    return new Promise((resolve) => {
+      let data = spawnSync('npm', ['i', plugin], { stdio: 'inherit' });
+      resolve(data)
     })
   }
 

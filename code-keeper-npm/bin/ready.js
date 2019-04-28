@@ -90,8 +90,7 @@ module.exports = {
     "less-loader": "^4.1.0"
   },
   initfile: [
-    { in: './keeper-config.js', out: 'system/config-front.js' },
-    { in: './seoinfor.json', out: 'system/seoinfor.json' },
-    { in: './index.html', out: 'init/index.html', force: true },
+    { in: './package.json', out: 'system/package.json' },
+    // { in: './index.html', out: 'init/index.html', force: true },
   ]
 }

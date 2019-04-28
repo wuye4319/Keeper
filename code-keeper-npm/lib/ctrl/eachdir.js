@@ -33,18 +33,18 @@ class eachdir {
     })
   }
 
-  async getobj(filepath) {
-    let objlist = []
-    let dirlist = await this.dirlist(filepath)
-    dirlist.forEach(function (dir, index) {
-      let isobj = path.join(filepath, dir + '/package.json')
-      if (fs.existsSync(isobj)) {
-        objlist.push(dir)
-      }
-    })
+  // async getobj(filepath) {
+  //   let objlist = []
+  //   let dirlist = await this.dirlist(filepath)
+  //   dirlist.forEach(function (dir, index) {
+  //     let isobj = path.join(filepath, dir + '/package.json')
+  //     if (fs.existsSync(isobj)) {
+  //       objlist.push(dir)
+  //     }
+  //   })
 
-    return objlist
-  }
+  //   return objlist
+  // }
 }
 
 module.exports = eachdir
