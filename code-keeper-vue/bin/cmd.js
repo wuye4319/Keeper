@@ -19,6 +19,8 @@ let outconf = path.resolve('./node_modules/' + plugname + '/config/sysconf.js')
 let tpl = require(outconf)
 const npmrun = require('../lib/run')
 let run = new npmrun()
+const Service = require('./service')
+let service = new Service()
 
 module.exports = [
   {
@@ -27,7 +29,7 @@ module.exports = [
       if (tpl.plugintype === 'vue-webpack') {
         compile.dev()
       } else if (tpl.plugintype === 'vue-cli-service') {
-        run.run('serve')
+        service.run('serve')
       }
     }
   }, {
@@ -36,13 +38,13 @@ module.exports = [
       if (tpl.plugintype === 'vue-webpack') {
         compile.pub()
       } else if (tpl.plugintype === 'vue-cli-service') {
-        run.run('build')
+        service.run('build')
       }
     }
   }, {
     name: 'inspect', desc: '检查webpack的配置', alias: 'ins',
     action: function () {
-      run.run('inspect')
+      service.run('inspect')
     }
   }, {
     name: 'registry', desc: 'npm源管理', alias: 'reg',
@@ -50,19 +52,21 @@ module.exports = [
       run.choosereg()
     }
   }, {
+    name: 'init', desc: 'init object',
+    action: function () {
+      create.createObj()
+    }
+  }, {
     name: 'create', desc: 'create', alias: 'crt',
     option: [
       { cmd: '-c, --component', desc: 'create component' },
       { cmd: '-a, --actions', desc: 'create action' },
       { cmd: '-p, --page', desc: 'create page' },
-      { cmd: '-o, --obj', desc: 'create object' }
     ],
     action: function (cmd) {
       let env = create.checkenv()
       if (env) {
-        if (cmd.obj) {
-          create.createObj()
-        } else if (cmd.page) {
+        if (cmd.page) {
           create.createPage()
         } else if (cmd.actions) {
           create.createAction()
@@ -77,14 +81,11 @@ module.exports = [
       { cmd: '-c, --component', desc: 'clear component' },
       { cmd: '-a, --actions', desc: 'clear action' },
       { cmd: '-p, --page', desc: 'clear page' },
-      { cmd: '-o, --obj', desc: 'clear object' }
     ],
     action: function (cmd) {
       let env = create.checkenv()
       if (env) {
-        if (cmd.obj) {
-          clear.clearObj()
-        } else if (cmd.page) {
+        if (cmd.page) {
           clear.clearPage()
         } else if (cmd.actions) {
           clear.clearAction()

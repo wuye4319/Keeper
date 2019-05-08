@@ -6,9 +6,10 @@
 
 module.exports = {
   root: './src/',
-  package: './package.json',
-  action: { from: '../../tpl/action', to: './src/' },
+  action: { from: '../../tpl/action' },
+  config: { from: '../../tpl/config' },
   obj: { from: '../../tpl/obj', to: './' },
+  package: './package.json',
   pages: {
     Except: ['common', 'wrapper'],
     mainrout: { // wrapper router

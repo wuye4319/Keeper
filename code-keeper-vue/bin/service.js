@@ -1,3 +1,5 @@
+const path = require('path')
+
 const resolve = require('../lib/resolve')
 const minimist = resolve.require('minimist')
 const Service = resolve.require('@vue/cli-service/lib/Service')

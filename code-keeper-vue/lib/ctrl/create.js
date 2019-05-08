@@ -47,7 +47,7 @@ module.exports = class {
       if (a.acname && a.title) {
         let action = this.option.action
         let from = path.join(__dirname, action.from)
-        let to = path.resolve(action.to + a.acname)
+        let to = path.resolve(this.option.root + a.acname)
         writefile.copydir(from, to)
         this.writepage(a.acname, 'index', a.title)
       } else {
@@ -165,28 +165,23 @@ module.exports = class {
   }
 
   createObj() {
-    const promptList = [{
-      type: 'input',
-      message: '请填写新项目的名称(英文):',
-      name: 'objname'
-    }];
+    let tpl = this.option.obj
+    // 初始化
+    let from = path.join(__dirname, tpl.from)
+    let to = path.resolve(tpl.to + '/src/')
+    writefile.copydir(from, to)
 
-    inquirer.prompt(promptList).then(a => {
-      if (a.objname) {
-        spawnSync('vue', ['create', a.objname], { stdio: 'inherit' });
-        let tpl = this.option.obj
+    // config
+    let config = this.option.config
+    let from2 = path.join(__dirname, config.from)
+    let to2 = path.resolve(tpl.to)
+    writefile.copydir(from2, to2)
 
-        // clear src
-        let tempath = path.join(tpl.to + a.objname, this.option.root)
-        del.deleteSource(tempath, 'all')
-        // 初始化
-        let from = path.join(__dirname, tpl.from)
-        let to = path.resolve(tpl.to + a.objname + '/src/')
-        writefile.copydir(from, to)
-      } else {
-        console.log('请填写新项目名称')
-      }
-    })
+    // empty action
+    let action = this.option.action
+    let from1 = path.join(__dirname, action.from)
+    writefile.copydir(from1, to + '/demo/')
+    this.writepage('demo', 'index', '首页')
   }
 
   // rewrite file router.ts

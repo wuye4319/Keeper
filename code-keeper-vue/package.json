@@ -1,12 +1,12 @@
 {
   "name": "code-keeper-vue",
-  "version": "0.0.6",
+  "version": "0.0.9",
   "description": "code-keeper-vue",
   "main": "index.js",
   "dependencies": {
     "commander": "^2.13.0",
     "inquirer": "^6.2.1",
-    "keeper-core": "^1.1.8"
+    "keeper-core": "^1.1.10"
   },
   "devDependencies": {},
   "scripts": {

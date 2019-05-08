@@ -142,22 +142,6 @@ class clear {
       del.deleteSource(tempath, 'all')
     })
   }
-
-  async clearObj() {
-    const root = path.join('./')
-    let dirlist = await eachdir.getobj(root)
-
-    // select action
-    inquirer.prompt([{
-      type: 'list',
-      message: '请选择要删除的项目:',
-      name: 'obj',
-      choices: dirlist
-    }]).then(async ac => {
-      let tempath = path.join(root, ac.obj + '/')
-      del.deleteSource(tempath, 'all')
-    })
-  }
 }
 
 module.exports = clear
