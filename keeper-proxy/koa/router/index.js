@@ -27,15 +27,14 @@ app.use(router.routes()).use(router.allowedMethods())
 app.on('error', function (err, ctx) {
   console.log('server error', err, ctx)
 })
-let lis = app.listen(8080)
-console.log('Server is started! port is 8080'.green)
+console.log('Server is started! port is 8080')
 
 let server = {
   addrouter: (url, fn) => {
     router.get(url, fn).post(url, fn)
   },
-  close: () => {
-    lis.close()
+  listen: (port) => {
+    return app.listen(port)
   }
 }
 

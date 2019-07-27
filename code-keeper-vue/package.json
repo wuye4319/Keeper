@@ -1,6 +1,6 @@
 {
   "name": "code-keeper-vue",
-  "version": "0.0.9",
+  "version": "1.0.1",
   "description": "code-keeper-vue",
   "main": "index.js",
   "dependencies": {
@@ -9,6 +9,9 @@
     "keeper-core": "^1.1.10"
   },
   "devDependencies": {},
+  "publishConfig": {
+    "registry": "http://120.78.157.233:8888/repository/npm-authine/"
+  },
   "scripts": {
     "test": "test"
   },
@@ -25,7 +28,7 @@
   "bin": {
     "vkeeper": "./bin/main.js"
   },
-  "author": "nero",
+  "author": "zhangxiang",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/"

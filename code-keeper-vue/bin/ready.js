@@ -92,7 +92,7 @@ module.exports = {
   initfile: [
     // { in: './keeper-config.js', out: 'system/config-front.js' },
     // { in: './seoinfor.json', out: 'system/seoinfor.json' },
-    { in: './package.json', out: 'system/package.json' },
+    { in: './package.json', out: 'init/pack.json' },
     // { in: './index.html', out: 'init/index.html', force: true },
   ]
 }
