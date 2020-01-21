@@ -6,13 +6,15 @@ const path = require('path')
 const fs = require('fs')
 const Writefile = require('./writefile')
 let writefile = new Writefile()
-const Del = require('./delete')
-let del = new Del()
+// const Del = require('./delete')
+// let del = new Del()
 let npm = require('npm')
 const Render = require('./render')
 let render = new Render()
-let lowplugin, heightplugin, lostplugin
-const { spawnSync } = require('child_process');
+let heightplugin, lostplugin
+const {
+  spawnSync
+} = require('child_process');
 
 class initnpm {
   constructor() {
@@ -29,11 +31,11 @@ class initnpm {
 
   async boot(plugintype, part) {
     console.log('This is the first time to start keeper!'.green)
-    this.checkplugin(plugintype)// keeper will auto install plugin for you,please wait...
-    if (lowplugin.length) {
-      console.log('Some of your plug-ins version are too old, Keeper will update those plug-ins.'.red)
-      await this.updateall(part)
-    }
+    this.checkplugin(plugintype) // keeper will auto install plugin for you,please wait...
+    // if (lowplugin.length) {
+    //   console.log('Some of your plug-ins version are too old, Keeper will update those plug-ins.'.red)
+    //   await this.updateall(part)
+    // }
     if (lostplugin.length) {
       console.log('You have some plugin is missing, Keeper will install those plugin.'.red)
       await this.installall(part, lostplugin)
@@ -41,25 +43,25 @@ class initnpm {
     this.checkplugin(plugintype)
   }
 
-  async updateall(part) {
-    let packagelock = './package-lock.json'
-    if (fs.existsSync(packagelock)) del.deleteSource(packagelock)
-    // lowplugin = lowplugin.concat(heightplugin)
+  // async updateall(part) {
+  //   let packagelock = './package-lock.json'
+  //   if (fs.existsSync(packagelock)) del.deleteSource(packagelock)
+  //   // lowplugin = lowplugin.concat(heightplugin)
 
-    this.installall(part, lowplugin)
-  }
+  //   this.installall(part, lowplugin)
+  // }
 
   async installall(part, lostplugin) {
-    if (part) {
-      for (let i in lostplugin) {
-        console.log('keeper installing part plugin : ' + lostplugin[i])
-        await this.installplugin(lostplugin[i])
-      }
-    } else {
+    if (part) { // special
       // merge plugin
       let allplugin = lostplugin.join(' ')
       console.log('keeper installing all plugin : ' + allplugin)
       await this.installpluginonce(allplugin)
+    } else {
+      for (let i in lostplugin) {
+        console.log('keeper installing part plugin : ' + lostplugin[i])
+        await this.installplugin(lostplugin[i])
+      }
     }
     console.log('Install Finished!'.green)
   }
@@ -67,7 +69,7 @@ class initnpm {
   checkplugin(plugintype) {
     let listkey = Object.keys(this.pluginlist)
     let listval = Object.values(this.pluginlist)
-    lowplugin = []
+    // lowplugin = []
     heightplugin = []
     lostplugin = []
     for (let i in listkey) {
@@ -83,23 +85,23 @@ class initnpm {
         let str = fs.readFileSync(packagepath).toString()
         let low = this.checkver(listval[i], JSON.parse(str).version)
         if (low) {
-          low === 'height' ? heightplugin.push(listkey[i] + '@' + listval[i])
-            : lowplugin.push(listkey[i] + '@' + listval[i])
+          low === 'height' ? heightplugin.push(listkey[i] + '@' + listval[i]) :
+            lostplugin.push(listkey[i] + '@' + listval[i])
         }
       } else {
         lostplugin.push(listkey[i] + '@' + listval[i])
       }
     }
-    if (lowplugin.length) {
-      console.log('Warning : outdataed version plugin : '.red + lowplugin.toString().red)
-    }
+    // if (lowplugin.length) {
+    //   console.log('Warning : outdataed version plugin : '.red + lowplugin.toString().red)
+    // }
     if (heightplugin.length) {
       console.log('Warning : height version plugin : '.yellow + heightplugin.toString().yellow)
     }
     if (lostplugin.length) {
       console.log('Missing plugin : '.yellow + lostplugin.toString().red)
     }
-    if (lostplugin.length === 0 && lowplugin.length === 0) {
+    if (lostplugin.length === 0) {
       console.log('Keeper is ready!'.green)
 
       let plugver = path.join(__dirname, '/../../../../' + this.currplugin + '/package.json')
@@ -113,7 +115,10 @@ class initnpm {
       let inconf = path.join(__dirname, '/../tpl/system/sysconf.txt')
       let outconf = path.resolve('./node_modules/' + this.currplugin + '/config/sysconf.js')
       let tpl = fs.readFileSync(inconf).toString()
-      let data = { timer: JSON.parse(plugver).version, type: plugintype }
+      let data = {
+        timer: JSON.parse(plugver).version,
+        type: plugintype
+      }
       let mystr = render.renderdata(tpl, data)
       writefile.writejs(outconf, mystr)
 
@@ -141,7 +146,9 @@ class initnpm {
 
   installpluginonce(plugin) {
     return new Promise((resolve) => {
-      let data = spawnSync('npm', ['i', plugin], { stdio: 'inherit' });
+      let data = spawnSync('npm', ['i', plugin], {
+        stdio: 'inherit'
+      });
       resolve(data)
     })
   }

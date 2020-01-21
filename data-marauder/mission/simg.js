@@ -1,0 +1,55 @@
+/**
+ * Created by nero on 2018/4/26
+ */
+// http://www.se8pc.com/thread-9283739-1-11.html
+const fs = require('fs')
+const Fscache = require('keeper-core/cache/cache')
+const cache = new Fscache()
+const Dataurl = require('../lib/url')
+let dataurl = new Dataurl()
+const Writefile = require('keeper-core/lib/writefile')
+let writefile = new Writefile()
+const Mytime = require('keeper-core/lib/time')
+let mytime = new Mytime()
+
+class simg {
+  getcont (cont, url, type) {
+    cache.writecache(cont, url, type)
+    console.log('Save data success'.green)
+  }
+
+  saveimg (imgdatabox) {
+    if (imgdatabox) {
+      const imgpath = './testimg/' + mytime.mydate('mins') + '/'
+      const initstr = imgpath + 'init.txt'
+      if (!fs.existsSync(initstr)) {
+        writefile.writejs(initstr, '123')
+      }
+
+      for (let i in imgdatabox) {
+        let imgurl = imgdatabox[i]
+        let imgtype = imgurl.match(/.jpg|.png/)[0]
+
+        if (imgurl) dataurl.saveimg(imgurl, imgpath + i + imgtype)
+      }
+    }
+  }
+
+  // async downloadimg (res) {
+  //   let reg = /.jpg|.jpeg|.png$/
+  //   if (reg.test(res.url())) {
+  //     let imgname = res.url().match(/\w+(.png|.jpg)/g)[0]
+  //     console.log(imgname.green)
+  //     try {
+  //       const buffer = await res.buffer()
+  //       fs.writeFileSync('./testimg/' + imgname, buffer)
+  //     }
+  //     catch (e) {
+  //       console.log('get simg failed! '.red + e)
+  //       throw e
+  //     }
+  //   }
+  // }
+}
+
+module.exports = simg

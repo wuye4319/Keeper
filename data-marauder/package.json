@@ -1,10 +1,10 @@
 {
   "name": "data-marauder",
-  "version": "0.0.13",
+  "version": "0.0.15",
   "description": "data-marauder",
   "main": "index.js",
   "dependencies": {
-    "keeper-core": "^1.1.5",
+    "keeper-core": "^1.1.11",
     "commander": "^2.13.0",
     "inquirer": "^6.2.1"
   },

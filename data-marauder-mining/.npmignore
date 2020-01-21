@@ -1,0 +1,7 @@
+.npmignore
+/test/
+
+/bin/
+/lib/
+/mission/
+/router/

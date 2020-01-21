@@ -12,13 +12,7 @@ let writefile = new Writefile()
 
 class infor {
   checkplugin(plugin, readyconfig) {
-    let tempver = fs.readFileSync(path.resolve('./package.json')).toString()
-    let scripts = JSON.parse(tempver).scripts
-    if (JSON.stringify(scripts).indexOf('vue-cli-service') !== -1) {
-      mynpm.init(readyconfig.cliservicelist, plugin, 'vue-cli-service', 1)
-    } else {
-      mynpm.init(readyconfig.pluginlist, plugin, 'vue-webpack')
-    }
+    mynpm.init(readyconfig.pluginlist, plugin, 'vue-webpack')
   }
 
   initpro(initfile) {
@@ -58,12 +52,7 @@ class infor {
       let tempver = fs.readFileSync(path.join(__dirname, '/../../../package.json')).toString()
       let currversion = JSON.parse(tempver).version
       console.log(plugname + ' : '.green + currversion.green)
-      let preversion = require(sysconf)
-      if (preversion.check_env === currversion) {
-        fn()
-      } else {
-        this.bootstrap(plugname, readyconfig)
-      }
+      fn()
     } else {
       this.bootstrap(plugname, readyconfig)
     }
