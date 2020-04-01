@@ -7,11 +7,21 @@ const Action = require('./action')
 let action = new Action()
 require('../operation/global')
 
-// subject
-proxy.addrouter(/^\/image(?:\/|$)/, async (ctx) => {
-  await action.getimg(ctx, 'image')
+// get taobao product list
+// http://localhost:8080/taopro/
+proxy.addrouter(/^\/taopro(?:\/|$)/, async (ctx) => {
+  // let url = 'https://www.nvsheen.space/forum-155-1.html'
+  let url = 'https://pub.alimama.com/promo/search/index.htm'
+
+  await action.getimg(url, ctx, 'taopro')
 })
-// subject
-// proxy.addrouter(/^\/taobao(?:\/|$)/, async (ctx) => {
-//   await action.getmall(ctx, 'taobao')
-// })
+// get taobao code by id
+// http://localhost:8080/taocode/
+proxy.addrouter(/^\/taocode(?:\/|$)/, async (ctx) => {
+  await action.getTaocode(ctx, 'taocode')
+})
+// analysis taobao product list
+// http://localhost:8080/analysis/
+proxy.addrouter(/^\/analysis(?:\/|$)/, async (ctx) => {
+  await action.analysisinfor(ctx, 'analysis')
+})

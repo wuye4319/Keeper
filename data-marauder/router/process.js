@@ -13,7 +13,7 @@ let internumb = 0
 let urlbox = []
 
 class ctrl {
-  async filter (myurl, rout, datatype) {
+  async filter(myurl, rout, datatype, rules) {
     // filter
     logger.myconsole('process : '.red + internumb.toString().red)
     logger.myconsole(myurl)
@@ -44,7 +44,7 @@ class ctrl {
           result = hascache
           logger.myconsole('this is cache file!')
         } else {
-          result = await this.getdatatype(rout, myurl, datatype)
+          result = await this.getdatatype(rout, myurl, datatype, rules)
         }
 
         // rm url in box
@@ -58,10 +58,10 @@ class ctrl {
     return result
   }
 
-  async getdatatype (rout, url, type) {
+  async getdatatype(rout, url, type, rules) {
     switch (type) {
       case 'pipe':
-        return proxy.pipedata(rout, url, internumb)
+        return proxy.pipedata(rout, url, internumb, rules)
       case 'page':
         return proxy.pagedata(rout, url, internumb)
       case 'url':
@@ -69,7 +69,7 @@ class ctrl {
     }
   }
 
-  eachurl (box, url) {
+  eachurl(box, url) {
     let result = false
     for (let i in box) {
       if (box[i] === url) result = i + 1
@@ -77,9 +77,13 @@ class ctrl {
     return result
   }
 
-  clearinternumb () {
+  clearinternumb() {
     internumb = 0
     urlbox = []
+  }
+
+  async getTaocode(type) {
+    await proxy.getTaocode(type)
   }
 }
 

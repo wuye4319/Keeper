@@ -13,15 +13,16 @@ let mytime = new Mytime()
 
 // constructor
 class InitJs {
-  async getdata (browser, type, url, rules, process, selfbrowser) {
+  async getdata(browser, type, url, rules, process, selfbrowser) {
     return new Promise(async (resolve) => {
       let t = Date.now()
-      let cont = {cont: '', apidata: '', status: false}
+      let cont = { cont: '', apidata: '', status: false }
       let intercept = false // de-duplication
       // let cookiebox = []
       let mylogstr = {}
       let page = await browser.newPage()
       await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36')
+      // get cont after / , like : /index.html
       let proid = url.substr(url.lastIndexOf('/'))
       logger.myconsole(mytime.mytime())
 
@@ -59,6 +60,7 @@ class InitJs {
                 cont.cont += await result.text()
                 if (!rules) {
                   intercept = true
+                  // start from 0,count time
                   waitcont(0)
                 }
               } catch (e) {
@@ -93,9 +95,11 @@ class InitJs {
         await page.goto(url)
         // let cont = await page.content()
         // console.log(filterbox)
+
         // close page when analysis is done
-        await page.close()
-        if (!intercept) {
+        // await page.close()
+
+        if (intercept === 'failed') {
           selfbrowser ? logger.myconsole('Self browser product is missing! '.yellow + process) : logger.myconsole('Product is missing! '.yellow +
             process)
           cont.status = 'Product is missing!'
@@ -108,14 +112,15 @@ class InitJs {
         logger.mybuffer(mylogstr)
         logger.writelog('success', type)
       } catch (e) {
-        resolve(false)
+        resolve(cont)
         logger.myconsole('System error! Or page timeout!'.red)
-        await page.close()
+        console.log('System error! Or page timeout!'.red)
+        // await page.close()
       }
     })
   }
 
-  interceptbox (result, rules) {
+  interceptbox(result, rules) {
     let res = false
     if (rules) {
       for (let i in rules) {

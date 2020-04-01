@@ -31,12 +31,7 @@ class Writefile {
   mymkdirs(file) {
     let index = file.lastIndexOf('/')
     if (index === -1) index = file.lastIndexOf('\\')
-    let dir = file.substr(0, index + 1)
-
-    if (dir.indexOf('\\') !== -1) {
-      dir = path.normalize(dir)
-      dir = dir.replace(/\\/g, '/')
-    }
+    let dir = file.substr(0, index)
 
     // creat dir first
     this.createdirs(dir)

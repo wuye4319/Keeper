@@ -4,6 +4,7 @@
  * plugin:init js
  */
 'use strict'
+require('colors')
 const puppeteer = require('puppeteer')
 const Pipedata = require('./pipe')
 let pipedata = new Pipedata()
@@ -25,6 +26,9 @@ let logger = new Logger()
 const systemconfig = require('../config/system')
 const Getcodeimg = require('./codeimg')
 let getcodeimg = new Getcodeimg()
+
+const GetTaoCode = require('./taocode')
+let getTaocode = new GetTaoCode()
 
 let browser = []
 let selfbrowser = {}
@@ -48,17 +52,17 @@ let proxyserver = systemconfig.proxyserver
 // constructor
 class InitJs {
   // controll proxy
-  closeproxy () {
+  closeproxy() {
     proxyserver = 0
     browser.close()
   }
 
-  openproxy () {
+  openproxy() {
     proxyserver = 1
     this.initproxybrowser()
   }
 
-  changebrowser () {
+  changebrowser() {
     browserindex += 1
     // if (index) {
     if (browserindex >= systemconfig.browsernumb) {
@@ -66,12 +70,12 @@ class InitJs {
     }
   }
 
-  setipinterval (time) {
+  setipinterval(time) {
     changeiptime = time
     console.log('set ip interval : ' + changeiptime + ' mins')
   }
 
-  changeproxy () {
+  changeproxy() {
     proxyindex += 1
     logger.myconsole('proxy : '.green + proxyindex)
     // if (index) {
@@ -80,19 +84,24 @@ class InitJs {
     }
   }
 
-  async init () {
+  async init() {
     let numb = systemconfig.browsernumb
     for (let i = 0; i < numb; i++) {
       selfbrowser[i] = await this.creatbrowser(i)
     }
   }
 
-  async creatbrowser (i) {
+  // self
+  async creatbrowser(i) {
     return new Promise(async (resolve) => {
       let tempbrowser = await puppeteer.launch({
         ignoreHTTPSErrors: true,
-        // headless: false,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
+        headless: false,
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        defaultViewport: {
+          width: 1200,
+          height: 800
+        }
       })
       logger.myconsole('self browser' + i + ' is start!'.green)
       // router
@@ -100,7 +109,7 @@ class InitJs {
     })
   }
 
-  async initproxybrowser () {
+  async initproxybrowser() {
     if (proxyserver) {
       for (let i = 0; i < proxyserver; i++) {
         let proxy = iplist[i].address + ':' + iplist[i].host
@@ -110,7 +119,8 @@ class InitJs {
     }
   }
 
-  async newbrowser (tempip) {
+  // proxy
+  async newbrowser(tempip) {
     return new Promise(async (resolve) => {
       let args = ['--no-sandbox', '--disable-setuid-sandbox']
       if (tempip) args.push('--proxy-server=' + tempip)
@@ -135,7 +145,7 @@ class InitJs {
     })
   }
 
-  async changeip () {
+  async changeip() {
     ipindex += 1
     // if (index) {
     if (ipindex >= iplist.length) {
@@ -150,14 +160,14 @@ class InitJs {
     await getcodeimg.writeacc(false, 'curr')
   }
 
-  async restart (proxy) {
+  async restart(proxy) {
     ipdate = mytime.mydate('mins')
     logger.myconsole(ipdate)
     logger.myconsole('changeiptime : '.green + changeiptime)
     await this.newbrowser(proxy)
   }
 
-  getproxystatus () {
+  getproxystatus() {
     let temp = {
       'ipindex': proxyserver ? ipindex : -1,
       'browserindex': browserindex,
@@ -167,7 +177,7 @@ class InitJs {
     return temp
   }
 
-  async close () {
+  async close() {
     for (let i in selfbrowser) {
       await selfbrowser[i].close()
     }
@@ -178,21 +188,21 @@ class InitJs {
     }
   }
 
-  async manualchangeip () {
+  async manualchangeip() {
     changeipactive = false
     await this.changeip()
   }
 
-  autoproxy () {
+  autoproxy() {
     changeipactive = true
     console.log('Active change ip is start!'.green)
   }
 
-  getproxylist () {
+  getproxylist() {
     return iplist
   }
 
-  async pagedata (type, url, process) {
+  async pagedata(type, url, process) {
     let cache = systemconfig.cache
     let currbrow = systemconfig.backupserver ? browser : selfbrowser
     let result = await pagedata.getdata(currbrow, type, url, cache, process)
@@ -200,7 +210,7 @@ class InitJs {
     return result === 'changeip' ? 'Analysis failed!' : result
   }
 
-  async servermatrix (type, url, process, result) {
+  async servermatrix(type, url, process, result) {
     let cache = systemconfig.cache
     // when the first one is done, it will stop the second
     // check ip date
@@ -215,12 +225,12 @@ class InitJs {
     return result
   }
 
-  async pipedata (type, url, process) {
+  async pipedata(type, url, process, rules) {
     !proxyserver || this.changeproxy()
     let cache = systemconfig.cache
     let currbrow = proxyserver ? browser[proxyindex] : selfbrowser[browserindex]
-    // let rules = ['initItemDetail.htm', 'sib.htm']
-    let rules = false
+
+    rules = rules || false
     let result = await pipedata.getdata(currbrow, type, url, rules, process)
 
     if (systemconfig.backupserver) {
@@ -230,19 +240,19 @@ class InitJs {
     return result
   }
 
-  async urldata (url) {
+  async urldata(url) {
     // let cache = systemconfig.cache
     let result = await dataurl.getdata(url)
 
     return result
   }
 
-  async getip (myproxy) {
+  async getip(myproxy) {
     let data = await getip.getip(myproxy)
     return data
   }
 
-  async loginbycode (browsertype, index) {
+  async loginbycode(browsertype, index) {
     let data
     if (browsertype === 'self') {
       data = await getcodeimg.getimg(selfbrowser[index || browserindex], browsertype + (index || browserindex))
@@ -255,7 +265,7 @@ class InitJs {
     return data
   }
 
-  async getstate (browsertype, index) {
+  async getstate(browsertype, index) {
     let data = false
     if (browsertype === 'self') {
       data = await getstate.getstate(selfbrowser[index || browserindex], browsertype + (index || browserindex))
@@ -266,7 +276,7 @@ class InitJs {
     return data
   }
 
-  async login (loginurl, url, account) {
+  async login(loginurl, url, account) {
     const page = await selfbrowser[browserindex].newPage()
 
     let file = path.join(__dirname, '/acc.js')
@@ -283,6 +293,21 @@ class InitJs {
     let data = await login.login(page, loginurl, url)
     return data
   }
+
+  // get taobao code
+  async getTaocode(browsertype, index) {
+    let data
+    if (browsertype === 'self') {
+      data = await getTaocode.getTaocode(selfbrowser[index || browserindex], browsertype + (index || browserindex))
+    } else if (browsertype === 'curr' && proxyserver) {
+      data = await getTaocode.getTaocode(browser[index || proxyindex], browsertype + (index || proxyinde))
+    } else {
+      data = false
+    }
+
+    return data
+  }
+
 }
 
 module.exports = InitJs

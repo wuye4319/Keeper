@@ -7,6 +7,7 @@
 module.exports = {
   pluginlist: {
     "keeper-proxy": "0.0.7",
+    "keeper-core": "1.1.3",
     "koa": "2.3.0",
     "koa-cors": "0.0.16",
     "koa-router": "7.2.1",
