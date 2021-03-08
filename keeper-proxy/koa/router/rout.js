@@ -24,6 +24,10 @@ class rout {
     server.addrouter(rule, fn)
   }
 
+  logger() { 
+    server.logger()
+  }
+
   close() {
     this.serverlistem.close()
     this.staticlisten.close()

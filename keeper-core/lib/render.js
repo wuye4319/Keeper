@@ -1,44 +1,79 @@
 /**
- * author : nero
+ * author:nero
+ * version:v1.0
+ * plugin:render page
+ * params1:tpl //dom
+ * params2:data //json
+ * params3:compress //like uglify
  */
+// constructor
 class render {
-  constructor () {this.options = {sTag: '<%', eTag: '%>', debugcompiler: !1, compress: !1}}
-
-  renderdata (a, b, c) {
-    '[object Array]' === Object.prototype.toString.call(b) && (b = {data: b})
-    let e = this.options.sTag, f = this.options.eTag, g = a.split(e), h = c || this.options.compress, j = this.options.debugcompiler,
-      l = 'var js=\'\''
-    for (let o, n = 0; n < g.length; n++) o = g[n].split(f), 0 !== n && (l += this.parsepage(o[0])), l += '+\'' +
-      o[o.length - 1].replace(/\'/g, '\\\'').replace(/\r\n/g, '\\n').replace(/\n/g, '\\n').replace(/\r/g, '\\n') + '\''
-    l += ';return js;'
-    let m = this.func(b, l)
-    return h && (m = m.replace(/\s+/g, ' ').replace(/<!--[\w\W]*?-->/g, '')), j &&
-    (console.log(l.yellow), console.log(b.yellow), console.log(m.yellow)), b ? m : this.func
+  constructor () {
+    // Default options
+    this.options = {
+      sTag: '<%',
+      eTag: '%>',
+      debugcompiler: false,
+      compress: false
+    }
   }
 
-  func (a, b) {
-    let c, e = [], f = []
-    for (c in a) e.push(c), f.push(a[c])
-    return new Function(e, b).apply(a, f)
+  // renderdata
+  renderdata (tpl, data, compress) {
+    // if data is array
+    if (Object.prototype.toString.call(data) === '[object Array]') {
+      data = {'data': data}
+    }
+    let sTag = this.options.sTag, eTag = this.options.eTag, tpls = tpl.split(sTag),
+      mycompress = compress || this.options.compress, debugcompiler = this.options.debugcompiler, code = 'var js=\'\''
+    for (let t = 0; t < tpls.length; t++) {
+      let p = tpls[t].split(eTag)
+      if (t !== 0) {
+        // code += this.parsepage(p[0]);
+        code += this.parsepage(p[0])
+      }
+      // \' support single quotation mark model
+      code += '+\'' + p[p.length - 1].replace(/\'/g, '\\\'').replace(/\r\n/g, '\\n').replace(/\n/g, '\\n').replace(/\r/g, '\\n') + '\''
+    }
+    code += ';return js;'
+    let html = this.func(data, code)
+    !mycompress || (html = html.replace(/\s+/g, ' ').replace(/<!--[\w\W]*?-->/g, ''))
+    if (debugcompiler) {
+      console.log(code.yellow)
+      console.log(data.yellow)
+      console.log(html.yellow)
+    }
+    return data ? html : this.func
   }
 
-  encodeHTML (a) {
-    return (a + '').replace(/&/g, '&amp;').
-      replace(/</g, '&lt;').
-      replace(/>/g, '&gt;').
-      replace(/\\/g, '&#92;').
-      replace(/"/g, '&quot;').
-      replace(/'/g, '&#39;')
+  // make function by running
+  func (d, code) {
+    let i, k = [], v = []
+    for (i in d) {
+      k.push(i)
+      v.push(d[i])
+    }
+    // apply(this,v)
+    return (new Function(k, code)).apply(d, v)
   }
 
-  parsepage (a) {
-    return a = '=' == a.substr(0, 1)
-      ? '+(' + a.substr(2) + ')'
-      : 'h=' == a.substr(0, 2)
-        ? '+(' + this.encodeHTML(a.substr(3)) + ')'
-        : 'u=' == a.substr(0, 2)
-          ? '+encodeURI(' + a.substr(3) + ')'
-          : ';' + a.replace(/\r\n/g, '') + 'js=js', a
+  // encode html code
+  encodeHTML (source) {
+    return String(source).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\\/g, '&#92;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+  }
+
+  // parse page
+  parsepage (line) {
+    if (line.substr(0, 1) == '=') {
+      line = '+(' + line.substr(2) + ')'
+    } else if (line.substr(0, 2) == 'h=') {
+      line = '+(' + this.encodeHTML(line.substr(3)) + ')'
+    } else if (line.substr(0, 2) == 'u=') {
+      line = '+encodeURI(' + line.substr(3) + ')'
+    } else {
+      line = ';' + line.replace(/\r\n/g, '') + 'js=js'
+    }
+    return line
   }
 }
 
